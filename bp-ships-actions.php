@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since BuddyPress (2.1.0)
  */
-function bp_groups_group_access_protection() {
+function bp_ships_group_access_protection() {
 	if ( ! bp_is_group() ) {
 		return;
 	}
@@ -89,7 +89,7 @@ function bp_groups_group_access_protection() {
 	}
 
 }
-add_action( 'bp_actions', 'bp_groups_group_access_protection' );
+add_action( 'bp_actions', 'bp_ships_group_access_protection' );
 
 /**
  * Catch and process group creation form submissions.
@@ -440,7 +440,7 @@ function groups_action_sort_creation_steps() {
 function groups_action_redirect_to_random_group() {
 
 	if ( bp_is_groups_component() && isset( $_GET['random-group'] ) ) {
-		$group = BP_Groups_Group::get_random( 1, 1 );
+		$group = bp_ships_Group::get_random( 1, 1 );
 
 		bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . $group['groups'][0]->slug . '/' );
 	}

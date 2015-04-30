@@ -150,7 +150,7 @@ function groups_screen_group_forum() {
 			check_admin_referer( 'bp_forums_new_reply' );
 
 			// Auto join this user if they are not yet a member of this group
-			if ( bp_groups_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+			if ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
 				groups_join_group( $bp->groups->current_group->id, bp_loggedin_user_id() );
 			}
 
@@ -372,7 +372,7 @@ function groups_screen_group_forum() {
 			if ( $user_is_banned ) {
 				$error_message = __( "You have been banned from this group.", 'buddypress' );
 
-			} elseif ( bp_groups_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+			} elseif ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
 				// Auto join this user if they are not yet a member of this group
 				groups_join_group( $bp->groups->current_group->id, bp_loggedin_user_id() );
 			}
@@ -489,10 +489,10 @@ function groups_remove_group_invite() {
 	$redirect  = wp_get_referer();
 	$error     = false;
 
-	if ( ! bp_groups_user_can_send_invites( $group_id ) ) {
+	if ( ! bp_ships_user_can_send_invites( $group_id ) ) {
 		$message = __( 'You are not allowed to send or remove invites', 'buddypress' );
 		$error = 'error';
-	} elseif ( BP_Groups_Member::check_for_membership_request( $friend_id, $group_id ) ) {
+	} elseif ( bp_ships_Member::check_for_membership_request( $friend_id, $group_id ) ) {
 		$message = __( 'The member requested to join the group', 'buddypress' );
 		$error = 'error';
 	} elseif ( ! groups_uninvite_user( $friend_id, $group_id ) ) {
@@ -1020,7 +1020,7 @@ add_action( 'bp_notification_settings', 'groups_screen_notification_settings' );
  *
  * @since BuddyPress (1.7.0)
  */
-class BP_Groups_Theme_Compat {
+class bp_ships_Theme_Compat {
 
 	/**
 	 * Set up theme compatibility for the Groups component.
@@ -1239,4 +1239,4 @@ class BP_Groups_Theme_Compat {
 		return bp_buffer_template_part( 'groups/single/home', null, false );
 	}
 }
-new BP_Groups_Theme_Compat();
+new bp_ships_Theme_Compat();

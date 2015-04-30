@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * BuddyPress Group object.
  */
-class BP_Groups_Group {
+class bp_ships_Group {
 
 	/**
 	 * ID of the group.
@@ -233,9 +233,9 @@ class BP_Groups_Group {
 
 			// Set user-specific data
 			$user_id          = bp_loggedin_user_id();
-			$this->is_member  = BP_Groups_Member::check_is_member( $user_id, $this->id );
-			$this->is_invited = BP_Groups_Member::check_has_invite( $user_id, $this->id );
-			$this->is_pending = BP_Groups_Member::check_for_membership_request( $user_id, $this->id );
+			$this->is_member  = bp_ships_Member::check_is_member( $user_id, $this->id );
+			$this->is_invited = bp_ships_Member::check_has_invite( $user_id, $this->id );
+			$this->is_pending = bp_ships_Member::check_for_membership_request( $user_id, $this->id );
 
 			// If this is a private or hidden group, does the current user have access?
 			if ( ( 'private' === $this->status ) || ( 'hidden' === $this->status ) ) {
@@ -361,16 +361,16 @@ class BP_Groups_Group {
 		groups_delete_groupmeta( $this->id );
 
 		// Fetch the user IDs of all the members of the group
-		$user_ids    = BP_Groups_Member::get_group_member_ids( $this->id );
+		$user_ids    = bp_ships_Member::get_group_member_ids( $this->id );
 		$user_id_str = esc_sql( implode( ',', wp_parse_id_list( $user_ids ) ) );
 
 		// Modify group count usermeta for members
 		$wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_value = meta_value - 1 WHERE meta_key = 'total_group_count' AND user_id IN ( {$user_id_str} )" );
 
 		// Now delete all group member entries
-		BP_Groups_Member::delete_all( $this->id );
+		bp_ships_Member::delete_all( $this->id );
 
-		do_action_ref_array( 'bp_groups_delete_group', array( &$this, $user_ids ) );
+		do_action_ref_array( 'bp_ships_delete_group', array( &$this, $user_ids ) );
 
 		wp_cache_delete( $this->id, 'bp_groups' );
 
@@ -406,13 +406,13 @@ class BP_Groups_Group {
 	/**
 	 * Get the ID of a group by the group's slug.
 	 *
-	 * Alias of {@link BP_Groups_Group::group_exists()}.
+	 * Alias of {@link bp_ships_Group::group_exists()}.
 	 *
-	 * @param string $slug See {@link BP_Groups_Group::group_exists()}.
-	 * @return string|null See {@link BP_Groups_Group::group_exists()}.
+	 * @param string $slug See {@link bp_ships_Group::group_exists()}.
+	 * @return string|null See {@link bp_ships_Group::group_exists()}.
 	 */
 	public static function get_id_from_slug( $slug ) {
-		return BP_Groups_Group::group_exists( $slug );
+		return bp_ships_Group::group_exists( $slug );
 	}
 
 	/**
@@ -459,7 +459,7 @@ class BP_Groups_Group {
 			$pag_sql = $wpdb->prepare( " LIMIT %d, %d", intval( ( $page - 1 ) * $limit), intval( $limit ) );
 
 		// Get all the group ids for the current user's groups.
-		$gids = BP_Groups_Member::get_group_ids( $user_id );
+		$gids = bp_ships_Member::get_group_ids( $user_id );
 
 		if ( empty( $gids['groups'] ) )
 			return false;
@@ -746,7 +746,7 @@ class BP_Groups_Group {
 		// If a 'type' parameter was passed, parse it and overwrite
 		// 'order' and 'orderby' params passed to the function
 		if (  ! empty( $r['type'] ) ) {
-			$order_orderby = apply_filters( 'bp_groups_get_orderby', self::convert_type_to_order_orderby( $r['type'] ), $r['type'] );
+			$order_orderby = apply_filters( 'bp_ships_get_orderby', self::convert_type_to_order_orderby( $r['type'] ), $r['type'] );
 
 			// If an invalid type is passed, $order_orderby will be
 			// an array with empty values. In this case, we stick
@@ -764,7 +764,7 @@ class BP_Groups_Group {
 		$order = bp_esc_sql_order( $order );
 
 		// Convert 'orderby' into the proper ORDER BY term
-		$orderby = apply_filters( 'bp_groups_get_orderby_converted_by_term', self::convert_orderby_to_order_by_term( $orderby ), $orderby, $r['type'] );
+		$orderby = apply_filters( 'bp_ships_get_orderby_converted_by_term', self::convert_orderby_to_order_by_term( $orderby ), $orderby, $r['type'] );
 
 		// Random order is a special case
 		if ( 'rand()' === $orderby ) {
@@ -778,7 +778,7 @@ class BP_Groups_Group {
 		}
 
 		// Get paginated results
-		$paged_groups_sql = apply_filters( 'bp_groups_get_paged_groups_sql', join( ' ', (array) $sql ), $sql, $r );
+		$paged_groups_sql = apply_filters( 'bp_ships_get_paged_groups_sql', join( ' ', (array) $sql ), $sql, $r );
 		$paged_groups     = $wpdb->get_results( $paged_groups_sql );
 
 		$total_sql['select'] = "SELECT COUNT(DISTINCT g.id) FROM {$bp->groups->table_name} g, {$bp->groups->table_name_groupmeta} gm";
@@ -830,7 +830,7 @@ class BP_Groups_Group {
 		}
 
 		// Get total group results
-		$total_groups_sql = apply_filters( 'bp_groups_get_total_groups_sql', $t_sql, $total_sql, $r );
+		$total_groups_sql = apply_filters( 'bp_ships_get_total_groups_sql', $t_sql, $total_sql, $r );
 		$total_groups     = $wpdb->get_var( $total_groups_sql );
 
 		$group_ids = array();
@@ -840,12 +840,12 @@ class BP_Groups_Group {
 
 		// Populate some extra information instead of querying each time in the loop
 		if ( !empty( $r['populate_extras'] ) ) {
-			$paged_groups = BP_Groups_Group::get_group_extras( $paged_groups, $group_ids, $r['type'] );
+			$paged_groups = bp_ships_Group::get_group_extras( $paged_groups, $group_ids, $r['type'] );
 		}
 
 		// Grab all groupmeta
 		if ( ! empty( $r['update_meta_cache'] ) ) {
-			bp_groups_update_meta_cache( $group_ids );
+			bp_ships_update_meta_cache( $group_ids );
 		}
 
 		unset( $sql, $total_sql );
@@ -886,7 +886,7 @@ class BP_Groups_Group {
 
 			$meta_sql = $groups_meta_query->get_sql( 'group', 'g', 'id' );
 
-			// BP_Groups_Group::get uses the comma syntax for table
+			// bp_ships_Group::get uses the comma syntax for table
 			// joins, which means that we have to do some regex to
 			// convert the INNER JOIN and move the ON clause to a
 			// WHERE condition
@@ -1047,7 +1047,7 @@ class BP_Groups_Group {
 			foreach ( (array) $paged_groups as $group ) {
 				$group_ids[] = $group->id;
 			}
-			$paged_groups = BP_Groups_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
+			$paged_groups = bp_ships_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
 		}
 
 		return array( 'groups' => $paged_groups, 'total' => $total_groups );
@@ -1111,7 +1111,7 @@ class BP_Groups_Group {
 			foreach ( (array) $paged_groups as $group ) {
 				$group_ids[] = $group->id;
 			}
-			$paged_groups = BP_Groups_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
+			$paged_groups = bp_ships_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
 		}
 
 		return array( 'groups' => $paged_groups, 'total' => $total_groups );
@@ -1174,7 +1174,7 @@ class BP_Groups_Group {
 			foreach ( (array) $paged_groups as $group ) {
 				$group_ids[] = $group->id;
 			}
-			$paged_groups = BP_Groups_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
+			$paged_groups = bp_ships_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
 		}
 
 		return array( 'groups' => $paged_groups, 'total' => $total_groups );
@@ -1183,7 +1183,7 @@ class BP_Groups_Group {
 	/**
 	 * Get a list of random groups.
 	 *
-	 * Use BP_Groups_Group::get() with 'type' = 'random' instead.
+	 * Use bp_ships_Group::get() with 'type' = 'random' instead.
 	 *
 	 * @param int $limit Optional. The max number of results to return.
 	 *        Default: null (no limit).
@@ -1239,7 +1239,7 @@ class BP_Groups_Group {
 			foreach ( (array) $paged_groups as $group ) {
 				$group_ids[] = $group->id;
 			}
-			$paged_groups = BP_Groups_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
+			$paged_groups = bp_ships_Group::get_group_extras( $paged_groups, $group_ids, 'newest' );
 		}
 
 		return array( 'groups' => $paged_groups, 'total' => $total_groups );
@@ -1825,7 +1825,7 @@ class BP_Group_Member_Query extends BP_User_Query {
 /**
  * BuddyPress Group Membership object.
  */
-class BP_Groups_Member {
+class bp_ships_Member {
 
 	/**
 	 * ID of the membership.
@@ -2183,7 +2183,7 @@ class BP_Groups_Member {
 	 * @return bool True on success, false on failure.
 	 */
 	public static function refresh_total_member_count_for_group( $group_id ) {
-		return groups_update_groupmeta( $group_id, 'total_member_count', (int) BP_Groups_Group::get_total_member_count( $group_id ) );
+		return groups_update_groupmeta( $group_id, 'total_member_count', (int) bp_ships_Group::get_total_member_count( $group_id ) );
 	}
 
 	/**
@@ -2752,7 +2752,7 @@ class BP_Groups_Member {
 		global $bp, $wpdb;
 
 		// Get all the group ids for the current user's groups and update counts
-		$group_ids = BP_Groups_Member::get_group_ids( $user_id );
+		$group_ids = bp_ships_Member::get_group_ids( $user_id );
 		foreach ( $group_ids['groups'] as $group_id ) {
 			groups_update_groupmeta( $group_id, 'total_member_count', groups_get_total_member_count( $group_id ) - 1 );
 
@@ -3566,7 +3566,7 @@ class BP_Group_Extension {
 	}
 
 	/**
-	 * Filter the access check in bp_groups_group_access_protection() for this extension.
+	 * Filter the access check in bp_ships_group_access_protection() for this extension.
 	 *
 	 * Note that $no_access_args is passed by reference, as there are some
 	 * circumstances where the bp_core_no_access() arguments need to be
@@ -3876,10 +3876,10 @@ class BP_Group_Extension {
 		}
 
 		// Hook the admin screen markup function to the content hook
-		add_action( 'bp_groups_admin_meta_box_content_' . $this->slug, array( $this, 'call_admin_screen' ) );
+		add_action( 'bp_ships_admin_meta_box_content_' . $this->slug, array( $this, 'call_admin_screen' ) );
 
 		// Initialize the metabox
-		add_action( 'bp_groups_admin_meta_boxes', array( $this, '_meta_box_display_callback' ) );
+		add_action( 'bp_ships_admin_meta_boxes', array( $this, '_meta_box_display_callback' ) );
 
 		// Catch the metabox save
 		add_action( 'bp_group_admin_edit_after', array( $this, 'call_admin_screen_save' ), 10 );
@@ -3917,7 +3917,7 @@ class BP_Group_Extension {
 		add_meta_box(
 			$screen['slug'],
 			$screen['name'],
-			create_function( '', 'do_action( "bp_groups_admin_meta_box_content_' . $this->slug . '", ' . $group_id . ' );' ),
+			create_function( '', 'do_action( "bp_ships_admin_meta_box_content_' . $this->slug . '", ' . $group_id . ' );' ),
 			get_current_screen()->id,
 			$screen['metabox_context'],
 			$screen['metabox_priority']
@@ -4429,7 +4429,7 @@ function bp_register_group_extension( $group_extension_class = '' ) {
  *
  * @since BuddyPress (2.1.0)
  */
-class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
+class bp_ships_Member_Suggestions extends BP_Members_Suggestions {
 
 	/**
 	 * Default arguments for this suggestions service.
@@ -4462,7 +4462,7 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 	 */
 	public function validate() {
 		$this->args['group_id'] = (int) $this->args['group_id'];
-		$this->args             = apply_filters( 'bp_groups_member_suggestions_args', $this->args, $this );
+		$this->args             = apply_filters( 'bp_ships_member_suggestions_args', $this->args, $this );
 
 		// Check for invalid or missing mandatory parameters.
 		if ( ! $this->args['group_id'] || ! bp_is_active( 'groups' ) ) {
@@ -4479,7 +4479,7 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 			return new WP_Error( 'access_denied' );
 		}
 
-		return apply_filters( 'bp_groups_member_suggestions_validate_args', parent::validate(), $this );
+		return apply_filters( 'bp_ships_member_suggestions_validate_args', parent::validate(), $this );
 	}
 
 	/**
@@ -4530,7 +4530,7 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 			}
 		}
 
-		$user_query = apply_filters( 'bp_groups_member_suggestions_query_args', $user_query, $this );
+		$user_query = apply_filters( 'bp_ships_member_suggestions_query_args', $user_query, $this );
 		if ( is_wp_error( $user_query ) ) {
 			return $user_query;
 		}
@@ -4552,6 +4552,6 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 			$results[] = $result;
 		}
 
-		return apply_filters( 'bp_groups_member_suggestions_get_suggestions', $results, $this );
+		return apply_filters( 'bp_ships_member_suggestions_get_suggestions', $results, $this );
 	}
 }

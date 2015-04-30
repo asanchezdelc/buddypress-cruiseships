@@ -30,7 +30,7 @@ class BP_Ships_Component extends BP_Component {
 	 *
 	 * @since BuddyPress (1.5.0)
 	 * @access public
-	 * @var BP_Groups_Group
+	 * @var bp_ships_Group
 	 */
 	public $current_group;
 
@@ -123,7 +123,7 @@ class BP_Ships_Component extends BP_Component {
 	/**
 	 * Set up component global data.
 	 *
-	 * The BP_GROUPS_SLUG constant is deprecated, and only used here for
+	 * The bp_ships_SLUG constant is deprecated, and only used here for
 	 * backwards compatibility.
 	 *
 	 * @since BuddyPress (1.5.0)
@@ -142,13 +142,13 @@ class BP_Ships_Component extends BP_Component {
 		// Global tables for groups component
 		$global_tables = array(
 			'table_name'           => $bp->table_prefix . 'bp_groups',
-			'table_name_members'   => $bp->table_prefix . 'bp_groups_members',
-			'table_name_groupmeta' => $bp->table_prefix . 'bp_groups_groupmeta'
+			'table_name_members'   => $bp->table_prefix . 'bp_ships_members',
+			'table_name_groupmeta' => $bp->table_prefix . 'bp_ships_groupmeta'
 		);
 
 		// Metadata tables for groups component
 		$meta_tables = array(
-			'group' => $bp->table_prefix . 'bp_groups_groupmeta',
+			'group' => $bp->table_prefix . 'bp_ships_groupmeta',
 		);
 
 		// All globals for groups component.
@@ -169,19 +169,19 @@ class BP_Ships_Component extends BP_Component {
 		/** Single Group Globals **********************************************/
 
 		// Are we viewing a single group?
-		if ( bp_is_groups_component() && $group_id = BP_Groups_Group::group_exists( bp_current_action() ) ) {
+		if ( bp_is_groups_component() && $group_id = bp_ships_Group::group_exists( bp_current_action() ) ) {
 
 			$bp->is_single_item  = true;
-			$current_group_class = apply_filters( 'bp_groups_current_group_class', 'BP_Groups_Group' );
+			$current_group_class = apply_filters( 'bp_ships_current_group_class', 'bp_ships_Group' );
 
-			if ( $current_group_class == 'BP_Groups_Group' ) {
+			if ( $current_group_class == 'bp_ships_Group' ) {
 				$this->current_group = groups_get_group( array(
 					'group_id'        => $group_id,
 					'populate_extras' => true,
 				) );
 
 			} else {
-				$this->current_group = apply_filters( 'bp_groups_current_group_object', new $current_group_class( $group_id ) );
+				$this->current_group = apply_filters( 'bp_ships_current_group_object', new $current_group_class( $group_id ) );
 			}
 
 			// When in a single group, the first action is bumped down one because of the
@@ -305,7 +305,7 @@ class BP_Ships_Component extends BP_Component {
 		}
 
 
-		$this->default_extension = apply_filters( 'bp_groups_default_extension', defined( 'BP_GROUPS_DEFAULT_EXTENSION' ) ? BP_GROUPS_DEFAULT_EXTENSION : 'home' );
+		$this->default_extension = apply_filters( 'bp_ships_default_extension', defined( 'bp_ships_DEFAULT_EXTENSION' ) ? bp_ships_DEFAULT_EXTENSION : 'home' );
 
 		if ( !bp_current_action() ) {
 			buddypress()->current_action = $this->default_extension;
@@ -477,7 +477,7 @@ class BP_Ships_Component extends BP_Component {
 				'no_access_url'   => $group_link,
 			);
 
-			if ( bp_is_active( 'friends' ) && bp_groups_user_can_send_invites() ) {
+			if ( bp_is_active( 'friends' ) && bp_ships_user_can_send_invites() ) {
 				$sub_nav[] = array(
 					'name'            => _x( 'Send Invites', 'My Group screen nav', 'buddypress' ),
 					'slug'            => 'send-invites',

@@ -12,17 +12,17 @@ defined( 'ABSPATH' ) || exit;
 
 /* Register widgets for groups component */
 function groups_register_widgets() {
-	add_action('widgets_init', create_function('', 'return register_widget("BP_Groups_Widget");') );
+	add_action('widgets_init', create_function('', 'return register_widget("bp_ships_Widget");') );
 }
 add_action( 'bp_register_widgets', 'groups_register_widgets' );
 
 /*** GROUPS WIDGET *****************/
 
-class BP_Groups_Widget extends WP_Widget {
+class bp_ships_Widget extends WP_Widget {
 	function __construct() {
 		$widget_ops = array(
 			'description' => __( 'A dynamic list of recently active, popular, and newest groups', 'buddypress' ),
-			'classname' => 'widget_bp_groups_widget buddypress widget',
+			'classname' => 'widget_bp_ships_widget buddypress widget',
 		);
 		parent::__construct( false, _x( '(BuddyPress) Groups', 'widget name', 'buddypress' ), $widget_ops );
 
@@ -37,7 +37,7 @@ class BP_Groups_Widget extends WP_Widget {
 	 *
 	 * For backward compatibility only
 	 */
-	function bp_groups_widget() {
+	function bp_ships_widget() {
 		$this->_construct();
 	}
 
@@ -71,9 +71,9 @@ class BP_Groups_Widget extends WP_Widget {
 
 		<?php if ( bp_has_groups( $group_args ) ) : ?>
 			<div class="item-options" id="groups-list-options">
-				<a href="<?php bp_groups_directory_permalink(); ?>" id="newest-groups"<?php if ( $instance['group_default'] == 'newest' ) : ?> class="selected"<?php endif; ?>><?php _e("Newest", 'buddypress') ?></a> |
-				<a href="<?php bp_groups_directory_permalink(); ?>" id="recently-active-groups"<?php if ( $instance['group_default'] == 'active' ) : ?> class="selected"<?php endif; ?>><?php _e("Active", 'buddypress') ?></a> |
-				<a href="<?php bp_groups_directory_permalink(); ?>" id="popular-groups" <?php if ( $instance['group_default'] == 'popular' ) : ?> class="selected"<?php endif; ?>><?php _e("Popular", 'buddypress') ?></a>
+				<a href="<?php bp_ships_directory_permalink(); ?>" id="newest-groups"<?php if ( $instance['group_default'] == 'newest' ) : ?> class="selected"<?php endif; ?>><?php _e("Newest", 'buddypress') ?></a> |
+				<a href="<?php bp_ships_directory_permalink(); ?>" id="recently-active-groups"<?php if ( $instance['group_default'] == 'active' ) : ?> class="selected"<?php endif; ?>><?php _e("Active", 'buddypress') ?></a> |
+				<a href="<?php bp_ships_directory_permalink(); ?>" id="popular-groups" <?php if ( $instance['group_default'] == 'popular' ) : ?> class="selected"<?php endif; ?>><?php _e("Popular", 'buddypress') ?></a>
 			</div>
 
 			<ul id="groups-list" class="item-list">

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 // Filter bbPress template locations
 
-add_filter( 'bp_groups_get_directory_template', 'bp_add_template_locations' );
+add_filter( 'bp_ships_get_directory_template', 'bp_add_template_locations' );
 add_filter( 'bp_get_single_group_template',    'bp_add_template_locations' );
 
 /* Apply WordPress defined filters */
@@ -35,7 +35,7 @@ add_filter( 'bp_get_group_description_excerpt', 'make_clickable', 9 );
 
 add_filter( 'bp_get_group_name',                    'wp_filter_kses',        1 );
 add_filter( 'bp_get_group_permalink',               'wp_filter_kses',        1 );
-add_filter( 'bp_get_group_description',             'bp_groups_filter_kses', 1 );
+add_filter( 'bp_get_group_description',             'bp_ships_filter_kses', 1 );
 add_filter( 'bp_get_group_description_excerpt',     'wp_filter_kses',        1 );
 add_filter( 'groups_group_name_before_save',        'wp_filter_kses',        1 );
 add_filter( 'groups_group_description_before_save', 'wp_filter_kses',        1 );
@@ -73,7 +73,7 @@ add_filter( 'bp_get_group_total_members',    'bp_core_number_format' );
  * @param string $content
  * @return string
  */
-function bp_groups_filter_kses( $content = '' ) {
+function bp_ships_filter_kses( $content = '' ) {
 
 	/**
 	 * Note that we don't immediately bail if $content is empty. This is because
@@ -104,7 +104,7 @@ function bp_groups_filter_kses( $content = '' ) {
 	 *
 	 * @param string $allowed_tags Allowed tags, attributes, and/or entities.
 	 */
-	$tags = apply_filters( 'bp_groups_filter_kses', $allowed_tags );
+	$tags = apply_filters( 'bp_ships_filter_kses', $allowed_tags );
 
 	// Return KSES'ed content, allowing the above tags
 	return wp_kses( $content, $tags );
@@ -243,7 +243,7 @@ add_filter( 'get_latest_topics_fields', 'groups_filter_forums_root_page_sql' );
  * @return bool True if mentions scripts should be loaded.
  * @since BuddyPress (2.2.0)
  */
-function bp_groups_maybe_load_mentions_scripts( $load_mentions, $mentions_enabled ) {
+function bp_ships_maybe_load_mentions_scripts( $load_mentions, $mentions_enabled ) {
 	if ( ! $mentions_enabled ) {
 		return $load_mentions;
 	}
@@ -254,4 +254,4 @@ function bp_groups_maybe_load_mentions_scripts( $load_mentions, $mentions_enable
 
 	return $load_mentions;
 }
-add_filter( 'bp_activity_maybe_load_mentions_scripts', 'bp_groups_maybe_load_mentions_scripts', 10, 2 );
+add_filter( 'bp_activity_maybe_load_mentions_scripts', 'bp_ships_maybe_load_mentions_scripts', 10, 2 );

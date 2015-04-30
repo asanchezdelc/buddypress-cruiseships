@@ -29,7 +29,7 @@ function groups_register_activity_actions() {
 		$bp->groups->id,
 		'created_group',
 		__( 'Created a group', 'buddypress' ),
-		'bp_groups_format_activity_action_created_group',
+		'bp_ships_format_activity_action_created_group',
 		__( 'New Groups', 'buddypress' ),
 		array( 'activity', 'member', 'member_groups' )
 	);
@@ -38,7 +38,7 @@ function groups_register_activity_actions() {
 		$bp->groups->id,
 		'joined_group',
 		__( 'Joined a group', 'buddypress' ),
-		'bp_groups_format_activity_action_joined_group',
+		'bp_ships_format_activity_action_joined_group',
 		__( 'Group Memberships', 'buddypress' ),
 		array( 'activity', 'group', 'member', 'member_groups' )
 	);
@@ -47,7 +47,7 @@ function groups_register_activity_actions() {
 		$bp->groups->id,
 		'group_details_updated',
 		__( 'Group details edited', 'buddypress' ),
-		'bp_groups_format_activity_action_group_details_updated',
+		'bp_ships_format_activity_action_group_details_updated',
 		__( 'Group Updates', 'buddypress' ),
 		array( 'activity', 'group', 'member', 'member_groups' )
 	);
@@ -88,7 +88,7 @@ add_action( 'bp_register_activity_actions', 'groups_register_activity_actions' )
  * @param object $activity Activity data object.
  * @return string
  */
-function bp_groups_format_activity_action_created_group( $action, $activity ) {
+function bp_ships_format_activity_action_created_group( $action, $activity ) {
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group = groups_get_group( array(
@@ -111,7 +111,7 @@ function bp_groups_format_activity_action_created_group( $action, $activity ) {
  * @param object $activity Activity data object.
  * @return string
  */
-function bp_groups_format_activity_action_joined_group( $action, $activity ) {
+function bp_ships_format_activity_action_joined_group( $action, $activity ) {
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group = groups_get_group( array(
@@ -133,7 +133,7 @@ function bp_groups_format_activity_action_joined_group( $action, $activity ) {
 		$action = apply_filters_ref_array( 'groups_activity_accepted_invite_action', array( $action, $activity->user_id, &$group ) );
 	}
 
-	return apply_filters( 'bp_groups_format_activity_action_joined_group', $action, $activity );
+	return apply_filters( 'bp_ships_format_activity_action_joined_group', $action, $activity );
 }
 
 /**
@@ -145,7 +145,7 @@ function bp_groups_format_activity_action_joined_group( $action, $activity ) {
  * @param  object $activity Activity data object.
  * @return string
  */
-function bp_groups_format_activity_action_group_details_updated( $action, $activity ) {
+function bp_ships_format_activity_action_group_details_updated( $action, $activity ) {
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group = groups_get_group( array(
@@ -156,7 +156,7 @@ function bp_groups_format_activity_action_group_details_updated( $action, $activ
 
 	/*
 	 * Changed group details are stored in groupmeta, keyed by the activity
-	 * timestamp. See {@link bp_groups_group_details_updated_add_activity()}.
+	 * timestamp. See {@link bp_ships_group_details_updated_add_activity()}.
 	 */
 	$changed = groups_get_groupmeta( $activity->item_id, 'updated_details_' . $activity->date_recorded );
 
@@ -178,7 +178,7 @@ function bp_groups_format_activity_action_group_details_updated( $action, $activ
 
 	}
 
-	return apply_filters( 'bp_groups_format_activity_action_joined_group', $action, $activity );
+	return apply_filters( 'bp_ships_format_activity_action_joined_group', $action, $activity );
 }
 
 /**
@@ -191,7 +191,7 @@ function bp_groups_format_activity_action_group_details_updated( $action, $activ
  * @param array $activities Array of activity items.
  * @return array
  */
-function bp_groups_prefetch_activity_object_data( $activities ) {
+function bp_ships_prefetch_activity_object_data( $activities ) {
 	$group_ids = array();
 
 	if ( empty( $activities ) ) {
@@ -231,7 +231,7 @@ function bp_groups_prefetch_activity_object_data( $activities ) {
 
 	return $activities;
 }
-add_filter( 'bp_activity_prefetch_object_data', 'bp_groups_prefetch_activity_object_data' );
+add_filter( 'bp_activity_prefetch_object_data', 'bp_ships_prefetch_activity_object_data' );
 
 /**
  * Set up activity arguments for use with the 'groups' scope.
@@ -242,7 +242,7 @@ add_filter( 'bp_activity_prefetch_object_data', 'bp_groups_prefetch_activity_obj
  * @param array $filter Current activity arguments
  * @return array
  */
-function bp_groups_filter_activity_scope( $retval = array(), $filter = array() ) {
+function bp_ships_filter_activity_scope( $retval = array(), $filter = array() ) {
 
 	// Determine the user_id
 	if ( ! empty( $filter['user_id'] ) ) {
@@ -293,7 +293,7 @@ function bp_groups_filter_activity_scope( $retval = array(), $filter = array() )
 
 	return $retval;
 }
-add_filter( 'bp_activity_set_groups_scope_args', 'bp_groups_filter_activity_scope', 10, 2 );
+add_filter( 'bp_activity_set_groups_scope_args', 'bp_ships_filter_activity_scope', 10, 2 );
 
 /**
  * Record an activity item related to the Groups component.
@@ -385,7 +385,7 @@ add_action( 'groups_new_forum_topic_post', 'groups_update_last_activity' );
  * @param int $group_id ID of the group.
  * @return bool|null False on failure.
  */
-function bp_groups_membership_accepted_add_activity( $user_id, $group_id ) {
+function bp_ships_membership_accepted_add_activity( $user_id, $group_id ) {
 
 	// Bail if Activity is not active
 	if ( ! bp_is_active( 'activity' ) ) {
@@ -403,7 +403,7 @@ function bp_groups_membership_accepted_add_activity( $user_id, $group_id ) {
 		'user_id' => $user_id
 	) );
 }
-add_action( 'groups_membership_accepted', 'bp_groups_membership_accepted_add_activity', 10, 2 );
+add_action( 'groups_membership_accepted', 'bp_ships_membership_accepted_add_activity', 10, 2 );
 
 /**
  * Add an activity item when a group's details are updated.
@@ -411,11 +411,11 @@ add_action( 'groups_membership_accepted', 'bp_groups_membership_accepted_add_act
  * @since BuddyPress (2.2.0)
  *
  * @param  int             $group_id       ID of the group.
- * @param  BP_Groups_Group $old_group      Group object before the details had been changed.
+ * @param  bp_ships_Group $old_group      Group object before the details had been changed.
  * @param  bool            $notify_members True if the admin has opted to notify group members, otherwise false.
  * @return int|bool The ID of the activity on success. False on error.
  */
-function bp_groups_group_details_updated_add_activity( $group_id, $old_group, $notify_members ) {
+function bp_ships_group_details_updated_add_activity( $group_id, $old_group, $notify_members ) {
 
 	// Bail if Activity is not active.
 	if ( ! bp_is_active( 'activity' ) ) {
@@ -475,7 +475,7 @@ function bp_groups_group_details_updated_add_activity( $group_id, $old_group, $n
 	) );
 
 }
-add_action( 'groups_details_updated', 'bp_groups_group_details_updated_add_activity', 10, 3 );
+add_action( 'groups_details_updated', 'bp_ships_group_details_updated_add_activity', 10, 3 );
 
 /**
  * Delete all activity items related to a specific group.
@@ -484,7 +484,7 @@ add_action( 'groups_details_updated', 'bp_groups_group_details_updated_add_activ
  *
  * @param int $group_id ID of the group.
  */
-function bp_groups_delete_group_delete_all_activity( $group_id ) {
+function bp_ships_delete_group_delete_all_activity( $group_id ) {
 	if ( bp_is_active( 'activity' ) ) {
 		bp_activity_delete_by_item_id( array(
 			'item_id'   => $group_id,
@@ -492,7 +492,7 @@ function bp_groups_delete_group_delete_all_activity( $group_id ) {
 		) );
 	}
 }
-add_action( 'groups_delete_group', 'bp_groups_delete_group_delete_all_activity', 10 );
+add_action( 'groups_delete_group', 'bp_ships_delete_group_delete_all_activity', 10 );
 
 /**
  * Delete group member activity if they leave or are removed within 5 minutes of membership modification.
@@ -506,7 +506,7 @@ add_action( 'groups_delete_group', 'bp_groups_delete_group_delete_all_activity',
  * @param int $group_id ID of the group.
  * @param int $user_id ID of the user leaving the group.
  */
-function bp_groups_leave_group_delete_recent_activity( $group_id, $user_id ) {
+function bp_ships_leave_group_delete_recent_activity( $group_id, $user_id ) {
 
 	// Bail if Activity component is not active
 	if ( ! bp_is_active( 'activity' ) ) {
@@ -514,7 +514,7 @@ function bp_groups_leave_group_delete_recent_activity( $group_id, $user_id ) {
 	}
 
 	// Get the member's group membership information
-	$membership = new BP_Groups_Member( $user_id, $group_id );
+	$membership = new bp_ships_Member( $user_id, $group_id );
 
 	// Check the time period, and maybe delete their recent group activity
 	if ( time() <= strtotime( '+5 minutes', (int) strtotime( $membership->date_modified ) ) ) {
@@ -526,6 +526,6 @@ function bp_groups_leave_group_delete_recent_activity( $group_id, $user_id ) {
 		) );
 	}
 }
-add_action( 'groups_leave_group',   'bp_groups_leave_group_delete_recent_activity', 10, 2 );
-add_action( 'groups_remove_member', 'bp_groups_leave_group_delete_recent_activity', 10, 2 );
-add_action( 'groups_ban_member',    'bp_groups_leave_group_delete_recent_activity', 10, 2 );
+add_action( 'groups_leave_group',   'bp_ships_leave_group_delete_recent_activity', 10, 2 );
+add_action( 'groups_remove_member', 'bp_ships_leave_group_delete_recent_activity', 10, 2 );
+add_action( 'groups_ban_member',    'bp_ships_leave_group_delete_recent_activity', 10, 2 );

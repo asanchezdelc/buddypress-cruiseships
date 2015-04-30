@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * @return bool|null False if not on a group page, or if user does not have
  *        access to group admin options.
  */
-function bp_groups_group_admin_menu() {
+function bp_ships_group_admin_menu() {
 	global $wp_admin_bar;
 	$bp = buddypress();
 
@@ -80,16 +80,16 @@ function bp_groups_group_admin_menu() {
 		}
 	}
 }
-add_action( 'admin_bar_menu', 'bp_groups_group_admin_menu', 99 );
+add_action( 'admin_bar_menu', 'bp_ships_group_admin_menu', 99 );
 
 /**
  * Remove rogue WP core Edit menu when viewing a single group.
  *
  * @since BuddyPress (1.6.0)
  */
-function bp_groups_remove_edit_page_menu() {
+function bp_ships_remove_edit_page_menu() {
 	if ( bp_is_group() ) {
 		remove_action( 'admin_bar_menu', 'wp_admin_bar_edit_menu', 80 );
 	}
 }
-add_action( 'add_admin_bar_menus', 'bp_groups_remove_edit_page_menu' );
+add_action( 'add_admin_bar_menus', 'bp_ships_remove_edit_page_menu' );
