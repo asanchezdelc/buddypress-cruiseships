@@ -115,7 +115,7 @@ function bp_ships_filter_kses( $content = '' ) {
 /**
  * Filter bbPress query SQL when on group pages or on forums directory.
  */
-function groups_add_forum_privacy_sql() {
+function ships_add_forum_privacy_sql() {
 	add_filter( 'get_topics_fields', 'groups_add_forum_fields_sql' );
 	add_filter( 'get_topics_join', 	 'groups_add_forum_tables_sql' );
 	add_filter( 'get_topics_where',  'groups_add_forum_where_sql'  );
@@ -128,7 +128,7 @@ add_filter( 'bbpress_init', 'groups_add_forum_privacy_sql' );
  * @param string $sql
  * @return string
  */
-function groups_add_forum_fields_sql( $sql = '' ) {
+function ships_add_forum_fields_sql( $sql = '' ) {
 	$sql = 't.*, g.id as object_id, g.name as object_name, g.slug as object_slug';
 	return $sql;
 }
@@ -139,7 +139,7 @@ function groups_add_forum_fields_sql( $sql = '' ) {
  * @param string $sql
  * @return string
  */
-function groups_add_forum_tables_sql( $sql = '' ) {
+function ships_add_forum_tables_sql( $sql = '' ) {
 	global $bp;
 
 	$sql .= 'JOIN ' . $bp->groups->table_name . ' AS g LEFT JOIN ' . $bp->groups->table_name_groupmeta . ' AS gm ON g.id = gm.group_id ';
@@ -153,7 +153,7 @@ function groups_add_forum_tables_sql( $sql = '' ) {
  * @param string $sql
  * @return string
  */
-function groups_add_forum_where_sql( $sql = '' ) {
+function ships_add_forum_where_sql( $sql = '' ) {
 	global $bp;
 
 	// Define locale variable
@@ -204,7 +204,7 @@ function groups_add_forum_where_sql( $sql = '' ) {
  * @param array $args
  * @return bool
  */
-function groups_filter_bbpress_caps( $value, $cap, $args ) {
+function ships_filter_bbpress_caps( $value, $cap, $args ) {
 	global $bp;
 
 	if ( bp_current_user_can( 'bp_moderate' ) )
@@ -229,7 +229,7 @@ add_filter( 'bb_current_user_can', 'groups_filter_bbpress_caps', 10, 3 );
  *
  * @see BB_Query::_filter_sql()
  */
-function groups_filter_forums_root_page_sql( $sql ) {
+function ships_filter_forums_root_page_sql( $sql ) {
 	return apply_filters( 'groups_filter_bbpress_root_page_sql', 't.topic_id' );
 }
 add_filter( 'get_latest_topics_fields', 'groups_filter_forums_root_page_sql' );

@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /* Register widgets for groups component */
-function groups_register_widgets() {
+function ships_register_widgets() {
 	add_action('widgets_init', create_function('', 'return register_widget("bp_ships_Widget");') );
 }
 add_action( 'bp_register_widgets', 'groups_register_widgets' );
@@ -162,7 +162,7 @@ class bp_ships_Widget extends WP_Widget {
 	}
 }
 
-function groups_ajax_widget_groups_list() {
+function ships_ajax_widget_groups_list() {
 
 	check_ajax_referer('groups_widget_groups_list');
 

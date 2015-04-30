@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return bool|null False on failure.
  */
-function groups_register_activity_actions() {
+function ships_register_activity_actions() {
 	$bp = buddypress();
 
 	if ( ! bp_is_active( 'activity' ) ) {
@@ -315,7 +315,7 @@ add_filter( 'bp_activity_set_groups_scope_args', 'bp_ships_filter_activity_scope
  * }
  * @return bool See {@link bp_activity_add()}.
  */
-function groups_record_activity( $args = '' ) {
+function ships_record_activity( $args = '' ) {
 
 	if ( ! bp_is_active( 'activity' ) ) {
 		return false;
@@ -359,7 +359,7 @@ function groups_record_activity( $args = '' ) {
  *        being updated. Default: the current group's ID.
  * @return bool|null False on failure.
  */
-function groups_update_last_activity( $group_id = 0 ) {
+function ships_update_last_activity( $group_id = 0 ) {
 
 	if ( empty( $group_id ) ) {
 		$group_id = buddypress()->groups->current_group->id;

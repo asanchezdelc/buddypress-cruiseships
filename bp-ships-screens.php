@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Handle the display of the Groups directory index.
  */
-function groups_directory_groups_setup() {
+function ships_directory_groups_setup() {
 	if ( bp_is_groups_directory() ) {
 		bp_update_is_directory( true, 'groups' );
 
@@ -31,7 +31,7 @@ add_action( 'bp_screens', 'groups_directory_groups_setup', 2 );
 /**
  * Handle the loading of the My Groups page.
  */
-function groups_screen_my_groups() {
+function ships_screen_my_groups() {
 
 	do_action( 'groups_screen_my_groups' );
 
@@ -41,7 +41,7 @@ function groups_screen_my_groups() {
 /**
  * Handle the loading of a user's Groups > Invites page.
  */
-function groups_screen_group_invites() {
+function ships_screen_group_invites() {
 	$group_id = (int)bp_action_variable( 1 );
 
 	if ( bp_is_action_variable( 'accept' ) && is_numeric( $group_id ) ) {
@@ -99,7 +99,7 @@ function groups_screen_group_invites() {
 /**
  * Handle the loading of a single group's page.
  */
-function groups_screen_group_home() {
+function ships_screen_group_home() {
 
 	if ( ! bp_is_single_item() ) {
 		return false;
@@ -113,7 +113,7 @@ function groups_screen_group_home() {
 /**
  * This screen function handles actions related to group forums.
  */
-function groups_screen_group_forum() {
+function ships_screen_group_forum() {
 
 	if ( !bp_is_active( 'forums' ) || !bp_forums_is_installed_correctly() )
 		return false;
@@ -412,7 +412,7 @@ function groups_screen_group_forum() {
 /**
  * Handle the display of a group's Members page.
  */
-function groups_screen_group_members() {
+function ships_screen_group_members() {
 
 	if ( !bp_is_single_item() )
 		return false;
@@ -429,7 +429,7 @@ function groups_screen_group_members() {
 /**
  * Handle the display of a group's Send Invites page.
  */
-function groups_screen_group_invite() {
+function ships_screen_group_invite() {
 
 	if ( !bp_is_single_item() )
 		return false;
@@ -470,7 +470,7 @@ function groups_screen_group_invite() {
  *
  * @since BuddyPress (2.0.0)
  */
-function groups_remove_group_invite() {
+function ships_remove_group_invite() {
 	if ( ! bp_is_group_invites() ) {
 		return;
 	}
@@ -508,7 +508,7 @@ add_action( 'bp_screens', 'groups_remove_group_invite' );
 /**
  * Handle the display of a group's Request Membership page.
  */
-function groups_screen_group_request_membership() {
+function ships_screen_group_request_membership() {
 	global $bp;
 
 	if ( !is_user_logged_in() )
@@ -551,7 +551,7 @@ function groups_screen_group_request_membership() {
 /**
  * Handle the display of a single group activity item.
  */
-function groups_screen_group_activity_permalink() {
+function ships_screen_group_activity_permalink() {
 
 	if ( !bp_is_groups_component() || !bp_is_active( 'activity' ) || ( bp_is_active( 'activity' ) && !bp_is_current_action( bp_get_activity_slug() ) ) || !bp_action_variable( 0 ) )
 		return false;
@@ -565,7 +565,7 @@ add_action( 'bp_screens', 'groups_screen_group_activity_permalink' );
 /**
  * Handle the display of a group's Admin pages.
  */
-function groups_screen_group_admin() {
+function ships_screen_group_admin() {
 	if ( !bp_is_groups_component() || !bp_is_current_action( 'admin' ) )
 		return false;
 
@@ -578,7 +578,7 @@ function groups_screen_group_admin() {
 /**
  * Handle the display of a group's admin/edit-details page.
  */
-function groups_screen_group_admin_edit_details() {
+function ships_screen_group_admin_edit_details() {
 
 	if ( 'edit-details' != bp_get_group_current_admin_tab() )
 		return false;
@@ -616,7 +616,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_edit_details' );
 /**
  * Handle the display of a group's admin/group-settings page.
  */
-function groups_screen_group_admin_settings() {
+function ships_screen_group_admin_settings() {
 
 	if ( 'group-settings' != bp_get_group_current_admin_tab() )
 		return false;
@@ -662,7 +662,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_settings' );
 /**
  * Handle the display of a group's Change Avatar page.
  */
-function groups_screen_group_admin_avatar() {
+function ships_screen_group_admin_avatar() {
 
 	if ( 'group-avatar' != bp_get_group_current_admin_tab() )
 		return false;
@@ -740,7 +740,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_avatar' );
 /**
  * This function handles actions related to member management on the group admin.
  */
-function groups_screen_group_admin_manage_members() {
+function ships_screen_group_admin_manage_members() {
 
 	if ( 'manage-members' != bp_get_group_current_admin_tab() )
 		return false;
@@ -859,7 +859,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_manage_members' );
 /**
  * Handle the display of Admin > Membership Requests.
  */
-function groups_screen_group_admin_requests() {
+function ships_screen_group_admin_requests() {
 	$bp = buddypress();
 
 	if ( 'membership-requests' != bp_get_group_current_admin_tab() ) {
@@ -910,7 +910,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_requests' );
 /**
  * Handle the display of the Delete Group page.
  */
-function groups_screen_group_admin_delete_group() {
+function ships_screen_group_admin_delete_group() {
 	global $bp;
 
 	if ( 'delete-group' != bp_get_group_current_admin_tab() )
@@ -951,7 +951,7 @@ add_action( 'bp_screens', 'groups_screen_group_admin_delete_group' );
 /**
  * Render the group settings fields on the Notification Settings page.
  */
-function groups_screen_notification_settings() {
+function ships_screen_notification_settings() {
 
 	if ( !$group_invite = bp_get_user_meta( bp_displayed_user_id(), 'notification_groups_invite', true ) )
 		$group_invite  = 'yes';

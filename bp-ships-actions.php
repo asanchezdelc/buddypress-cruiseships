@@ -94,7 +94,7 @@ add_action( 'bp_actions', 'bp_ships_group_access_protection' );
 /**
  * Catch and process group creation form submissions.
  */
-function groups_action_create_group() {
+function ships_action_create_group() {
 	global $bp;
 
 	// If we're not at domain.org/groups/create/ then return false
@@ -322,7 +322,7 @@ add_action( 'bp_actions', 'groups_action_create_group' );
 /**
  * Catch and process "Join Group" button clicks.
  */
-function groups_action_join_group() {
+function ships_action_join_group() {
 	global $bp;
 
 	if ( !bp_is_single_item() || !bp_is_groups_component() || !bp_is_current_action( 'join' ) )
@@ -367,7 +367,7 @@ add_action( 'bp_actions', 'groups_action_join_group' );
  *
  * @since BuddyPress (1.2.4)
  */
-function groups_action_leave_group() {
+function ships_action_leave_group() {
 	if ( ! bp_is_single_item() || ! bp_is_groups_component() || ! bp_is_current_action( 'leave-group' ) ) {
 		return false;
 	}
@@ -410,7 +410,7 @@ add_action( 'bp_actions', 'groups_action_leave_group' );
  *
  * @return bool|null False on failure.
  */
-function groups_action_sort_creation_steps() {
+function ships_action_sort_creation_steps() {
 	global $bp;
 
 	if ( !bp_is_groups_component() || !bp_is_current_action( 'create' ) )
@@ -437,7 +437,7 @@ function groups_action_sort_creation_steps() {
 /**
  * Catch requests for a random group page (example.com/groups/?random-group) and redirect.
  */
-function groups_action_redirect_to_random_group() {
+function ships_action_redirect_to_random_group() {
 
 	if ( bp_is_groups_component() && isset( $_GET['random-group'] ) ) {
 		$group = bp_ships_Group::get_random( 1, 1 );
@@ -454,7 +454,7 @@ add_action( 'bp_actions', 'groups_action_redirect_to_random_group' );
  *
  * @return bool|null False on failure.
  */
-function groups_action_group_feed() {
+function ships_action_group_feed() {
 
 	// get current group
 	$group = groups_get_current_group();

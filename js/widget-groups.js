@@ -25,7 +25,7 @@ jQuery(document).ready( function() {
 	);
 });
 
-function groups_widget_response(response) {
+function ships_widget_response(response) {
 	response = response.substr(0, response.length-1);
 	response = response.split('[[SPLIT]]');
 

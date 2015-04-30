@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * @param int $group_id ID of the group.
  * @param bp_ships_Group $old_group Group before new details were saved.
  */
-function groups_notification_group_updated( $group_id = 0, $old_group = null ) {
+function ships_notification_group_updated( $group_id = 0, $old_group = null ) {
 
 	$group = groups_get_group( array( 'group_id' => $group_id ) );
 
@@ -114,7 +114,7 @@ To view the group: %3$s
  * @param int $membership_id ID of the group membership object.
  * @return bool|null False on failure.
  */
-function groups_notification_new_membership_request( $requesting_user_id = 0, $admin_id = 0, $group_id = 0, $membership_id = 0 ) {
+function ships_notification_new_membership_request( $requesting_user_id = 0, $admin_id = 0, $group_id = 0, $membership_id = 0 ) {
 
 	// Trigger a BuddyPress Notification
 	if ( bp_is_active( 'notifications' ) ) {
@@ -212,7 +212,7 @@ To view %4$s\'s profile: %5$s
  *        Default: true.
  * @return boolean
  */
-function groups_notification_membership_request_completed( $requesting_user_id = 0, $group_id = 0, $accepted = true ) {
+function ships_notification_membership_request_completed( $requesting_user_id = 0, $group_id = 0, $accepted = true ) {
 
 	// Trigger a BuddyPress Notification
 	if ( bp_is_active( 'notifications' ) ) {
@@ -290,7 +290,7 @@ add_action( 'groups_membership_rejected', 'groups_notification_membership_reques
  * @param int $group_id ID of the group.
  * @return bool|null False on failure.
  */
-function groups_notification_promoted_member( $user_id = 0, $group_id = 0 ) {
+function ships_notification_promoted_member( $user_id = 0, $group_id = 0 ) {
 
 	// What type of promotion is this?
 	if ( groups_is_user_admin( $user_id, $group_id ) ) {
@@ -359,7 +359,7 @@ add_action( 'groups_promoted_member', 'groups_notification_promoted_member', 10,
  * @param int $inviter_user_id ID of the user who sent the invite.
  * @return bool|null False on failure.
  */
-function groups_notification_group_invites( &$group, &$member, $inviter_user_id ) {
+function ships_notification_group_invites( &$group, &$member, $inviter_user_id ) {
 
 	// Bail if member has already been invited
 	if ( ! empty( $member->invite_sent ) ) {
@@ -442,7 +442,7 @@ To view %5$s\'s profile visit: %6$s
  *        for WP Toolbar. Default: 'string'.
  * @return string
  */
-function groups_format_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
+function ships_format_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 
 	switch ( $action ) {
 		case 'new_membership_request':

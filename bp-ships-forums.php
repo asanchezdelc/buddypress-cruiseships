@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
  * @param string $group_name The group name.
  * @param string $group_desc The group description.
  */
-function groups_new_group_forum( $group_id = 0, $group_name = '', $group_desc = '' ) {
+function ships_new_group_forum( $group_id = 0, $group_name = '', $group_desc = '' ) {
 
 	if ( empty( $group_id ) ) {
 		$group_id = bp_get_current_group_id();
@@ -59,7 +59,7 @@ function groups_new_group_forum( $group_id = 0, $group_name = '', $group_desc = 
  *
  * @param int $group_id Group id, passed from groups_details_updated.
  */
-function groups_update_group_forum( $group_id ) {
+function ships_update_group_forum( $group_id ) {
 
 	$group = groups_get_group( array( 'group_id' => $group_id ) );
 
@@ -97,7 +97,7 @@ add_action( 'groups_details_updated', 'groups_update_group_forum' );
  *        Default: false.
  * @return mixed The new forum post ID on success. Boolean false on failure.
  */
-function groups_new_group_forum_post( $post_text, $topic_id, $page = false ) {
+function ships_new_group_forum_post( $post_text, $topic_id, $page = false ) {
 	if ( empty( $post_text ) ) {
 		return false;
 	}
@@ -150,7 +150,7 @@ function groups_new_group_forum_post( $post_text, $topic_id, $page = false ) {
  * @param int $forum_id The forum ID this forum topic resides in.
  * @return mixed The new topic object on success. Boolean false on failure.
  */
-function groups_new_group_forum_topic( $topic_title, $topic_text, $topic_tags, $forum_id ) {
+function ships_new_group_forum_topic( $topic_title, $topic_text, $topic_tags, $forum_id ) {
 	if ( empty( $topic_title ) || empty( $topic_text ) )
 		return false;
 
@@ -201,7 +201,7 @@ function groups_new_group_forum_topic( $topic_title, $topic_text, $topic_tags, $
  * @param mixed $topic_tags A comma-delimited string of topic tags. Optional.
  * @return mixed The topic object on success. Boolean false on failure.
  */
-function groups_update_group_forum_topic( $topic_id, $topic_title, $topic_text, $topic_tags = false ) {
+function ships_update_group_forum_topic( $topic_id, $topic_title, $topic_text, $topic_tags = false ) {
 	$bp = buddypress();
 
 	$topic_title = apply_filters( 'group_forum_topic_title_before_save', $topic_title );
@@ -262,7 +262,7 @@ function groups_update_group_forum_topic( $topic_id, $topic_title, $topic_text, 
  *	  Optional.
  * @return mixed The forum post ID on success. Boolean false on failure.
  */
-function groups_update_group_forum_post( $post_id, $post_text, $topic_id, $page = false ) {
+function ships_update_group_forum_post( $post_id, $post_text, $topic_id, $page = false ) {
 	$bp = buddypress();
 
 	$post_text = apply_filters( 'group_forum_post_text_before_save', $post_text );
@@ -328,7 +328,7 @@ function groups_update_group_forum_post( $post_id, $post_text, $topic_id, $page 
  * @param int $topic_id The ID of the topic to be deleted.
  * @return bool True if the delete routine went through properly.
  */
-function groups_delete_group_forum_topic( $topic_id ) {
+function ships_delete_group_forum_topic( $topic_id ) {
 	$bp = buddypress();
 
 	// Before deleting the thread, get the post ids so that their activity items can be deleted
@@ -379,7 +379,7 @@ function groups_delete_group_forum_topic( $topic_id ) {
  *        hooks.
  * @return bool True on success.
  */
-function groups_delete_group_forum_post( $post_id, $topic_id = false ) {
+function ships_delete_group_forum_post( $post_id, $topic_id = false ) {
 
 	$action = bp_forums_delete_post( array( 'post_id' => $post_id ) );
 
@@ -411,7 +411,7 @@ function groups_delete_group_forum_post( $post_id, $topic_id = false ) {
  *        Default: 'newest'.
  * @return int The topic count.
  */
-function groups_total_public_forum_topic_count( $type = 'newest' ) {
+function ships_total_public_forum_topic_count( $type = 'newest' ) {
 	return apply_filters( 'groups_total_public_forum_topic_count', bp_ships_Group::get_global_forum_topic_count( $type ) );
 }
 
@@ -425,6 +425,6 @@ function groups_total_public_forum_topic_count( $type = 'newest' ) {
  * @param string $search_terms Optional. Limit by a search term.
  * @return int The topic count.
  */
-function groups_total_forum_topic_count( $status = 'public', $search_terms = false ) {
+function ships_total_forum_topic_count( $status = 'public', $search_terms = false ) {
 	return apply_filters( 'groups_total_forum_topic_count', bp_ships_Group::get_global_topic_count( $status, $search_terms ) );
 }
