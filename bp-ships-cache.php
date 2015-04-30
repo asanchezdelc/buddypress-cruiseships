@@ -27,16 +27,16 @@ defined( 'ABSPATH' ) || exit;
  * @param int|str|array $group_ids Accepts a single group_id, or a
  *        comma-separated list or array of group ids.
  */
-function bp_groups_update_meta_cache( $group_ids = false ) {
+function bp_ships_update_meta_cache( $group_ids = false ) {
 	global $bp;
 
 	$cache_args = array(
 		'object_ids' 	   => $group_ids,
 		'object_type' 	   => $bp->groups->id,
-		'cache_group'      => 'group_meta',
-		'object_column'    => 'group_id',
+		'cache_group'      => 'ship_meta',
+		'object_column'    => 'ship_id',
 		'meta_table' 	   => $bp->groups->table_name_groupmeta,
-		'cache_key_prefix' => 'bp_groups_groupmeta'
+		'cache_key_prefix' => 'bp_ships_groupmeta'
 	);
 
 	bp_update_meta_cache( $cache_args );
@@ -47,15 +47,14 @@ function bp_groups_update_meta_cache( $group_ids = false ) {
  *
  * @param $group_id Not used.
  */
-function groups_clear_group_object_cache( $group_id ) {
+function ships_clear_group_object_cache( $group_id ) {
 	wp_cache_delete( 'bp_total_group_count', 'bp' );
 }
-add_action( 'groups_group_deleted',              'groups_clear_group_object_cache' );
-add_action( 'groups_settings_updated',           'groups_clear_group_object_cache' );
-add_action( 'groups_details_updated',            'groups_clear_group_object_cache' );
-add_action( 'groups_group_avatar_updated',       'groups_clear_group_object_cache' );
-add_action( 'groups_create_group_step_complete', 'groups_clear_group_object_cache' );
-
+add_action( 'ships_group_deleted',              'ships_clear_group_object_cache' );
+add_action( 'ships_settings_updated',           'ships_clear_group_object_cache' );
+add_action( 'ships_details_updated',            'ships_clear_group_object_cache' );
+add_action( 'ships_group_avatar_updated',       'ships_clear_group_object_cache' );
+add_action( 'ships_create_group_step_complete', 'ships_clear_group_object_cache' );
 /**
  * Bust group caches when editing or deleting.
  *

@@ -10,11 +10,11 @@
  * @package BuddyPress
  * @subpackage GroupsLoader
  */
-
+echo 'before';
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-class BP_Groups_Component extends BP_Component {
+class BP_Ships_Component extends BP_Component {
 
 	/**
 	 * Auto-join group when non group member performs group activity
@@ -85,12 +85,13 @@ class BP_Groups_Component extends BP_Component {
 	 * @since BuddyPress (1.5.0)
 	 */
 	public function __construct() {
+		echo 'started';
 		parent::start(
-			'groups',
-			_x( 'User Groups', 'Group screen page <title>', 'buddypress' ),
-			buddypress()->plugin_dir,
+			'ships',
+			_x( 'Cruise Ships', 'Ship screen page <title>', 'buddypress' ),
+			plugin_dir_path(__FILE__),
 			array(
-				'adminbar_myaccount_order' => 70
+				'adminbar_myaccount_order' => 72
 			)
 		);
 	}
@@ -106,18 +107,11 @@ class BP_Groups_Component extends BP_Component {
 	 */
 	public function includes( $includes = array() ) {
 		$includes = array(
-			'cache',
-			'forums',
 			'actions',
 			'filters',
 			'screens',
-			'classes',
-			'widgets',
 			'activity',
-			'template',
-			'adminbar',
-			'functions',
-			'notifications'
+			'adminbar'
 		);
 
 		if ( is_admin() )
@@ -142,8 +136,8 @@ class BP_Groups_Component extends BP_Component {
 		$bp = buddypress();
 
 		// Define a slug, if necessary
-		if ( !defined( 'BP_GROUPS_SLUG' ) )
-			define( 'BP_GROUPS_SLUG', $this->id );
+		if ( !defined( 'BP_SHIPS_SLUG' ) )
+			define( 'BP_SHIPS_SLUG', $this->id );
 
 		// Global tables for groups component
 		$global_tables = array(
@@ -160,12 +154,12 @@ class BP_Groups_Component extends BP_Component {
 		// All globals for groups component.
 		// Note that global_tables is included in this array.
 		$args = array(
-			'slug'                  => BP_GROUPS_SLUG,
-			'root_slug'             => isset( $bp->pages->groups->slug ) ? $bp->pages->groups->slug : BP_GROUPS_SLUG,
+			'slug'                  => BP_SHIPS_SLUG,
+			'root_slug'             => isset( $bp->pages->groups->slug ) ? $bp->pages->groups->slug : BP_SHIPS_SLUG,
 			'has_directory'         => true,
-			'directory_title'       => _x( 'Groups', 'component directory title', 'buddypress' ),
-			'notification_callback' => 'groups_format_notifications',
-			'search_string'         => _x( 'Search Groups...', 'Component directory search', 'buddypress' ),
+			'directory_title'       => _x( 'Ships', 'component directory title', 'buddypress' ),
+			'notification_callback' => 'ships_format_notifications',
+			'search_string'         => _x( 'Search Ships...', 'Component directory search', 'buddypress' ),
 			'global_tables'         => $global_tables,
 			'meta_tables'           => $meta_tables,
 		);
@@ -232,7 +226,7 @@ class BP_Groups_Component extends BP_Component {
 		} else {
 			$this->current_group = 0;
 		}
-
+		echo 'SHIPPPSSS';
 		// Illegal group names/slugs
 		$this->forbidden_names = apply_filters( 'groups_forbidden_names', array(
 			'my-groups',
@@ -354,9 +348,9 @@ class BP_Groups_Component extends BP_Component {
 		if ( bp_is_user() ) {
 			$count    = bp_get_total_group_count_for_user();
 			$class    = ( 0 === $count ) ? 'no-count' : 'count';
-			$nav_name = sprintf( _x( 'Groups <span class="%s">%s</span>', 'Group screen nav with counter', 'buddypress' ), esc_attr( $class ), number_format_i18n( $count ) );
+			$nav_name = sprintf( _x( 'Ships <span class="%s">%s</span>', 'Ship screen nav with counter', 'buddypress' ), esc_attr( $class ), number_format_i18n( $count ) );
 		} else {
-			$nav_name = _x( 'Groups', 'Group screen nav without counter', 'buddypress' );
+			$nav_name = _x( 'Ships', 'Ship screen nav without counter', 'buddypress' );
 		}
 
 		// Add 'Groups' to the main navigation
@@ -365,7 +359,7 @@ class BP_Groups_Component extends BP_Component {
 			'slug'                => $this->slug,
 			'position'            => 70,
 			'screen_function'     => 'groups_screen_my_groups',
-			'default_subnav_slug' => 'my-groups',
+			'default_subnav_slug' => 'my-ships',
 			'item_css_id'         => $this->id
 		);
 
@@ -380,7 +374,7 @@ class BP_Groups_Component extends BP_Component {
 
 		if ( !empty( $user_domain ) ) {
 			$groups_link = trailingslashit( $user_domain . $this->slug );
-
+			/*
 			// Add the My Groups nav item
 			$sub_nav[] = array(
 				'name'            => __( 'Memberships', 'buddypress' ),
@@ -402,15 +396,16 @@ class BP_Groups_Component extends BP_Component {
 				'user_has_access' => bp_core_can_edit_settings(),
 				'position'        => 30
 			);
-
+			
 			parent::setup_nav( $main_nav, $sub_nav );
+		*/
 		}
 
 		if ( bp_is_groups_component() && bp_is_single_item() ) {
 
 			// Reset sub nav
 			$sub_nav = array();
-
+			/*
 			// Add 'Groups' to the main navigation
 			$main_nav = array(
 				'name'                => __( 'Memberships', 'buddypress' ),
@@ -420,6 +415,7 @@ class BP_Groups_Component extends BP_Component {
 				'default_subnav_slug' => $this->default_extension,
 				'item_css_id'         => $this->id
 			);
+			*/
 
 			$group_link = bp_get_group_permalink( $this->current_group );
 
@@ -443,7 +439,7 @@ class BP_Groups_Component extends BP_Component {
 				 $this->current_group->status == 'private' &&
 				 ! groups_check_user_has_invite( bp_loggedin_user_id(), $this->current_group->id )
 				) {
-
+				
 				$sub_nav[] = array(
 					'name'               => _x( 'Request Membership','Group screen nav', 'buddypress' ),
 					'slug'               => 'request-membership',
@@ -452,6 +448,7 @@ class BP_Groups_Component extends BP_Component {
 					'screen_function'    => 'groups_screen_group_request_membership',
 					'position'           => 30
 				);
+				
 			}
 
 			// Forums are enabled and turned on
@@ -469,8 +466,8 @@ class BP_Groups_Component extends BP_Component {
 			}
 
 			$sub_nav[] = array(
-				'name'            => sprintf( _x( 'Members <span>%s</span>', 'My Group screen nav', 'buddypress' ), number_format( $this->current_group->total_member_count ) ),
-				'slug'            => 'members',
+				'name'            => sprintf( _x( 'Followers <span>%s</span>', 'My Group screen nav', 'buddypress' ), number_format( $this->current_group->total_member_count ) ),
+				'slug'            => 'followers',
 				'parent_url'      => $group_link,
 				'parent_slug'     => $this->current_group->slug,
 				'screen_function' => 'groups_screen_group_members',
@@ -581,6 +578,7 @@ class BP_Groups_Component extends BP_Component {
 	 */
 	public function setup_admin_bar( $wp_admin_nav = array() ) {
 		$bp = buddypress();
+
 
 		// Menus for logged in user
 		if ( is_user_logged_in() ) {
@@ -701,7 +699,8 @@ class BP_Groups_Component extends BP_Component {
  *
  * @since BuddyPress (1.5.0)
  */
-function bp_setup_groups() {
-	buddypress()->groups = new BP_Groups_Component();
+function bp_setup_ships() {
+	echo 'INIT SHIPS';
+	buddypress()->ships = new BP_Ships_Component();
 }
-add_action( 'bp_setup_components', 'bp_setup_groups', 6 );
+add_action( 'bp_setup_components', 'bp_setup_ships', 6 );
