@@ -107,11 +107,18 @@ class BP_Ships_Component extends BP_Component {
 	 */
 	public function includes( $includes = array() ) {
 		$includes = array(
+			'cache',
+			'forums',
 			'actions',
 			'filters',
 			'screens',
+			'classes',
+			'widgets',
 			'activity',
-			'adminbar'
+			'template',
+			'adminbar',
+			'functions',
+			'notifications'
 		);
 
 		if ( is_admin() )
@@ -141,14 +148,14 @@ class BP_Ships_Component extends BP_Component {
 
 		// Global tables for groups component
 		$global_tables = array(
-			'table_name'           => $bp->table_prefix . 'bp_groups',
+			'table_name'           => $bp->table_prefix . 'bp_ships',
 			'table_name_members'   => $bp->table_prefix . 'bp_ships_members',
 			'table_name_groupmeta' => $bp->table_prefix . 'bp_ships_groupmeta'
 		);
 
 		// Metadata tables for groups component
 		$meta_tables = array(
-			'group' => $bp->table_prefix . 'bp_ships_groupmeta',
+			'ship' => $bp->table_prefix . 'bp_ships_groupmeta',
 		);
 
 		// All globals for groups component.
@@ -169,12 +176,12 @@ class BP_Ships_Component extends BP_Component {
 		/** Single Group Globals **********************************************/
 
 		// Are we viewing a single group?
-		if ( bp_is_groups_component() && $group_id = bp_ships_Group::group_exists( bp_current_action() ) ) {
+		if ( bp_is_current_component( 'ships' ) && $group_id = BP_Ships_Ship::group_exists( bp_current_action() ) ) {
 
 			$bp->is_single_item  = true;
 			$current_group_class = apply_filters( 'bp_ships_current_group_class', 'bp_ships_Group' );
 
-			if ( $current_group_class == 'bp_ships_Group' ) {
+			if ( $current_group_class == 'BP_Ships_Ship' ) {
 				$this->current_group = groups_get_group( array(
 					'group_id'        => $group_id,
 					'populate_extras' => true,
@@ -246,7 +253,7 @@ class BP_Ships_Component extends BP_Component {
 		) );
 
 		// If the user was attempting to access a group, but no group by that name was found, 404
-		if ( bp_is_groups_component() && empty( $this->current_group ) && bp_current_action() && !in_array( bp_current_action(), $this->forbidden_names ) ) {
+		if ( bp_is_current_component( 'ships' ) && empty( $this->current_group ) && bp_current_action() && !in_array( bp_current_action(), $this->forbidden_names ) ) {
 			bp_do_404();
 			return;
 		}
@@ -296,7 +303,7 @@ class BP_Ships_Component extends BP_Component {
 	 * @since BuddyPress (2.1.0)
 	 */
 	public function setup_canonical_stack() {
-		if ( ! bp_is_groups_component() ) {
+		if ( ! bp_is_current_component( 'ships' ) ) {
 			return;
 		}
 
@@ -401,7 +408,7 @@ class BP_Ships_Component extends BP_Component {
 		*/
 		}
 
-		if ( bp_is_groups_component() && bp_is_single_item() ) {
+		if ( bp_is_current_component( 'ships' ) && bp_is_single_item() ) {
 
 			// Reset sub nav
 			$sub_nav = array();
@@ -641,7 +648,7 @@ class BP_Ships_Component extends BP_Component {
 	public function setup_title() {
 		$bp = buddypress();
 
-		if ( bp_is_groups_component() ) {
+		if ( bp_is_current_component( 'ships' ) ) {
 
 			if ( bp_is_my_profile() && !bp_is_single_item() ) {
 				$bp->bp_options_title = _x( 'Memberships', 'My Groups page <title>', 'buddypress' );

@@ -125,7 +125,7 @@ function ships_screen_group_forum() {
 
 	$bp = buddypress();
 
-	if ( !$bp->groups->current_group->user_has_access ) {
+	if ( !$bp->ships->current_group->user_has_access ) {
 		bp_core_no_access();
 		return;
 	}
@@ -136,10 +136,10 @@ function ships_screen_group_forum() {
 	// Fetch the details we need
 	$topic_slug	= (string)bp_action_variable( 1 );
 	$topic_id       = bp_forums_get_topic_id_from_slug( $topic_slug );
-	$forum_id       = groups_get_groupmeta( $bp->groups->current_group->id, 'forum_id' );
+	$forum_id       = groups_get_groupmeta( $bp->ships->current_group->id, 'forum_id' );
 	$user_is_banned = false;
 
-	if ( !bp_current_user_can( 'bp_moderate' ) && groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id ) )
+	if ( !bp_current_user_can( 'bp_moderate' ) && groups_is_user_banned( bp_loggedin_user_id(), $bp->ships->current_group->id ) )
 		$user_is_banned = true;
 
 	if ( !empty( $topic_slug ) && !empty( $topic_id ) ) {
@@ -150,8 +150,8 @@ function ships_screen_group_forum() {
 			check_admin_referer( 'bp_forums_new_reply' );
 
 			// Auto join this user if they are not yet a member of this group
-			if ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
-				groups_join_group( $bp->groups->current_group->id, bp_loggedin_user_id() );
+			if ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->ships->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
+				groups_join_group( $bp->ships->current_group->id, bp_loggedin_user_id() );
 			}
 
 			$topic_page = isset( $_GET['topic_page'] ) ? $_GET['topic_page'] : false;
@@ -169,7 +169,7 @@ function ships_screen_group_forum() {
 
 			$query_vars = isset( $_SERVER['QUERY_STRING'] ) ? '?' . $_SERVER['QUERY_STRING'] : '';
 
-			$redirect = bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic_slug . '/' . $query_vars;
+			$redirect = bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic_slug . '/' . $query_vars;
 
 			if ( !empty( $post_id ) ) {
 				$redirect .= '#post-' . $post_id;
@@ -260,7 +260,7 @@ function ships_screen_group_forum() {
 			}
 
 			do_action( 'groups_delete_forum_topic', $topic_id );
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'forum/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'forum/' );
 		}
 
 		// Editing a topic
@@ -286,7 +286,7 @@ function ships_screen_group_forum() {
 				}
 
 				do_action( 'groups_edit_forum_topic', $topic_id );
-				bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic_slug . '/' );
+				bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic_slug . '/' );
 			}
 
 			bp_core_load_template( apply_filters( 'groups_template_group_forum_topic_edit', 'groups/single/home' ) );
@@ -343,7 +343,7 @@ function ships_screen_group_forum() {
 				}
 
 				do_action( 'groups_edit_forum_post', $post_id );
-				bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) . 'forum/topic/' . $topic_slug . '/' . $query_vars . '#post-' . $post_id );
+				bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) . 'forum/topic/' . $topic_slug . '/' . $query_vars . '#post-' . $post_id );
 			}
 
 			bp_core_load_template( apply_filters( 'groups_template_group_forum_topic_edit', 'groups/single/home' ) );
@@ -372,9 +372,9 @@ function ships_screen_group_forum() {
 			if ( $user_is_banned ) {
 				$error_message = __( "You have been banned from this group.", 'buddypress' );
 
-			} elseif ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->groups->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+			} elseif ( bp_ships_auto_join() && !bp_current_user_can( 'bp_moderate' ) && 'public' == $bp->ships->current_group->status && !groups_is_user_member( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
 				// Auto join this user if they are not yet a member of this group
-				groups_join_group( $bp->groups->current_group->id, bp_loggedin_user_id() );
+				groups_join_group( $bp->ships->current_group->id, bp_loggedin_user_id() );
 			}
 
 			if ( empty( $_POST['topic_title'] ) ) {
@@ -389,14 +389,14 @@ function ships_screen_group_forum() {
 
 			if ( isset( $error_message ) ) {
 				bp_core_add_message( $error_message, 'error' );
-				$redirect = bp_get_group_permalink( $bp->groups->current_group ) . 'forum';
+				$redirect = bp_get_group_permalink( $bp->ships->current_group ) . 'forum';
 			} else {
 				if ( !$topic = groups_new_group_forum_topic( $_POST['topic_title'], $_POST['topic_text'], $_POST['topic_tags'], $forum_id ) ) {
 					bp_core_add_message( __( 'There was an error when creating the topic', 'buddypress'), 'error' );
-					$redirect = bp_get_group_permalink( $bp->groups->current_group ) . 'forum';
+					$redirect = bp_get_group_permalink( $bp->ships->current_group ) . 'forum';
 				} else {
 					bp_core_add_message( __( 'The topic was created successfully', 'buddypress') );
-					$redirect = bp_get_group_permalink( $bp->groups->current_group ) . 'forum/topic/' . $topic->topic_slug . '/';
+					$redirect = bp_get_group_permalink( $bp->ships->current_group ) . 'forum/topic/' . $topic->topic_slug . '/';
 				}
 			}
 
@@ -420,9 +420,9 @@ function ships_screen_group_members() {
 	$bp = buddypress();
 
 	// Refresh the group member count meta
-	groups_update_groupmeta( $bp->groups->current_group->id, 'total_member_count', groups_get_total_member_count( $bp->groups->current_group->id ) );
+	groups_update_groupmeta( $bp->ships->current_group->id, 'total_member_count', groups_get_total_member_count( $bp->ships->current_group->id ) );
 
-	do_action( 'groups_screen_group_members', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_members', $bp->ships->current_group->id );
 	bp_core_load_template( apply_filters( 'groups_template_group_members', 'groups/single/home' ) );
 }
 
@@ -443,15 +443,15 @@ function ships_screen_group_invite() {
 
 		if ( !empty( $_POST['friends'] ) ) {
 			foreach( (array) $_POST['friends'] as $friend ) {
-				groups_invite_user( array( 'user_id' => $friend, 'group_id' => $bp->groups->current_group->id ) );
+				groups_invite_user( array( 'user_id' => $friend, 'group_id' => $bp->ships->current_group->id ) );
 			}
 		}
 
 		// Send the invites.
-		groups_send_invites( bp_loggedin_user_id(), $bp->groups->current_group->id );
+		groups_send_invites( bp_loggedin_user_id(), $bp->ships->current_group->id );
 		bp_core_add_message( __('Group invites sent.', 'buddypress') );
-		do_action( 'groups_screen_group_invite', $bp->groups->current_group->id );
-		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		do_action( 'groups_screen_group_invite', $bp->ships->current_group->id );
+		bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 
 	} elseif ( !bp_action_variable( 0 ) ) {
 		// Show send invite page
@@ -516,16 +516,16 @@ function ships_screen_group_request_membership() {
 
 	$bp = buddypress();
 
-	if ( 'private' != $bp->groups->current_group->status )
+	if ( 'private' != $bp->ships->current_group->status )
 		return false;
 
 	// If the user is already invited, accept invitation
-	if ( groups_check_user_has_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
-		if ( groups_accept_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) )
+	if ( groups_check_user_has_invite( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
+		if ( groups_accept_invite( bp_loggedin_user_id(), $bp->ships->current_group->id ) )
 			bp_core_add_message( __( 'Group invite accepted', 'buddypress' ) );
 		else
 			bp_core_add_message( __( 'There was an error accepting the group invitation. Please try again.', 'buddypress' ), 'error' );
-		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 	}
 
 	// If the user has submitted a request, send it.
@@ -535,15 +535,15 @@ function ships_screen_group_request_membership() {
 		if ( !check_admin_referer( 'groups_request_membership' ) )
 			return false;
 
-		if ( !groups_send_membership_request( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+		if ( !groups_send_membership_request( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
 			bp_core_add_message( __( 'There was an error sending your group membership request. Please try again.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'Your membership request was sent to the group administrator successfully. You will be notified when the group administrator responds to your request.', 'buddypress' ) );
 		}
-		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 	}
 
-	do_action( 'groups_screen_group_request_membership', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_request_membership', $bp->ships->current_group->id );
 
 	bp_core_load_template( apply_filters( 'groups_template_group_request_membership', 'groups/single/home' ) );
 }
@@ -553,7 +553,7 @@ function ships_screen_group_request_membership() {
  */
 function ships_screen_group_activity_permalink() {
 
-	if ( !bp_is_groups_component() || !bp_is_active( 'activity' ) || ( bp_is_active( 'activity' ) && !bp_is_current_action( bp_get_activity_slug() ) ) || !bp_action_variable( 0 ) )
+	if ( !bp_is_current_component( 'ships' ) || !bp_is_active( 'activity' ) || ( bp_is_active( 'activity' ) && !bp_is_current_action( bp_get_activity_slug() ) ) || !bp_action_variable( 0 ) )
 		return false;
 
 	buddypress()->is_single_item = true;
@@ -566,13 +566,13 @@ add_action( 'bp_screens', 'groups_screen_group_activity_permalink' );
  * Handle the display of a group's Admin pages.
  */
 function ships_screen_group_admin() {
-	if ( !bp_is_groups_component() || !bp_is_current_action( 'admin' ) )
+	if ( !bp_is_current_component( 'ships' ) || !bp_is_current_action( 'admin' ) )
 		return false;
 
 	if ( bp_action_variables() )
 		return false;
 
-	bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/edit-details/' );
+	bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/edit-details/' );
 }
 
 /**
@@ -601,12 +601,12 @@ function ships_screen_group_admin_edit_details() {
 				bp_core_add_message( __( 'Group details were successfully updated.', 'buddypress' ) );
 			}
 
-			do_action( 'groups_group_details_edited', $bp->groups->current_group->id );
+			do_action( 'groups_group_details_edited', $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/edit-details/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/edit-details/' );
 		}
 
-		do_action( 'groups_screen_group_admin_edit_details', $bp->groups->current_group->id );
+		do_action( 'groups_screen_group_admin_edit_details', $bp->ships->current_group->id );
 
 		bp_core_load_template( apply_filters( 'groups_template_group_admin', 'groups/single/home' ) );
 	}
@@ -648,12 +648,12 @@ function ships_screen_group_admin_settings() {
 			bp_core_add_message( __( 'Group settings were successfully updated.', 'buddypress' ) );
 		}
 
-		do_action( 'groups_group_settings_edited', $bp->groups->current_group->id );
+		do_action( 'groups_group_settings_edited', $bp->ships->current_group->id );
 
-		bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/group-settings/' );
+		bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/group-settings/' );
 	}
 
-	do_action( 'groups_screen_group_admin_settings', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_admin_settings', $bp->ships->current_group->id );
 
 	bp_core_load_template( apply_filters( 'groups_template_group_admin_settings', 'groups/single/home' ) );
 }
@@ -679,7 +679,7 @@ function ships_screen_group_admin_avatar() {
 		// Check the nonce
 		check_admin_referer( 'bp_group_avatar_delete' );
 
-		if ( bp_core_delete_existing_avatar( array( 'item_id' => $bp->groups->current_group->id, 'object' => 'group' ) ) ) {
+		if ( bp_core_delete_existing_avatar( array( 'item_id' => $bp->ships->current_group->id, 'object' => 'group' ) ) ) {
 			bp_core_add_message( __( 'The group profile photo was deleted successfully!', 'buddypress' ) );
 		} else {
 			bp_core_add_message( __( 'There was a problem deleting the group profile photo. Please try again.', 'buddypress' ), 'error' );
@@ -716,7 +716,7 @@ function ships_screen_group_admin_avatar() {
 		$args = array(
 			'object'        => 'group',
 			'avatar_dir'    => 'group-avatars',
-			'item_id'       => $bp->groups->current_group->id,
+			'item_id'       => $bp->ships->current_group->id,
 			'original_file' => $_POST['image_src'],
 			'crop_x'        => $_POST['x'],
 			'crop_y'        => $_POST['y'],
@@ -731,7 +731,7 @@ function ships_screen_group_admin_avatar() {
 		}
 	}
 
-	do_action( 'groups_screen_group_admin_avatar', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_admin_avatar', $bp->ships->current_group->id );
 
 	bp_core_load_template( apply_filters( 'groups_template_group_admin_avatar', 'groups/single/home' ) );
 }
@@ -760,14 +760,14 @@ function ships_screen_group_admin_manage_members() {
 				return false;
 
 			// Promote a user.
-			if ( !groups_promote_member( $user_id, $bp->groups->current_group->id, $status ) )
+			if ( !groups_promote_member( $user_id, $bp->ships->current_group->id, $status ) )
 				bp_core_add_message( __( 'There was an error when promoting that user. Please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User promoted successfully', 'buddypress' ) );
 
-			do_action( 'groups_promoted_member', $user_id, $bp->groups->current_group->id );
+			do_action( 'groups_promoted_member', $user_id, $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/manage-members/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/manage-members/' );
 		}
 	}
 
@@ -780,19 +780,19 @@ function ships_screen_group_admin_manage_members() {
 				return false;
 
 			// Stop sole admins from abandoning their group
-			$group_admins = groups_get_group_admins( $bp->groups->current_group->id );
+			$group_admins = groups_get_group_admins( $bp->ships->current_group->id );
 			if ( 1 == count( $group_admins ) && $group_admins[0]->user_id == $user_id )
 				bp_core_add_message( __( 'This group must have at least one admin', 'buddypress' ), 'error' );
 
 			// Demote a user.
-			elseif ( !groups_demote_member( $user_id, $bp->groups->current_group->id ) )
+			elseif ( !groups_demote_member( $user_id, $bp->ships->current_group->id ) )
 				bp_core_add_message( __( 'There was an error when demoting that user. Please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User demoted successfully', 'buddypress' ) );
 
-			do_action( 'groups_demoted_member', $user_id, $bp->groups->current_group->id );
+			do_action( 'groups_demoted_member', $user_id, $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/manage-members/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/manage-members/' );
 		}
 
 		if ( bp_is_action_variable( 'ban', 1 ) && is_numeric( bp_action_variable( 2 ) ) ) {
@@ -803,14 +803,14 @@ function ships_screen_group_admin_manage_members() {
 				return false;
 
 			// Ban a user.
-			if ( !groups_ban_member( $user_id, $bp->groups->current_group->id ) )
+			if ( !groups_ban_member( $user_id, $bp->ships->current_group->id ) )
 				bp_core_add_message( __( 'There was an error when banning that user. Please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User banned successfully', 'buddypress' ) );
 
-			do_action( 'groups_banned_member', $user_id, $bp->groups->current_group->id );
+			do_action( 'groups_banned_member', $user_id, $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/manage-members/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/manage-members/' );
 		}
 
 		if ( bp_is_action_variable( 'unban', 1 ) && is_numeric( bp_action_variable( 2 ) ) ) {
@@ -821,14 +821,14 @@ function ships_screen_group_admin_manage_members() {
 				return false;
 
 			// Remove a ban for user.
-			if ( !groups_unban_member( $user_id, $bp->groups->current_group->id ) )
+			if ( !groups_unban_member( $user_id, $bp->ships->current_group->id ) )
 				bp_core_add_message( __( 'There was an error when unbanning that user. Please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User ban removed successfully', 'buddypress' ) );
 
-			do_action( 'groups_unbanned_member', $user_id, $bp->groups->current_group->id );
+			do_action( 'groups_unbanned_member', $user_id, $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/manage-members/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/manage-members/' );
 		}
 
 		if ( bp_is_action_variable( 'remove', 1 ) && is_numeric( bp_action_variable( 2 ) ) ) {
@@ -839,18 +839,18 @@ function ships_screen_group_admin_manage_members() {
 				return false;
 
 			// Remove a user.
-			if ( !groups_remove_member( $user_id, $bp->groups->current_group->id ) )
+			if ( !groups_remove_member( $user_id, $bp->ships->current_group->id ) )
 				bp_core_add_message( __( 'There was an error removing that user from the group. Please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User removed successfully', 'buddypress' ) );
 
-			do_action( 'groups_removed_member', $user_id, $bp->groups->current_group->id );
+			do_action( 'groups_removed_member', $user_id, $bp->ships->current_group->id );
 
-			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/manage-members/' );
+			bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/manage-members/' );
 		}
 	}
 
-	do_action( 'groups_screen_group_admin_manage_members', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_admin_manage_members', $bp->ships->current_group->id );
 
 	bp_core_load_template( apply_filters( 'groups_template_group_admin_manage_members', 'groups/single/home' ) );
 }
@@ -866,7 +866,7 @@ function ships_screen_group_admin_requests() {
 		return false;
 	}
 
-	if ( ! bp_is_item_admin() || ( 'public' == $bp->groups->current_group->status ) ) {
+	if ( ! bp_is_item_admin() || ( 'public' == $bp->ships->current_group->status ) ) {
 		return false;
 	}
 
@@ -898,11 +898,11 @@ function ships_screen_group_admin_requests() {
 				bp_core_add_message( __( 'Group membership request rejected', 'buddypress' ) );
 		}
 
-		do_action( 'groups_group_request_managed', $bp->groups->current_group->id, $request_action, $membership_id );
-		bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/membership-requests/' );
+		do_action( 'groups_group_request_managed', $bp->ships->current_group->id, $request_action, $membership_id );
+		bp_core_redirect( bp_get_group_permalink( ships_get_current_ship() ) . 'admin/membership-requests/' );
 	}
 
-	do_action( 'groups_screen_group_admin_requests', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_admin_requests', $bp->ships->current_group->id );
 	bp_core_load_template( apply_filters( 'groups_template_group_admin_requests', 'groups/single/home' ) );
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_requests' );
@@ -926,15 +926,15 @@ function ships_screen_group_admin_delete_group() {
 			return false;
 		}
 
-		do_action( 'groups_before_group_deleted', $bp->groups->current_group->id );
+		do_action( 'groups_before_group_deleted', $bp->ships->current_group->id );
 
 		// Group admin has deleted the group, now do it.
-		if ( !groups_delete_group( $bp->groups->current_group->id ) ) {
+		if ( !groups_delete_group( $bp->ships->current_group->id ) ) {
 			bp_core_add_message( __( 'There was an error deleting the group. Please try again.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'The group was deleted successfully', 'buddypress' ) );
 
-			do_action( 'groups_group_deleted', $bp->groups->current_group->id );
+			do_action( 'groups_group_deleted', $bp->ships->current_group->id );
 
 			bp_core_redirect( trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() ) );
 		}
@@ -942,7 +942,7 @@ function ships_screen_group_admin_delete_group() {
 		bp_core_redirect( trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() ) );
 	}
 
-	do_action( 'groups_screen_group_admin_delete_group', $bp->groups->current_group->id );
+	do_action( 'groups_screen_group_admin_delete_group', $bp->ships->current_group->id );
 
 	bp_core_load_template( apply_filters( 'groups_template_group_admin_delete_group', 'groups/single/home' ) );
 }
@@ -1039,7 +1039,7 @@ class bp_ships_Theme_Compat {
 	public function is_group() {
 
 		// Bail if not looking at a group
-		if ( ! bp_is_groups_component() )
+		if ( ! bp_is_current_component( 'ships' ) )
 			return;
 
 		// Group Directory
@@ -1053,7 +1053,7 @@ class bp_ships_Theme_Compat {
 			add_filter( 'bp_replace_the_content',                    array( $this, 'directory_content'    ) );
 
 		// Creating a group
-		} elseif ( bp_is_groups_component() && bp_is_current_action( 'create' ) ) {
+		} elseif ( bp_is_current_component( 'ships' ) && bp_is_current_action( 'create' ) ) {
 			add_filter( 'bp_get_buddypress_template',                array( $this, 'create_template_hierarchy' ) );
 			add_action( 'bp_template_include_reset_dummy_post_data', array( $this, 'create_dummy_post' ) );
 			add_filter( 'bp_replace_the_content',                    array( $this, 'create_content'    ) );
@@ -1193,7 +1193,7 @@ class bp_ships_Theme_Compat {
 	 */
 	public function single_template_hierarchy( $templates ) {
 		// Setup some variables we're going to reference in our custom templates
-		$group = groups_get_current_group();
+		$group = ships_get_current_ship();
 
 		// Setup our templates based on priority
 		$new_templates = apply_filters( 'bp_template_hierarchy_groups_single_item', array(

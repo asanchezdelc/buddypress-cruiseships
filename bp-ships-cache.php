@@ -32,10 +32,10 @@ function bp_ships_update_meta_cache( $group_ids = false ) {
 
 	$cache_args = array(
 		'object_ids' 	   => $group_ids,
-		'object_type' 	   => $bp->groups->id,
+		'object_type' 	   => $bp->ships->id,
 		'cache_group'      => 'ship_meta',
 		'object_column'    => 'ship_id',
-		'meta_table' 	   => $bp->groups->table_name_groupmeta,
+		'meta_table' 	   => $bp->ships->table_name_groupmeta,
 		'cache_key_prefix' => 'bp_ships_groupmeta'
 	);
 

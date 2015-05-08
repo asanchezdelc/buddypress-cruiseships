@@ -114,9 +114,9 @@ function ships_new_group_forum_post( $post_text, $topic_id, $page = false ) {
 	}
 
 	$topic            = bp_forums_get_topic_details( $topic_id );
-	$activity_action  = sprintf( __( '%1$s replied to the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( bp_loggedin_user_id() ), '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
+	$activity_action  = sprintf( __( '%1$s replied to the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( bp_loggedin_user_id() ), '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
 	$activity_content = bp_create_excerpt( $post_text );
-	$primary_link     = bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug . '/';
+	$primary_link     = bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug . '/';
 
 	if ( !empty( $page ) ) {
 		$primary_link .= "?topic_page=" . $page;
@@ -170,14 +170,14 @@ function ships_new_group_forum_topic( $topic_title, $topic_text, $topic_tags, $f
 	}
 
 	$topic            = bp_forums_get_topic_details( $topic_id );
-	$activity_action  = sprintf( __( '%1$s started the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( bp_loggedin_user_id() ), '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
+	$activity_action  = sprintf( __( '%1$s started the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( bp_loggedin_user_id() ), '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
 	$activity_content = bp_create_excerpt( $topic_text );
 
 	// Record this in activity streams
 	groups_record_activity( array(
 		'action'            => apply_filters_ref_array( 'groups_activity_new_forum_topic_action',  array( $activity_action,  $topic_text, &$topic ) ),
 		'content'           => apply_filters_ref_array( 'groups_activity_new_forum_topic_content', array( $activity_content, $topic_text, &$topic ) ),
-		'primary_link'      => apply_filters( 'groups_activity_new_forum_topic_primary_link', bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug . '/' ),
+		'primary_link'      => apply_filters( 'groups_activity_new_forum_topic_primary_link', bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug . '/' ),
 		'type'              => 'new_forum_topic',
 		'item_id'           => bp_get_current_group_id(),
 		'secondary_item_id' => $topic->topic_id
@@ -222,12 +222,12 @@ function ships_update_group_forum_topic( $topic_id, $topic_title, $topic_text, $
 		$id = bp_activity_get_activity_id( array(
 			'item_id'           => bp_get_current_group_id(),
 			'secondary_item_id' => $topic_id,
-			'component'         => $bp->groups->id,
+			'component'         => $bp->ships->id,
 			'type'              => 'new_forum_topic'
 		) );
 	}
 
-	$activity_action  = sprintf( __( '%1$s edited the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( $topic->topic_poster ), '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
+	$activity_action  = sprintf( __( '%1$s edited the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( $topic->topic_poster ), '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug .'/">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
 	$activity_content = bp_create_excerpt( $topic_text );
 
 	// Record this in activity streams
@@ -235,7 +235,7 @@ function ships_update_group_forum_topic( $topic_id, $topic_title, $topic_text, $
 		'id'                => $id,
 		'action'            => apply_filters_ref_array( 'groups_activity_new_forum_topic_action',  array( $activity_action,  $topic_text, &$topic ) ),
 		'content'           => apply_filters_ref_array( 'groups_activity_new_forum_topic_content', array( $activity_content, $topic_text, &$topic ) ),
-		'primary_link'      => apply_filters( 'groups_activity_new_forum_topic_primary_link', bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug . '/' ),
+		'primary_link'      => apply_filters( 'groups_activity_new_forum_topic_primary_link', bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug . '/' ),
 		'type'              => 'new_forum_topic',
 		'item_id'           => (int) bp_get_current_group_id(),
 		'user_id'           => (int) $topic->topic_poster,
@@ -281,9 +281,9 @@ function ships_update_group_forum_post( $post_id, $post_text, $topic_id, $page =
 	}
 
 	$topic            = bp_forums_get_topic_details( $topic_id );
-	$activity_action  = sprintf( __( '%1$s replied to the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( $post->poster_id ), '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug .'">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( groups_get_current_group() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
+	$activity_action  = sprintf( __( '%1$s replied to the forum topic %2$s in the group %3$s', 'buddypress'), bp_core_get_userlink( $post->poster_id ), '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug .'">' . esc_attr( $topic->topic_title ) . '</a>', '<a href="' . bp_get_group_permalink( ships_get_current_ship() ) . '">' . esc_attr( bp_get_current_group_name() ) . '</a>' );
 	$activity_content = bp_create_excerpt( $post_text );
-	$primary_link     = bp_get_group_permalink( groups_get_current_group() ) . 'forum/topic/' . $topic->topic_slug . '/';
+	$primary_link     = bp_get_group_permalink( ships_get_current_ship() ) . 'forum/topic/' . $topic->topic_slug . '/';
 
 	if ( !empty( $page ) ) {
 		$primary_link .= "?topic_page=" . $page;
@@ -293,7 +293,7 @@ function ships_update_group_forum_post( $post_id, $post_text, $topic_id, $page =
 	if ( bp_is_active( 'activity' ) ) {
 		$id = bp_activity_get_activity_id( array(
 			'user_id'           => $post->poster_id,
-			'component'         => $bp->groups->id,
+			'component'         => $bp->ships->id,
 			'type'              => 'new_forum_post',
 			'item_id'           => bp_get_current_group_id(),
 			'secondary_item_id' => $post_id
@@ -345,7 +345,7 @@ function ships_delete_group_forum_topic( $topic_id ) {
 			bp_activity_delete( array(
 				'item_id'           => bp_get_current_group_id(),
 				'secondary_item_id' => $topic_id,
-				'component'         => $bp->groups->id,
+				'component'         => $bp->ships->id,
 				'type'              => 'new_forum_topic'
 			) );
 
@@ -354,7 +354,7 @@ function ships_delete_group_forum_topic( $topic_id ) {
 				bp_activity_delete( array(
 					'item_id'           => bp_get_current_group_id(),
 					'secondary_item_id' => $post->post_id,
-					'component'         => $bp->groups->id,
+					'component'         => $bp->ships->id,
 					'type'              => 'new_forum_post'
 				) );
 			}

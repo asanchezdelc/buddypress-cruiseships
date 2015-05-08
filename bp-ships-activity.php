@@ -26,7 +26,7 @@ function ships_register_activity_actions() {
 	}
 
 	bp_activity_set_action(
-		$bp->groups->id,
+		$bp->ships->id,
 		'created_group',
 		__( 'Created a group', 'buddypress' ),
 		'bp_ships_format_activity_action_created_group',
@@ -35,7 +35,7 @@ function ships_register_activity_actions() {
 	);
 
 	bp_activity_set_action(
-		$bp->groups->id,
+		$bp->ships->id,
 		'joined_group',
 		__( 'Joined a group', 'buddypress' ),
 		'bp_ships_format_activity_action_joined_group',
@@ -44,7 +44,7 @@ function ships_register_activity_actions() {
 	);
 
 	bp_activity_set_action(
-		$bp->groups->id,
+		$bp->ships->id,
 		'group_details_updated',
 		__( 'Group details edited', 'buddypress' ),
 		'bp_ships_format_activity_action_group_details_updated',
@@ -57,7 +57,7 @@ function ships_register_activity_actions() {
 	// check for the legacy forums loader class to be extra cautious
 	if ( bp_is_active( 'forums' ) && class_exists( 'BP_Forums_Component' ) ) {
 		bp_activity_set_action(
-			$bp->groups->id,
+			$bp->ships->id,
 			'new_forum_topic',
 			__( 'New group forum topic', 'buddypress' ),
 			false,
@@ -66,7 +66,7 @@ function ships_register_activity_actions() {
 		);
 
 		bp_activity_set_action(
-			$bp->groups->id,
+			$bp->ships->id,
 			'new_forum_post',
 			__( 'New group forum post',  'buddypress' ),
 			false,
@@ -222,7 +222,7 @@ function bp_ships_prefetch_activity_object_data( $activities ) {
 			global $wpdb;
 			$bp = buddypress();
 			$uncached_ids_sql = implode( ',', wp_parse_id_list( $uncached_ids ) );
-			$groups = $wpdb->get_results( "SELECT * FROM {$bp->groups->table_name} WHERE id IN ({$uncached_ids_sql})" );
+			$groups = $wpdb->get_results( "SELECT * FROM {$bp->ships->table_name} WHERE id IN ({$uncached_ids_sql})" );
 			foreach ( $groups as $group ) {
 				wp_cache_set( $group->id, $group, 'bp_groups' );
 			}
@@ -325,7 +325,7 @@ function ships_record_activity( $args = '' ) {
 	$hide_sitewide = false;
 	if ( !empty( $args['item_id'] ) ) {
 		if ( bp_get_current_group_id() == $args['item_id'] ) {
-			$group = groups_get_current_group();
+			$group = ships_get_current_ship();
 		} else {
 			$group = groups_get_group( array( 'group_id' => $args['item_id'] ) );
 		}

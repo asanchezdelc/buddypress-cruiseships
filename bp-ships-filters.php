@@ -142,7 +142,7 @@ function ships_add_forum_fields_sql( $sql = '' ) {
 function ships_add_forum_tables_sql( $sql = '' ) {
 	global $bp;
 
-	$sql .= 'JOIN ' . $bp->groups->table_name . ' AS g LEFT JOIN ' . $bp->groups->table_name_groupmeta . ' AS gm ON g.id = gm.group_id ';
+	$sql .= 'JOIN ' . $bp->ships->table_name . ' AS g LEFT JOIN ' . $bp->ships->table_name_groupmeta . ' AS gm ON g.id = gm.group_id ';
 
 	return $sql;
 }
@@ -190,10 +190,10 @@ function ships_add_forum_where_sql( $sql = '' ) {
 	$parts_string = implode( ' AND ', $parts );
 
 	// Set it to the global filter
-	$bp->groups->filter_sql = $parts_string;
+	$bp->ships->filter_sql = $parts_string;
 
 	// Return the global filter
-	return $bp->groups->filter_sql;
+	return $bp->ships->filter_sql;
 }
 
 /**
@@ -211,7 +211,7 @@ function ships_filter_bbpress_caps( $value, $cap, $args ) {
 		return true;
 
 	if ( 'add_tag_to' == $cap )
-		if ( $bp->groups->current_group->user_has_access ) return true;
+		if ( $bp->ships->current_group->user_has_access ) return true;
 
 	if ( 'manage_forums' == $cap && is_user_logged_in() )
 		return true;

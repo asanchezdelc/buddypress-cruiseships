@@ -19,12 +19,12 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since BuddyPress (2.1.0)
  */
-function bp_ships_group_access_protection() {
+function bp_ships_ship_access_protection() {
 	if ( ! bp_is_group() ) {
 		return;
 	}
 
-	$current_group   = groups_get_current_group();
+	$current_group   = ships_get_current_ship();
 	$user_has_access = $current_group->user_has_access;
 	$no_access_args  = array();
 
@@ -89,7 +89,7 @@ function bp_ships_group_access_protection() {
 	}
 
 }
-add_action( 'bp_actions', 'bp_ships_group_access_protection' );
+add_action( 'bp_actions', 'bp_ships_ship_access_protection' );
 
 /**
  * Catch and process group creation form submissions.
@@ -98,7 +98,7 @@ function ships_action_create_group() {
 	global $bp;
 
 	// If we're not at domain.org/groups/create/ then return false
-	if ( !bp_is_groups_component() || !bp_is_current_action( 'create' ) )
+	if ( !bp_is_current_component( 'ships' ) || !bp_is_current_action( 'create' ) )
 		return false;
 
 	if ( !is_user_logged_in() )
@@ -113,36 +113,36 @@ function ships_action_create_group() {
 	groups_action_sort_creation_steps();
 
 	// If no current step is set, reset everything so we can start a fresh group creation
-	$bp->groups->current_create_step = bp_action_variable( 1 );
+	$bp->ships->current_create_step = bp_action_variable( 1 );
 	if ( !bp_get_groups_current_create_step() ) {
-		unset( $bp->groups->current_create_step );
-		unset( $bp->groups->completed_create_steps );
+		unset( $bp->ships->current_create_step );
+		unset( $bp->ships->completed_create_steps );
 
 		setcookie( 'bp_new_group_id', false, time() - 1000, COOKIEPATH );
 		setcookie( 'bp_completed_create_steps', false, time() - 1000, COOKIEPATH );
 
 		$reset_steps = true;
-		$keys        = array_keys( $bp->groups->group_creation_steps );
+		$keys        = array_keys( $bp->ships->group_creation_steps );
 		bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/' . array_shift( $keys ) . '/' );
 	}
 
 	// If this is a creation step that is not recognized, just redirect them back to the first screen
-	if ( bp_get_groups_current_create_step() && empty( $bp->groups->group_creation_steps[bp_get_groups_current_create_step()] ) ) {
+	if ( bp_get_groups_current_create_step() && empty( $bp->ships->group_creation_steps[bp_get_groups_current_create_step()] ) ) {
 		bp_core_add_message( __('There was an error saving group details. Please try again.', 'buddypress'), 'error' );
 		bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/' );
 	}
 
 	// Fetch the currently completed steps variable
 	if ( isset( $_COOKIE['bp_completed_create_steps'] ) && !isset( $reset_steps ) )
-		$bp->groups->completed_create_steps = json_decode( base64_decode( stripslashes( $_COOKIE['bp_completed_create_steps'] ) ) );
+		$bp->ships->completed_create_steps = json_decode( base64_decode( stripslashes( $_COOKIE['bp_completed_create_steps'] ) ) );
 
 	// Set the ID of the new group, if it has already been created in a previous step
 	if ( isset( $_COOKIE['bp_new_group_id'] ) ) {
-		$bp->groups->new_group_id = (int) $_COOKIE['bp_new_group_id'];
-		$bp->groups->current_group = groups_get_group( array( 'group_id' => $bp->groups->new_group_id ) );
+		$bp->ships->new_group_id = (int) $_COOKIE['bp_new_group_id'];
+		$bp->ships->current_group = groups_get_group( array( 'group_id' => $bp->ships->new_group_id ) );
 
 		// Only allow the group creator to continue to edit the new group
-		if ( ! bp_is_group_creator( $bp->groups->current_group, bp_loggedin_user_id() ) ) {
+		if ( ! bp_is_group_creator( $bp->ships->current_group, bp_loggedin_user_id() ) ) {
 			bp_core_add_message( __( 'Only the group creator may continue editing this group.', 'buddypress' ), 'error' );
 			bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/' );
 		}
@@ -160,9 +160,9 @@ function ships_action_create_group() {
 				bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/' . bp_get_groups_current_create_step() . '/' );
 			}
 
-			$new_group_id = isset( $bp->groups->new_group_id ) ? $bp->groups->new_group_id : 0;
+			$new_group_id = isset( $bp->ships->new_group_id ) ? $bp->ships->new_group_id : 0;
 
-			if ( !$bp->groups->new_group_id = groups_create_group( array( 'group_id' => $new_group_id, 'name' => $_POST['group-name'], 'description' => $_POST['group-desc'], 'slug' => groups_check_slug( sanitize_title( esc_attr( $_POST['group-name'] ) ) ), 'date_created' => bp_core_current_time(), 'status' => 'public' ) ) ) {
+			if ( !$bp->ships->new_group_id = groups_create_group( array( 'group_id' => $new_group_id, 'name' => $_POST['group-name'], 'description' => $_POST['group-desc'], 'slug' => groups_check_slug( sanitize_title( esc_attr( $_POST['group-name'] ) ) ), 'date_created' => bp_core_current_time(), 'status' => 'public' ) ) ) {
 				bp_core_add_message( __( 'There was an error saving group details. Please try again.', 'buddypress' ), 'error' );
 				bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/' . bp_get_groups_current_create_step() . '/' );
 			}
@@ -176,7 +176,7 @@ function ships_action_create_group() {
 				$group_enable_forum = 0;
 			} else {
 				// Create the forum if enable_forum = 1
-				if ( bp_is_active( 'forums' ) && !groups_get_groupmeta( $bp->groups->new_group_id, 'forum_id' ) ) {
+				if ( bp_is_active( 'forums' ) && !groups_get_groupmeta( $bp->ships->new_group_id, 'forum_id' ) ) {
 					groups_new_group_forum();
 				}
 			}
@@ -186,7 +186,7 @@ function ships_action_create_group() {
 			elseif ( 'hidden' == $_POST['group-status'] )
 				$group_status = 'hidden';
 
-			if ( !$bp->groups->new_group_id = groups_create_group( array( 'group_id' => $bp->groups->new_group_id, 'status' => $group_status, 'enable_forum' => $group_enable_forum ) ) ) {
+			if ( !$bp->ships->new_group_id = groups_create_group( array( 'group_id' => $bp->ships->new_group_id, 'status' => $group_status, 'enable_forum' => $group_enable_forum ) ) ) {
 				bp_core_add_message( __( 'There was an error saving group details. Please try again.', 'buddypress' ), 'error' );
 				bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/' . bp_get_groups_current_create_step() . '/' );
 			}
@@ -196,7 +196,7 @@ function ships_action_create_group() {
 			$allowed_invite_status = apply_filters( 'groups_allowed_invite_status', array( 'members', 'mods', 'admins' ) );
 			$invite_status	       = !empty( $_POST['group-invite-status'] ) && in_array( $_POST['group-invite-status'], (array) $allowed_invite_status ) ? $_POST['group-invite-status'] : 'members';
 
-			groups_update_groupmeta( $bp->groups->new_group_id, 'invite_status', $invite_status );
+			groups_update_groupmeta( $bp->ships->new_group_id, 'invite_status', $invite_status );
 		}
 
 		if ( 'group-invites' === bp_get_groups_current_create_step() ) {
@@ -204,12 +204,12 @@ function ships_action_create_group() {
 				foreach ( (array) $_POST['friends'] as $friend ) {
 					groups_invite_user( array(
 						'user_id'  => $friend,
-						'group_id' => $bp->groups->new_group_id,
+						'group_id' => $bp->ships->new_group_id,
 					) );
 				}
 			}
 
-			groups_send_invites( bp_loggedin_user_id(), $bp->groups->new_group_id );
+			groups_send_invites( bp_loggedin_user_id(), $bp->ships->new_group_id );
 		}
 
 		do_action( 'groups_create_group_step_save_' . bp_get_groups_current_create_step() );
@@ -220,20 +220,20 @@ function ships_action_create_group() {
 		 * we need to add the current step to the array of completed steps, then update the cookies
 		 * holding the information
 		 */
-		$completed_create_steps = isset( $bp->groups->completed_create_steps ) ? $bp->groups->completed_create_steps : array();
+		$completed_create_steps = isset( $bp->ships->completed_create_steps ) ? $bp->ships->completed_create_steps : array();
 		if ( !in_array( bp_get_groups_current_create_step(), $completed_create_steps ) )
-			$bp->groups->completed_create_steps[] = bp_get_groups_current_create_step();
+			$bp->ships->completed_create_steps[] = bp_get_groups_current_create_step();
 
 		// Reset cookie info
-		setcookie( 'bp_new_group_id', $bp->groups->new_group_id, time()+60*60*24, COOKIEPATH );
-		setcookie( 'bp_completed_create_steps', base64_encode( json_encode( $bp->groups->completed_create_steps ) ), time()+60*60*24, COOKIEPATH );
+		setcookie( 'bp_new_group_id', $bp->ships->new_group_id, time()+60*60*24, COOKIEPATH );
+		setcookie( 'bp_completed_create_steps', base64_encode( json_encode( $bp->ships->completed_create_steps ) ), time()+60*60*24, COOKIEPATH );
 
 		// If we have completed all steps and hit done on the final step we
 		// can redirect to the completed group
-		$keys = array_keys( $bp->groups->group_creation_steps );
-		if ( count( $bp->groups->completed_create_steps ) == count( $keys ) && bp_get_groups_current_create_step() == array_pop( $keys ) ) {
-			unset( $bp->groups->current_create_step );
-			unset( $bp->groups->completed_create_steps );
+		$keys = array_keys( $bp->ships->group_creation_steps );
+		if ( count( $bp->ships->completed_create_steps ) == count( $keys ) && bp_get_groups_current_create_step() == array_pop( $keys ) ) {
+			unset( $bp->ships->current_create_step );
+			unset( $bp->ships->completed_create_steps );
 
 			setcookie( 'bp_new_group_id', false, time() - 3600, COOKIEPATH );
 			setcookie( 'bp_completed_create_steps', false, time() - 3600, COOKIEPATH );
@@ -241,12 +241,12 @@ function ships_action_create_group() {
 			// Once we completed all steps, record the group creation in the activity stream.
 			groups_record_activity( array(
 				'type' => 'created_group',
-				'item_id' => $bp->groups->new_group_id
+				'item_id' => $bp->ships->new_group_id
 			) );
 
-			do_action( 'groups_group_create_complete', $bp->groups->new_group_id );
+			do_action( 'groups_group_create_complete', $bp->ships->new_group_id );
 
-			bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+			bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 		} else {
 			/**
 			 * Since we don't know what the next step is going to be (any plugin can insert steps)
@@ -277,7 +277,7 @@ function ships_action_create_group() {
 		$message = __( 'Invite successfully removed', 'buddypress' );
 		$error   = false;
 
-		if( ! groups_uninvite_user( (int) $_REQUEST['user_id'], $bp->groups->new_group_id ) ) {
+		if( ! groups_uninvite_user( (int) $_REQUEST['user_id'], $bp->ships->new_group_id ) ) {
 			$message = __( 'There was an error removing the invite', 'buddypress' );
 			$error   = 'error';
 		}
@@ -308,7 +308,7 @@ function ships_action_create_group() {
 		if ( isset( $_POST['avatar-crop-submit'] ) && isset( $_POST['upload'] ) ) {
 			// Normally we would check a nonce here, but the group save nonce is used instead
 
-			if ( !bp_core_avatar_handle_crop( array( 'object' => 'group', 'avatar_dir' => 'group-avatars', 'item_id' => $bp->groups->current_group->id, 'original_file' => $_POST['image_src'], 'crop_x' => $_POST['x'], 'crop_y' => $_POST['y'], 'crop_w' => $_POST['w'], 'crop_h' => $_POST['h'] ) ) )
+			if ( !bp_core_avatar_handle_crop( array( 'object' => 'group', 'avatar_dir' => 'group-avatars', 'item_id' => $bp->ships->current_group->id, 'original_file' => $_POST['image_src'], 'crop_x' => $_POST['x'], 'crop_y' => $_POST['y'], 'crop_w' => $_POST['w'], 'crop_h' => $_POST['h'] ) ) )
 				bp_core_add_message( __( 'There was an error saving the group profile photo, please try uploading again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'The group profile photo was uploaded successfully!', 'buddypress' ) );
@@ -325,7 +325,7 @@ add_action( 'bp_actions', 'groups_action_create_group' );
 function ships_action_join_group() {
 	global $bp;
 
-	if ( !bp_is_single_item() || !bp_is_groups_component() || !bp_is_current_action( 'join' ) )
+	if ( !bp_is_single_item() || !bp_is_current_component( 'ships' ) || !bp_is_current_action( 'join' ) )
 		return false;
 
 	// Nonce check
@@ -333,23 +333,23 @@ function ships_action_join_group() {
 		return false;
 
 	// Skip if banned or already a member
-	if ( !groups_is_user_member( bp_loggedin_user_id(), $bp->groups->current_group->id ) && !groups_is_user_banned( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+	if ( !groups_is_user_member( bp_loggedin_user_id(), $bp->ships->current_group->id ) && !groups_is_user_banned( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
 
 		// User wants to join a group that is not public
-		if ( $bp->groups->current_group->status != 'public' ) {
-			if ( !groups_check_user_has_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
+		if ( $bp->ships->current_group->status != 'public' ) {
+			if ( !groups_check_user_has_invite( bp_loggedin_user_id(), $bp->ships->current_group->id ) ) {
 				bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
-				bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+				bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 			}
 		}
 
 		// User wants to join any group
-		if ( !groups_join_group( $bp->groups->current_group->id ) )
+		if ( !groups_join_group( $bp->ships->current_group->id ) )
 			bp_core_add_message( __( 'There was an error joining the group.', 'buddypress' ), 'error' );
 		else
 			bp_core_add_message( __( 'You joined the group!', 'buddypress' ) );
 
-		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
+		bp_core_redirect( bp_get_group_permalink( $bp->ships->current_group ) );
 	}
 
 	bp_core_load_template( apply_filters( 'groups_template_group_home', 'groups/single/home' ) );
@@ -368,7 +368,7 @@ add_action( 'bp_actions', 'groups_action_join_group' );
  * @since BuddyPress (1.2.4)
  */
 function ships_action_leave_group() {
-	if ( ! bp_is_single_item() || ! bp_is_groups_component() || ! bp_is_current_action( 'leave-group' ) ) {
+	if ( ! bp_is_single_item() || ! bp_is_current_component( 'ships' ) || ! bp_is_current_action( 'leave-group' ) ) {
 		return false;
 	}
 
@@ -386,15 +386,15 @@ function ships_action_leave_group() {
 
 	 	if ( 1 == count( $group_admins ) && $group_admins[0]->user_id == bp_loggedin_user_id() ) {
 			bp_core_add_message( __( 'This group must have at least one admin', 'buddypress' ), 'error' );
-		} elseif ( ! groups_leave_group( $bp->groups->current_group->id ) ) {
+		} elseif ( ! groups_leave_group( $bp->ships->current_group->id ) ) {
 			bp_core_add_message( __( 'There was an error leaving the group.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'You successfully left the group.', 'buddypress' ) );
 		}
 
-		$redirect = bp_get_group_permalink( groups_get_current_group() );
+		$redirect = bp_get_group_permalink( ships_get_current_ship() );
 
-		if( 'hidden' == $bp->groups->current_group->status ) {
+		if( 'hidden' == $bp->ships->current_group->status ) {
 			$redirect = trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() );
 		}
 
@@ -413,13 +413,13 @@ add_action( 'bp_actions', 'groups_action_leave_group' );
 function ships_action_sort_creation_steps() {
 	global $bp;
 
-	if ( !bp_is_groups_component() || !bp_is_current_action( 'create' ) )
+	if ( !bp_is_current_component( 'ships' ) || !bp_is_current_action( 'create' ) )
 		return false;
 
-	if ( !is_array( $bp->groups->group_creation_steps ) )
+	if ( !is_array( $bp->ships->group_creation_steps ) )
 		return false;
 
-	foreach ( (array) $bp->groups->group_creation_steps as $slug => $step ) {
+	foreach ( (array) $bp->ships->group_creation_steps as $slug => $step ) {
 		while ( !empty( $temp[$step['position']] ) )
 			$step['position']++;
 
@@ -428,10 +428,10 @@ function ships_action_sort_creation_steps() {
 
 	// Sort the steps by their position key
 	ksort($temp);
-	unset($bp->groups->group_creation_steps);
+	unset($bp->ships->group_creation_steps);
 
 	foreach( (array) $temp as $position => $step )
-		$bp->groups->group_creation_steps[$step['slug']] = array( 'name' => $step['name'], 'position' => $position );
+		$bp->ships->group_creation_steps[$step['slug']] = array( 'name' => $step['name'], 'position' => $position );
 }
 
 /**
@@ -439,7 +439,7 @@ function ships_action_sort_creation_steps() {
  */
 function ships_action_redirect_to_random_group() {
 
-	if ( bp_is_groups_component() && isset( $_GET['random-group'] ) ) {
+	if ( bp_is_current_component( 'ships' ) && isset( $_GET['random-group'] ) ) {
 		$group = bp_ships_Group::get_random( 1, 1 );
 
 		bp_core_redirect( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . $group['groups'][0]->slug . '/' );
@@ -457,9 +457,9 @@ add_action( 'bp_actions', 'groups_action_redirect_to_random_group' );
 function ships_action_group_feed() {
 
 	// get current group
-	$group = groups_get_current_group();
+	$group = ships_get_current_ship();
 
-	if ( ! bp_is_active( 'activity' ) || ! bp_is_groups_component() || ! $group || ! bp_is_current_action( 'feed' ) )
+	if ( ! bp_is_active( 'activity' ) || ! bp_is_current_component( 'ships' ) || ! $group || ! bp_is_current_action( 'feed' ) )
 		return false;
 
 	// if group isn't public or if logged-in user is not a member of the group, do

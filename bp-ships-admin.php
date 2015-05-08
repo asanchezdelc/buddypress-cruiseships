@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 if ( !class_exists( 'WP_List_Table' ) ) require( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
 // per_page screen option. Has to be hooked in extremely early.
-if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'bp-groups' == $_REQUEST['page'] )
+if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'bp-ships' == $_REQUEST['page'] )
 	add_filter( 'set-screen-option', 'bp_ships_admin_screen_options', 10, 3 );
 
 /**
@@ -29,10 +29,10 @@ function bp_ships_add_admin_menu() {
 
 	// Add our screen
 	$hook = add_menu_page(
-		_x( 'Groups', 'Admin Groups page title', 'buddypress' ),
-		_x( 'Groups', 'Admin Groups menu', 'buddypress' ),
+		_x( 'Ships', 'Admin Ships page title', 'buddypress' ),
+		_x( 'Ships', 'Admin Ships menu', 'buddypress' ),
 		'bp_moderate',
-		'bp-groups',
+		'bp-ships',
 		'bp_ships_admin',
 		'div'
 	);
@@ -122,9 +122,9 @@ function bp_ships_admin_load() {
 
 		// Register metaboxes for the edit screen.
 		add_meta_box( 'submitdiv', _x( 'Save', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_status', get_current_screen()->id, 'side', 'high' );
-		add_meta_box( 'bp_group_settings', _x( 'Settings', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_settings', get_current_screen()->id, 'side', 'core' );
-		add_meta_box( 'bp_group_add_members', _x( 'Add New Members', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_add_new_members', get_current_screen()->id, 'normal', 'core' );
-		add_meta_box( 'bp_group_members', _x( 'Manage Members', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_members', get_current_screen()->id, 'normal', 'core' );
+		add_meta_box( 'bp_ship_settings', _x( 'Settings', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_settings', get_current_screen()->id, 'side', 'core' );
+		add_meta_box( 'bp_ship_add_members', _x( 'Add New Members', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_add_new_members', get_current_screen()->id, 'normal', 'core' );
+		add_meta_box( 'bp_ship_members', _x( 'Manage Members', 'group admin edit screen', 'buddypress' ), 'bp_ships_admin_edit_metabox_members', get_current_screen()->id, 'normal', 'core' );
 
 		do_action( 'bp_ships_admin_meta_boxes' );
 
@@ -142,14 +142,14 @@ function bp_ships_admin_load() {
 
 		// Help panel - overview text
 		get_current_screen()->add_help_tab( array(
-			'id'      => 'bp-groups-overview',
+			'id'      => 'bp-ships-overview',
 			'title'   => __( 'Overview', 'buddypress' ),
 			'content' =>
 				'<p>' . __( 'You can manage groups much like you can manage comments and other content. This screen is customizable in the same ways as other management screens, and you can act on groups by using the on-hover action links or the Bulk Actions.', 'buddypress' ) . '</p>',
 		) );
 
 		get_current_screen()->add_help_tab( array(
-			'id'      => 'bp-groups-overview-actions',
+			'id'      => 'bp-ships-overview-actions',
 			'title'   => __( 'Group Actions', 'buddypress' ),
 			'content' =>
 				'<p>' . __( 'Clicking "Visit" will take you to the group&#8217;s public page. Use this link to see what the group looks like on the front end of your site.', 'buddypress' ) . '</p>' .
@@ -1163,7 +1163,7 @@ class bp_ships_List_Table extends WP_List_Table {
 		}
 
 		// We'll use the ids of group types for the 'include' param
-		$this->group_type_ids = bp_ships_Group::get_group_type_ids();
+		$this->group_type_ids = BP_Ships_Ship::get_group_type_ids();
 
 		// Pass a dummy array if there are no groups of this type
 		$include = false;

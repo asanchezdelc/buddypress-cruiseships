@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * @since BuddyPress (1.5.0)
  */
 function bp_ships_slug() {
-	echo bp_get_groups_slug();
+	echo bp_get_ships_slug();
 }
 	/**
 	 * Return the groups component slug.
@@ -22,8 +22,8 @@ function bp_ships_slug() {
 	 *
 	 * @return string
 	 */
-	function bp_get_groups_slug() {
-		return apply_filters( 'bp_get_groups_slug', buddypress()->groups->slug );
+	function bp_get_ships_slug() {
+		return apply_filters( 'bp_get_ships_slug', buddypress()->groups->slug );
 	}
 
 /**
@@ -32,7 +32,7 @@ function bp_ships_slug() {
  * @since BuddyPress (1.5.0)
  */
 function bp_ships_root_slug() {
-	echo bp_get_groups_root_slug();
+	echo bp_get_ships_root_slug();
 }
 	/**
 	 * Return the groups component root slug
@@ -41,8 +41,8 @@ function bp_ships_root_slug() {
 	 *
 	 * @return string
 	 */
-	function bp_get_groups_root_slug() {
-		return apply_filters( 'bp_get_groups_root_slug', buddypress()->groups->root_slug );
+	function bp_get_ships_root_slug() {
+		return apply_filters( 'bp_get_ships_root_slug', buddypress()->groups->root_slug );
 	}
 
 /**
@@ -51,7 +51,7 @@ function bp_ships_root_slug() {
  * @since BuddyPress (1.5.0)
  */
 function bp_ships_directory_permalink() {
-	echo bp_get_groups_directory_permalink();
+	echo bp_get_ships_directory_permalink();
 }
 	/**
 	 * Return group directory permalink
@@ -60,8 +60,8 @@ function bp_ships_directory_permalink() {
 	 *
 	 * @return string
 	 */
-	function bp_get_groups_directory_permalink() {
-		return apply_filters( 'bp_get_groups_directory_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() ) );
+	function bp_get_ships_directory_permalink() {
+		return apply_filters( 'bp_get_ships_directory_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_ships_root_slug() ) );
 	}
 
 /**
@@ -141,7 +141,7 @@ class bp_ships_Template {
 	 * @access public
 	 * @var int
 	 */
-	var $total_group_count;
+	var $total_ship_count;
 
 	/**
 	 * Whether the template loop is for a single group page.
@@ -239,8 +239,8 @@ class bp_ships_Template {
 		} elseif ( 'single-group' == $type ) {
 			$this->single_group = true;
 
-			if ( groups_get_current_group() ) {
-				$group = groups_get_current_group();
+			if ( ships_get_current_ship() ) {
+				$group = ships_get_current_ship();
 
 			} else {
 				$group = groups_get_group( array(
@@ -279,22 +279,22 @@ class bp_ships_Template {
 		}
 
 		if ( 'invites' == $type ) {
-			$this->total_group_count = (int) $this->groups['total'];
+			$this->total_ship_count = (int) $this->groups['total'];
 			$this->group_count       = (int) $this->groups['total'];
 			$this->groups            = $this->groups['groups'];
 		} elseif ( 'single-group' == $type ) {
 			if ( empty( $group->id ) ) {
-				$this->total_group_count = 0;
+				$this->total_ship_count = 0;
 				$this->group_count       = 0;
 			} else {
-				$this->total_group_count = 1;
+				$this->total_ship_count = 1;
 				$this->group_count       = 1;
 			}
 		} else {
 			if ( empty( $max ) || $max >= (int) $this->groups['total'] ) {
-				$this->total_group_count = (int) $this->groups['total'];
+				$this->total_ship_count = (int) $this->groups['total'];
 			} else {
-				$this->total_group_count = (int) $max;
+				$this->total_ship_count = (int) $max;
 			}
 
 			$this->groups = $this->groups['groups'];
@@ -311,7 +311,7 @@ class bp_ships_Template {
 		}
 
 		// Build pagination links
-		if ( (int) $this->total_group_count && (int) $this->pag_num ) {
+		if ( (int) $this->total_ship_count && (int) $this->pag_num ) {
 			$pag_args = array(
 				$this->pag_arg => '%#%'
 			);
@@ -335,7 +335,7 @@ class bp_ships_Template {
 			$this->pag_links = paginate_links( array(
 				'base'      => add_query_arg( $pag_args, $base ),
 				'format'    => '',
-				'total'     => ceil( (int) $this->total_group_count / (int) $this->pag_num ),
+				'total'     => ceil( (int) $this->total_ship_count / (int) $this->pag_num ),
 				'current'   => $this->pag_page,
 				'prev_text' => _x( '&larr;', 'Group pagination previous text', 'buddypress' ),
 				'next_text' => _x( '&rarr;', 'Group pagination next text', 'buddypress' ),
@@ -352,7 +352,7 @@ class bp_ships_Template {
 	 *
 	 * @return bool True if there are items in the loop, otherwise false.
 	 */
-	function has_groups() {
+	function has_ships() {
 		if ( $this->group_count )
 			return true;
 
@@ -364,7 +364,7 @@ class bp_ships_Template {
 	 *
 	 * @return object The next group to iterate over.
 	 */
-	function next_group() {
+	function next_ship() {
 		$this->current_group++;
 		$this->group = $this->groups[$this->current_group];
 
@@ -374,7 +374,7 @@ class bp_ships_Template {
 	/**
 	 * Rewind the groups and reset member index.
 	 */
-	function rewind_groups() {
+	function rewind_ships() {
 		$this->current_group = -1;
 		if ( $this->group_count > 0 ) {
 			$this->group = $this->groups[0];
@@ -392,7 +392,7 @@ class bp_ships_Template {
 	 *
 	 * @return bool True if there are more groups to show, otherwise false.
 	 */
-	function groups() {
+	function ships() {
 		if ( $this->current_group + 1 < $this->group_count ) {
 			return true;
 		} elseif ( $this->current_group + 1 == $this->group_count ) {
@@ -414,7 +414,7 @@ class bp_ships_Template {
 	 *
 	 * @see bp_the_group()
 	 */
-	function the_group() {
+	function the_ship() {
 		$this->in_the_loop = true;
 		$this->group       = $this->next_group();
 
@@ -466,7 +466,7 @@ class bp_ships_Template {
  * }
  * @return bool True if there are groups to display that match the params
  */
-function bp_has_groups( $args = '' ) {
+function bp_has_ships( $args = '' ) {
 	global $groups_template;
 
 	/***
@@ -489,9 +489,9 @@ function bp_has_groups( $args = '' ) {
 		$type = 'invites';
 
 	// When looking at a single group, set the type and slug
-	} elseif ( bp_get_current_group_slug() ) {
+	} elseif ( bp_get_current_ship_slug() ) {
 		$type = 'single-group';
-		$slug = bp_get_current_group_slug();
+		$slug = bp_get_current_ship_slug();
 	}
 
 	// Default search string (too soon to escape here)
@@ -550,7 +550,7 @@ function bp_has_groups( $args = '' ) {
  *
  * @return bool
  */
-function bp_groups() {
+function bp_ships() {
 	global $groups_template;
 	return $groups_template->groups();
 }
@@ -560,7 +560,7 @@ function bp_groups() {
  *
  * @return object
  */
-function bp_the_group() {
+function bp_the_ship() {
 	global $groups_template;
 	return $groups_template->the_group();
 }
@@ -571,7 +571,7 @@ function bp_the_group() {
  * @param object $group Optional. Group object. Default: current group in loop.
  * @return bool
  */
-function bp_group_is_visible( $group = false ) {
+function bp_ship_is_visible( $group = false ) {
 	global $groups_template;
 
 	if ( bp_current_user_can( 'bp_moderate' ) )
@@ -596,8 +596,8 @@ function bp_group_is_visible( $group = false ) {
  *
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_id( $group = false ) {
-	echo bp_get_group_id( $group );
+function bp_ship_id( $group = false ) {
+	echo bp_get_ship_id( $group );
 }
 	/**
 	 * Get the ID of the current group in the loop.
@@ -606,13 +606,13 @@ function bp_group_id( $group = false ) {
 	 *        group in loop.
 	 * @return int
 	 */
-	function bp_get_group_id( $group = false ) {
+	function bp_get_ship_id( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_id', $group->id );
+		return apply_filters( 'bp_get_ship_id', $group->id );
 	}
 
 /**
@@ -620,8 +620,8 @@ function bp_group_id( $group = false ) {
  *
  * @since BuddyPress (1.7.0)
  */
-function bp_group_class() {
-	echo bp_get_group_class();
+function bp_ship_class() {
+	echo bp_get_ship_class();
 }
 	/**
 	 * Get the row class of the current group in the loop.
@@ -630,7 +630,7 @@ function bp_group_class() {
 	 *
 	 * @return string Row class of the group.
 	 */
-	function bp_get_group_class() {
+	function bp_get_ship_class() {
 		global $groups_template;
 
 		$classes      = array();
@@ -647,17 +647,17 @@ function bp_group_class() {
 
 		// User's group status
 		if ( bp_is_user_active() ) {
-			if ( bp_group_is_admin() )
+			if ( bp_ship_is_admin() )
 				$classes[] = 'is-admin';
 
-			if ( bp_group_is_member() )
+			if ( bp_ship_is_member() )
 				$classes[] = 'is-member';
 
-			if ( bp_group_is_mod() )
+			if ( bp_ship_is_mod() )
 				$classes[] = 'is-mod';
 		}
 
-		$classes = apply_filters( 'bp_get_group_class', $classes );
+		$classes = apply_filters( 'bp_get_ship_class', $classes );
 		$classes = array_merge( $classes, array() );
 		$retval = 'class="' . join( ' ', $classes ) . '"';
 
@@ -670,8 +670,8 @@ function bp_group_class() {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_name( $group = false ) {
-	echo bp_get_group_name( $group );
+function bp_ship_name( $group = false ) {
+	echo bp_get_ship_name( $group );
 }
 	/**
 	 * Get the name of the current group in the loop.
@@ -680,13 +680,13 @@ function bp_group_name( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_name( $group = false ) {
+	function bp_get_ship_name( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_name', $group->name );
+		return apply_filters( 'bp_get_ship_name', $group->name );
 	}
 
 /**
@@ -695,8 +695,8 @@ function bp_group_name( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_type( $group = false ) {
-	echo bp_get_group_type( $group );
+function bp_ship_type( $group = false ) {
+	echo bp_get_ship_type( $group );
 }
 	/**
 	 * Get the type of the current group in the loop.
@@ -705,7 +705,7 @@ function bp_group_type( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_type( $group = false ) {
+	function bp_get_ship_type( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
@@ -721,7 +721,7 @@ function bp_group_type( $group = false ) {
 			$type = ucwords( $group->status ) . ' ' . __( 'Group', 'buddypress' );
 		}
 
-		return apply_filters( 'bp_get_group_type', $type );
+		return apply_filters( 'bp_get_ship_type', $type );
 	}
 
 /**
@@ -730,8 +730,8 @@ function bp_group_type( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_status( $group = false ) {
-	echo bp_get_group_status( $group );
+function bp_ship_status( $group = false ) {
+	echo bp_get_ship_status( $group );
 }
 	/**
 	 * Get the status of the current group in the loop.
@@ -740,13 +740,13 @@ function bp_group_status( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_status( $group = false ) {
+	function bp_get_ship_status( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_status', $group->status );
+		return apply_filters( 'bp_get_ship_status', $group->status );
 	}
 
 /**
@@ -755,11 +755,11 @@ function bp_group_status( $group = false ) {
  * @since BuddyPress (1.0.0)
  *
  * @param array $args {
- *      See {@link bp_get_group_avatar()} for description of arguments.
+ *      See {@link bp_get_ship_avatar()} for description of arguments.
  * }
  */
-function bp_group_avatar( $args = '' ) {
-	echo bp_get_group_avatar( $args );
+function bp_ship_avatar( $args = '' ) {
+	echo bp_get_ship_avatar( $args );
 }
 	/**
 	 * Return the group avatar while in the groups loop.
@@ -775,7 +775,7 @@ function bp_group_avatar( $args = '' ) {
 	 * }
 	 * @return string
 	 */
-	function bp_get_group_avatar( $args = '' ) {
+	function bp_get_ship_avatar( $args = '' ) {
 		global $groups_template;
 
 		// Bail if avatars are turned off
@@ -813,7 +813,7 @@ function bp_group_avatar( $args = '' ) {
 			$avatar = '<img src="' . esc_url( $groups_template->group->avatar_thumb ) . '" class="avatar" alt="' . esc_attr( $groups_template->group->name ) . '" />';
 		}
 
-		return apply_filters( 'bp_get_group_avatar', $avatar, $r );
+		return apply_filters( 'bp_get_ship_avatar', $avatar, $r );
 	}
 
 /**
@@ -824,8 +824,8 @@ function bp_group_avatar( $args = '' ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_avatar_thumb( $group = false ) {
-	echo bp_get_group_avatar_thumb( $group );
+function bp_ship_avatar_thumb( $group = false ) {
+	echo bp_get_ship_avatar_thumb( $group );
 }
 	/**
 	 * Return the group avatar thumbnail while in the groups loop.
@@ -836,8 +836,8 @@ function bp_group_avatar_thumb( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_avatar_thumb( $group = false ) {
-		return bp_get_group_avatar( array(
+	function bp_get_ship_avatar_thumb( $group = false ) {
+		return bp_get_ship_avatar( array(
 			'type' => 'thumb',
 			'id'   => ! empty( $group->id ) ? $group->id : false
 		) );
@@ -851,8 +851,8 @@ function bp_group_avatar_thumb( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_avatar_mini( $group = false ) {
-	echo bp_get_group_avatar_mini( $group );
+function bp_ship_avatar_mini( $group = false ) {
+	echo bp_get_ship_avatar_mini( $group );
 }
 	/**
 	 * Return the miniature group avatar thumbnail while in the groups loop.
@@ -862,8 +862,8 @@ function bp_group_avatar_mini( $group = false ) {
 	 * @param object $group Optional. Group object. Default: current
 	 *        group in loop.
 	 */
-	function bp_get_group_avatar_mini( $group = false ) {
-		return bp_get_group_avatar( array(
+	function bp_get_ship_avatar_mini( $group = false ) {
+		return bp_get_ship_avatar( array(
 			'type'   => 'thumb',
 			'width'  => 30,
 			'height' => 30,
@@ -877,8 +877,8 @@ function bp_group_avatar_mini( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_last_active( $group = false ) {
-	echo bp_get_group_last_active( $group );
+function bp_ship_last_active( $group = false ) {
+	echo bp_get_ship_last_active( $group );
 }
 	/**
 	 * Return the 'last active' string for the current group in the loop.
@@ -887,7 +887,7 @@ function bp_group_last_active( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_last_active( $group = false ) {
+	function bp_get_ship_last_active( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
@@ -901,7 +901,7 @@ function bp_group_last_active( $group = false ) {
 		if ( empty( $last_active ) ) {
 			return __( 'not yet active', 'buddypress' );
 		} else {
-			return apply_filters( 'bp_get_group_last_active', bp_core_time_since( $last_active ) );
+			return apply_filters( 'bp_get_ship_last_active', bp_core_time_since( $last_active ) );
 		}
 	}
 
@@ -911,8 +911,8 @@ function bp_group_last_active( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_permalink( $group = false ) {
-	echo bp_get_group_permalink( $group );
+function bp_ship_permalink( $group = false ) {
+	echo bp_get_ship_permalink( $group );
 }
 	/**
 	 * Return the permalink for the current group in the loop.
@@ -921,13 +921,13 @@ function bp_group_permalink( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_permalink( $group = false ) {
+	function bp_get_ship_permalink( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/' ) );
+		return apply_filters( 'bp_get_ship_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_ships_root_slug() . '/' . $group->slug . '/' ) );
 	}
 
 /**
@@ -936,8 +936,8 @@ function bp_group_permalink( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_admin_permalink( $group = false ) {
-	echo bp_get_group_admin_permalink( $group );
+function bp_ship_admin_permalink( $group = false ) {
+	echo bp_get_ship_admin_permalink( $group );
 }
 	/**
 	 * Return the permalink for the admin section of the current group in the loop.
@@ -946,13 +946,13 @@ function bp_group_admin_permalink( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_admin_permalink( $group = false ) {
+	function bp_get_ship_admin_permalink( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_admin_permalink', trailingslashit( bp_get_group_permalink( $group ) . 'admin' ) );
+		return apply_filters( 'bp_get_ship_admin_permalink', trailingslashit( bp_get_ship_permalink( $group ) . 'admin' ) );
 	}
 
 /**
@@ -961,8 +961,8 @@ function bp_group_admin_permalink( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_slug( $group = false ) {
-	echo bp_get_group_slug( $group );
+function bp_ship_slug( $group = false ) {
+	echo bp_get_ship_slug( $group );
 }
 	/**
 	 * Return the slug for the current group in the loop.
@@ -971,13 +971,13 @@ function bp_group_slug( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_slug( $group = false ) {
+	function bp_get_ship_slug( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_slug', $group->slug );
+		return apply_filters( 'bp_get_ship_slug', $group->slug );
 	}
 
 /**
@@ -986,8 +986,8 @@ function bp_group_slug( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_description( $group = false ) {
-	echo bp_get_group_description( $group );
+function bp_ship_description( $group = false ) {
+	echo bp_get_ship_description( $group );
 }
 	/**
 	 * Return the description for the current group in the loop.
@@ -996,13 +996,13 @@ function bp_group_description( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_description( $group = false ) {
+	function bp_get_ship_description( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_description', stripslashes($group->description) );
+		return apply_filters( 'bp_get_ship_description', stripslashes($group->description) );
 	}
 
 /**
@@ -1011,27 +1011,27 @@ function bp_group_description( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_description_editable( $group = false ) {
-	echo bp_get_group_description_editable( $group );
+function bp_ship_description_editable( $group = false ) {
+	echo bp_get_ship_description_editable( $group );
 }
 	/**
 	 * Return the permalink for the current group in the loop, for use in a textarea.
 	 *
-	 * 'bp_get_group_description_editable' does not have the formatting
-	 * filters that 'bp_get_group_description' has, which makes it
+	 * 'bp_get_ship_description_editable' does not have the formatting
+	 * filters that 'bp_get_ship_description' has, which makes it
 	 * appropriate for "raw" editing.
 	 *
 	 * @param object $group Optional. Group object. Default: current
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_description_editable( $group = false ) {
+	function bp_get_ship_description_editable( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_description_editable', $group->description );
+		return apply_filters( 'bp_get_ship_description_editable', $group->description );
 	}
 
 /**
@@ -1040,8 +1040,8 @@ function bp_group_description_editable( $group = false ) {
  * @param object $group Optional. The group being referenced. Defaults to the
  *        group currently being iterated on in the groups loop.
  */
-function bp_group_description_excerpt( $group = false ) {
-	echo bp_get_group_description_excerpt( $group );
+function bp_ship_description_excerpt( $group = false ) {
+	echo bp_get_ship_description_excerpt( $group );
 }
 	/**
 	 * Get an excerpt of a group description.
@@ -1050,14 +1050,14 @@ function bp_group_description_excerpt( $group = false ) {
 	 *        to the group currently being iterated on in the groups loop.
 	 * @return string Excerpt.
 	 */
-	function bp_get_group_description_excerpt( $group = false ) {
+	function bp_get_ship_description_excerpt( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) ) {
 			$group =& $groups_template->group;
 		}
 
-		return apply_filters( 'bp_get_group_description_excerpt', bp_create_excerpt( $group->description ), $group );
+		return apply_filters( 'bp_get_ship_description_excerpt', bp_create_excerpt( $group->description ), $group );
 	}
 
 /**
@@ -1068,8 +1068,8 @@ function bp_group_description_excerpt( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_public_status( $group = false ) {
-	echo bp_get_group_public_status( $group );
+function bp_ship_public_status( $group = false ) {
+	echo bp_get_ship_public_status( $group );
 }
 	/**
 	 * Return the status of the current group in the loop.
@@ -1080,7 +1080,7 @@ function bp_group_public_status( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_public_status( $group = false ) {
+	function bp_get_ship_public_status( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
@@ -1101,8 +1101,8 @@ function bp_group_public_status( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_is_public( $group = false ) {
-	echo bp_get_group_is_public( $group );
+function bp_ship_is_public( $group = false ) {
+	echo bp_get_ship_is_public( $group );
 }
 	/**
 	 * Return whether the current group in the loop is public.
@@ -1113,13 +1113,13 @@ function bp_group_is_public( $group = false ) {
 	 *        group in loop.
 	 * @return unknown
 	 */
-	function bp_get_group_is_public( $group = false ) {
+	function bp_get_ship_is_public( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_is_public', $group->is_public );
+		return apply_filters( 'bp_get_ship_is_public', $group->is_public );
 	}
 
 /**
@@ -1128,8 +1128,8 @@ function bp_group_is_public( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_date_created( $group = false ) {
-	echo bp_get_group_date_created( $group );
+function bp_ship_date_created( $group = false ) {
+	echo bp_get_ship_date_created( $group );
 }
 	/**
 	 * Return the created date of the current group in the loop.
@@ -1138,13 +1138,13 @@ function bp_group_date_created( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_date_created( $group = false ) {
+	function bp_get_ship_date_created( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_date_created', bp_core_time_since( strtotime( $group->date_created ) ) );
+		return apply_filters( 'bp_get_ship_date_created', bp_core_time_since( strtotime( $group->date_created ) ) );
 	}
 
 /**
@@ -1153,8 +1153,8 @@ function bp_group_date_created( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_creator_username( $group = false ) {
-	echo bp_get_group_creator_username( $group );
+function bp_ship_creator_username( $group = false ) {
+	echo bp_get_ship_creator_username( $group );
 }
 	/**
 	 * Return the username of the creator of the current group in the loop.
@@ -1163,13 +1163,13 @@ function bp_group_creator_username( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_creator_username( $group = false ) {
+	function bp_get_ship_creator_username( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_creator_username', bp_core_get_user_displayname( $group->creator_id ) );
+		return apply_filters( 'bp_get_ship_creator_username', bp_core_get_user_displayname( $group->creator_id ) );
 	}
 
 /**
@@ -1178,8 +1178,8 @@ function bp_group_creator_username( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_creator_id( $group = false ) {
-	echo bp_get_group_creator_id( $group );
+function bp_ship_creator_id( $group = false ) {
+	echo bp_get_ship_creator_id( $group );
 }
 	/**
 	 * Return the user ID of the creator of the current group in the loop.
@@ -1188,13 +1188,13 @@ function bp_group_creator_id( $group = false ) {
 	 *        group in loop.
 	 * @return int
 	 */
-	function bp_get_group_creator_id( $group = false ) {
+	function bp_get_ship_creator_id( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_creator_id', $group->creator_id );
+		return apply_filters( 'bp_get_ship_creator_id', $group->creator_id );
 	}
 
 /**
@@ -1203,8 +1203,8 @@ function bp_group_creator_id( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_creator_permalink( $group = false ) {
-	echo bp_get_group_creator_permalink( $group );
+function bp_ship_creator_permalink( $group = false ) {
+	echo bp_get_ship_creator_permalink( $group );
 }
 	/**
 	 * Return the permalink of the creator of the current group in the loop.
@@ -1213,13 +1213,13 @@ function bp_group_creator_permalink( $group = false ) {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_creator_permalink( $group = false ) {
+	function bp_get_ship_creator_permalink( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_creator_permalink', bp_core_get_user_domain( $group->creator_id ) );
+		return apply_filters( 'bp_get_ship_creator_permalink', bp_core_get_user_domain( $group->creator_id ) );
 	}
 
 /**
@@ -1230,7 +1230,7 @@ function bp_group_creator_permalink( $group = false ) {
  * @param int $user_id ID of the user.
  * @return bool
  */
-function bp_is_group_creator( $group = false, $user_id = 0 ) {
+function bp_is_ship_creator( $group = false, $user_id = 0 ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1248,12 +1248,12 @@ function bp_is_group_creator( $group = false, $user_id = 0 ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  * @param array $args {
- *     Array of optional arguments. See {@link bp_get_group_creator_avatar()}
+ *     Array of optional arguments. See {@link bp_get_ship_creator_avatar()}
  *     for description.
  * }
  */
-function bp_group_creator_avatar( $group = false, $args = array() ) {
-	echo bp_get_group_creator_avatar( $group, $args );
+function bp_ship_creator_avatar( $group = false, $args = array() ) {
+	echo bp_get_ship_creator_avatar( $group, $args );
 }
 	/**
 	 * Return the avatar of the creator of the current group in the loop.
@@ -1273,7 +1273,7 @@ function bp_group_creator_avatar( $group = false, $args = array() ) {
 	 * }
 	 * @return string
 	 */
-	function bp_get_group_creator_avatar( $group = false, $args = array() ) {
+	function bp_get_ship_creator_avatar( $group = false, $args = array() ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
@@ -1293,7 +1293,7 @@ function bp_group_creator_avatar( $group = false, $args = array() ) {
 
 		$avatar = bp_core_fetch_avatar( array( 'item_id' => $group->creator_id, 'type' => $type, 'css_id' => $id, 'class' => $class, 'width' => $width, 'height' => $height, 'alt' => $alt ) );
 
-		return apply_filters( 'bp_get_group_creator_avatar', $avatar );
+		return apply_filters( 'bp_get_ship_creator_avatar', $avatar );
 	}
 
 /**
@@ -1303,7 +1303,7 @@ function bp_group_creator_avatar( $group = false, $args = array() ) {
  *
  * @return bool
  */
-function bp_group_is_admin() {
+function bp_ship_is_admin() {
 	return bp_is_item_admin();
 }
 
@@ -1314,7 +1314,7 @@ function bp_group_is_admin() {
  *
  * @return bool
  */
-function bp_group_is_mod() {
+function bp_ship_is_mod() {
 	return bp_is_item_mod();
 }
 
@@ -1324,7 +1324,7 @@ function bp_group_is_mod() {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_list_admins( $group = false ) {
+function bp_ship_list_admins( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) ) {
@@ -1333,7 +1333,7 @@ function bp_group_list_admins( $group = false ) {
 
 	// fetch group admins if 'populate_extras' flag is false
 	if ( empty( $group->args['populate_extras'] ) ) {
-		$query = new BP_Group_Member_Query( array(
+		$query = new BP_ship_Member_Query( array(
 			'group_id'   => $group->id,
 			'group_role' => 'admin',
 			'type'       => 'first_joined',
@@ -1364,7 +1364,7 @@ function bp_group_list_admins( $group = false ) {
  * @param object $group Optional. Group object. Default: current
  *        group in loop.
  */
-function bp_group_list_mods( $group = false ) {
+function bp_ship_list_mods( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) ) {
@@ -1373,7 +1373,7 @@ function bp_group_list_mods( $group = false ) {
 
 	// fetch group mods if 'populate_extras' flag is false
 	if ( empty( $group->args['populate_extras'] ) ) {
-		$query = new BP_Group_Member_Query( array(
+		$query = new BP_ship_Member_Query( array(
 			'group_id'   => $group->id,
 			'group_role' => 'mod',
 			'type'       => 'first_joined',
@@ -1417,7 +1417,7 @@ function bp_group_list_mods( $group = false ) {
  *        'array' to get an array.
  * @return mixed $admin_ids A string or array of user IDs.
  */
-function bp_group_admin_ids( $group = false, $format = 'string' ) {
+function bp_ship_admin_ids( $group = false, $format = 'string' ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1434,7 +1434,7 @@ function bp_group_admin_ids( $group = false, $format = 'string' ) {
 	if ( 'string' == $format )
 		$admin_ids = implode( ',', $admin_ids );
 
-	return apply_filters( 'bp_group_admin_ids', $admin_ids );
+	return apply_filters( 'bp_ship_admin_ids', $admin_ids );
 }
 
 /**
@@ -1448,7 +1448,7 @@ function bp_group_admin_ids( $group = false, $format = 'string' ) {
  *        'array' to get an array.
  * @return mixed $mod_ids A string or array of user IDs.
  */
-function bp_group_mod_ids( $group = false, $format = 'string' ) {
+function bp_ship_mod_ids( $group = false, $format = 'string' ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1465,14 +1465,14 @@ function bp_group_mod_ids( $group = false, $format = 'string' ) {
 	if ( 'string' == $format )
 		$mod_ids = implode( ',', $mod_ids );
 
-	return apply_filters( 'bp_group_mod_ids', $mod_ids );
+	return apply_filters( 'bp_ship_mod_ids', $mod_ids );
 }
 
 /**
  * Output the permalink of the current group's Members page.
  */
-function bp_group_all_members_permalink() {
-	echo bp_get_group_all_members_permalink();
+function bp_ship_all_members_permalink() {
+	echo bp_get_ship_all_members_permalink();
 }
 	/**
 	 * Return the permalink of the Members page of the current group in the loop.
@@ -1481,13 +1481,13 @@ function bp_group_all_members_permalink() {
 	 *        group in loop.
 	 * @return string
 	 */
-	function bp_get_group_all_members_permalink( $group = false ) {
+	function bp_get_ship_all_members_permalink( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_all_members_permalink', bp_get_group_permalink( $group ) . 'members' );
+		return apply_filters( 'bp_get_ship_all_members_permalink', bp_get_ship_permalink( $group ) . 'members' );
 	}
 
 /**
@@ -1497,10 +1497,10 @@ function bp_group_all_members_permalink() {
  *
  * @todo Deprecate
  */
-function bp_group_search_form() {
+function bp_ship_search_form() {
 	global $bp;
 
-	$action = bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/search/';
+	$action = bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/search/';
 	$label = __('Filter Groups', 'buddypress');
 	$name = 'group-filter-box';
 
@@ -1508,10 +1508,10 @@ function bp_group_search_form() {
 		<label for="'. $name .'" id="'. $name .'-label">'. $label .'</label>
 		<input type="search" name="'. $name . '" id="'. $name .'" value="'. $value .'"'.  $disabled .' />
 
-		'. wp_nonce_field( 'group-filter-box', '_wpnonce_group_filter', true, false ) .'
+		'. wp_nonce_field( 'group-filter-box', '_wpnonce_ship_filter', true, false ) .'
 		</form>';
 
-	echo apply_filters( 'bp_group_search_form', $search_form_html );
+	echo apply_filters( 'bp_ship_search_form', $search_form_html );
 }
 
 /**
@@ -1523,8 +1523,8 @@ function bp_group_search_form() {
  *
  * @return bool True if the displayed user has no groups, otherwise false.
  */
-function bp_group_show_no_groups_message() {
-	if ( !groups_total_groups_for_user( bp_displayed_user_id() ) )
+function bp_ship_show_no_ships_message() {
+	if ( !groups_total_ships_for_user( bp_displayed_user_id() ) )
 		return true;
 
 	return false;
@@ -1539,9 +1539,9 @@ function bp_group_show_no_groups_message() {
  *
  * @return bool True if this is a group activity permalink, otherwise false.
  */
-function bp_group_is_activity_permalink() {
+function bp_ship_is_activity_permalink() {
 
-	if ( !bp_is_single_item() || !bp_is_groups_component() || !bp_is_current_action( bp_get_activity_slug() ) )
+	if ( !bp_is_single_item() || !bp_is_current_component( 'ships' ) || !bp_is_current_action( bp_get_activity_slug() ) )
 		return false;
 
 	return true;
@@ -1551,39 +1551,39 @@ function bp_group_is_activity_permalink() {
  * Output the pagination HTML for a group loop.
  */
 function bp_ships_pagination_links() {
-	echo bp_get_groups_pagination_links();
+	echo bp_get_ships_pagination_links();
 }
 	/**
 	 * Get the pagination HTML for a group loop.
 	 *
 	 * @return string
 	 */
-	function bp_get_groups_pagination_links() {
+	function bp_get_ships_pagination_links() {
 		global $groups_template;
 
-		return apply_filters( 'bp_get_groups_pagination_links', $groups_template->pag_links );
+		return apply_filters( 'bp_get_ships_pagination_links', $groups_template->pag_links );
 	}
 
 /**
  * Output the "Viewing x-y of z groups" pagination message.
  */
 function bp_ships_pagination_count() {
-	echo bp_get_groups_pagination_count();
+	echo bp_get_ships_pagination_count();
 }
 	/**
 	 * Generate the "Viewing x-y of z groups" pagination message.
 	 *
 	 * @return string
 	 */
-	function bp_get_groups_pagination_count() {
+	function bp_get_ships_pagination_count() {
 		global $groups_template;
 
 		$start_num = intval( ( $groups_template->pag_page - 1 ) * $groups_template->pag_num ) + 1;
 		$from_num  = bp_core_number_format( $start_num );
-		$to_num    = bp_core_number_format( ( $start_num + ( $groups_template->pag_num - 1 ) > $groups_template->total_group_count ) ? $groups_template->total_group_count : $start_num + ( $groups_template->pag_num - 1 ) );
-		$total     = bp_core_number_format( $groups_template->total_group_count );
+		$to_num    = bp_core_number_format( ( $start_num + ( $groups_template->pag_num - 1 ) > $groups_template->total_ship_count ) ? $groups_template->total_ship_count : $start_num + ( $groups_template->pag_num - 1 ) );
+		$total     = bp_core_number_format( $groups_template->total_ship_count );
 
-		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing 1 group', 'Viewing %1$s - %2$s of %3$s groups', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_ships_pagination_count', sprintf( _n( 'Viewing 1 group', 'Viewing %1$s - %2$s of %3$s groups', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 /**
@@ -1597,7 +1597,7 @@ function bp_ships_pagination_count() {
 function bp_ships_auto_join() {
 	global $bp;
 
-	return apply_filters( 'bp_ships_auto_join', (bool)$bp->groups->auto_join );
+	return apply_filters( 'bp_ships_auto_join', (bool)$bp->ships->auto_join );
 }
 
 /**
@@ -1605,8 +1605,8 @@ function bp_ships_auto_join() {
  *
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_total_members( $group = false ) {
-	echo bp_get_group_total_members( $group );
+function bp_ship_total_members( $group = false ) {
+	echo bp_get_ship_total_members( $group );
 }
 	/**
 	 * Get the total member count for a group.
@@ -1614,13 +1614,13 @@ function bp_group_total_members( $group = false ) {
 	 * @param object $group Optional. Group object. Default: current group in loop.
 	 * @return int
 	 */
-	function bp_get_group_total_members( $group = false ) {
+	function bp_get_ship_total_members( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_total_members', $group->total_member_count );
+		return apply_filters( 'bp_get_ship_total_members', $group->total_member_count );
 	}
 
 /**
@@ -1628,8 +1628,8 @@ function bp_group_total_members( $group = false ) {
  *
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_member_count() {
-	echo bp_get_group_member_count();
+function bp_ship_member_count() {
+	echo bp_get_ship_member_count();
 }
 	/**
 	 * Generate the "x members" count string for a group.
@@ -1637,7 +1637,7 @@ function bp_group_member_count() {
 	 * @param object $group Optional. Group object. Default: current group in loop.
 	 * @return string
 	 */
-	function bp_get_group_member_count() {
+	function bp_get_ship_member_count() {
 		global $groups_template;
 
 		if ( isset( $groups_template->group->total_member_count ) ) {
@@ -1648,14 +1648,14 @@ function bp_group_member_count() {
 
 		$count_string = sprintf( _n( '%s member', '%s members', $count, 'buddypress' ), bp_core_number_format( $count ) );
 
-		return apply_filters( 'bp_get_group_member_count', $count_string );
+		return apply_filters( 'bp_get_ship_member_count', $count_string );
 	}
 
 /**
  * Output the URL of the Forum page of the current group in the loop.
  */
-function bp_group_forum_permalink() {
-	echo bp_get_group_forum_permalink();
+function bp_ship_forum_permalink() {
+	echo bp_get_ship_forum_permalink();
 }
 	/**
 	 * Generate the URL of the Forum page of a group.
@@ -1663,22 +1663,22 @@ function bp_group_forum_permalink() {
 	 * @param object $group Optional. Group object. Default: current group in loop.
 	 * @return string
 	 */
-	function bp_get_group_forum_permalink( $group = false ) {
+	function bp_get_ship_forum_permalink( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_forum_permalink', bp_get_group_permalink( $group ) . 'forum' );
+		return apply_filters( 'bp_get_ship_forum_permalink', bp_get_ship_permalink( $group ) . 'forum' );
 	}
 
 /**
  * Output the topic count for a group forum.
  *
- * @param array $args See {@link bp_get_group_forum_topic_count()}.
+ * @param array $args See {@link bp_get_ship_forum_topic_count()}.
  */
-function bp_group_forum_topic_count( $args = '' ) {
-	echo bp_get_group_forum_topic_count( $args );
+function bp_ship_forum_topic_count( $args = '' ) {
+	echo bp_get_ship_forum_topic_count( $args );
 }
 	/**
 	 * Generate the topic count string for a group forum.
@@ -1691,7 +1691,7 @@ function bp_group_forum_topic_count( $args = '' ) {
 	 * }
 	 * @return string|int
 	 */
-	function bp_get_group_forum_topic_count( $args = '' ) {
+	function bp_get_ship_forum_topic_count( $args = '' ) {
 		global $groups_template;
 
 		$defaults = array(
@@ -1719,16 +1719,16 @@ function bp_group_forum_topic_count( $args = '' ) {
 			$total_topics = (int) $groups_template->group->forum_counts[0]->topics;
 		}
 
-		return apply_filters( 'bp_get_group_forum_topic_count', $total_topics, (bool)$showtext );
+		return apply_filters( 'bp_get_ship_forum_topic_count', $total_topics, (bool)$showtext );
 	}
 
 /**
  * Output the post count for a group forum.
  *
- * @param array $args See {@link bp_get_group_forum_post_count()}.
+ * @param array $args See {@link bp_get_ship_forum_post_count()}.
  */
-function bp_group_forum_post_count( $args = '' ) {
-	echo bp_get_group_forum_post_count( $args );
+function bp_ship_forum_post_count( $args = '' ) {
+	echo bp_get_ship_forum_post_count( $args );
 }
 	/**
 	 * Generate the post count string for a group forum.
@@ -1741,7 +1741,7 @@ function bp_group_forum_post_count( $args = '' ) {
 	 * }
 	 * @return string|int
 	 */
-	function bp_get_group_forum_post_count( $args = '' ) {
+	function bp_get_ship_forum_post_count( $args = '' ) {
 		global $groups_template;
 
 		$defaults = array(
@@ -1769,7 +1769,7 @@ function bp_group_forum_post_count( $args = '' ) {
 			$total_posts = (int) $groups_template->group->forum_counts[0]->posts;
 		}
 
-		return apply_filters( 'bp_get_group_forum_post_count', $total_posts, (bool)$showtext );
+		return apply_filters( 'bp_get_ship_forum_post_count', $total_posts, (bool)$showtext );
 	}
 
 /**
@@ -1778,7 +1778,7 @@ function bp_group_forum_post_count( $args = '' ) {
  * @param object $group Optional. Group object. Default: current group in loop.
  * @return bool
  */
-function bp_group_is_forum_enabled( $group = false ) {
+function bp_ship_is_forum_enabled( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1795,7 +1795,7 @@ function bp_group_is_forum_enabled( $group = false ) {
  *
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_show_forum_setting( $group = false ) {
+function bp_ship_show_forum_setting( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1811,7 +1811,7 @@ function bp_group_show_forum_setting( $group = false ) {
  * @param string $setting Group status. 'public', 'private', 'hidden'.
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_show_status_setting( $setting, $group = false ) {
+function bp_ship_show_status_setting( $setting, $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -1830,10 +1830,10 @@ function bp_group_show_status_setting( $setting, $group = false ) {
  *	  'mods', or 'admins').
  * @param object $group Optional. Group object. Default: current group in loop.
  */
-function bp_group_show_invite_status_setting( $setting, $group = false ) {
+function bp_ship_show_invite_status_setting( $setting, $group = false ) {
 	$group_id = isset( $group->id ) ? $group->id : false;
 
-	$invite_status = bp_group_get_invite_status( $group_id );
+	$invite_status = bp_ship_get_invite_status( $group_id );
 
 	if ( $setting == $invite_status )
 		echo ' checked="checked"';
@@ -1845,7 +1845,7 @@ function bp_group_show_invite_status_setting( $setting, $group = false ) {
  * 'invite_status' became part of BuddyPress in BP 1.5. In order to provide
  * backward compatibility with earlier installations, groups without a status
  * set will default to 'members', ie all members in a group can send
- * invitations. Filter 'bp_group_invite_status_fallback' to change this
+ * invitations. Filter 'bp_ship_invite_status_fallback' to change this
  * fallback behavior.
  *
  * This function can be used either in or out of the loop.
@@ -1858,13 +1858,13 @@ function bp_group_show_invite_status_setting( $setting, $group = false ) {
  *         returns the group invite status, from among 'members', 'mods', and
  *         'admins'.
  */
-function bp_group_get_invite_status( $group_id = false ) {
+function bp_ship_get_invite_status( $group_id = false ) {
 	global $bp, $groups_template;
 
 	if ( !$group_id ) {
-		if ( isset( $bp->groups->current_group->id ) ) {
+		if ( isset( $bp->ships->current_group->id ) ) {
 			// Default to the current group first
-			$group_id = $bp->groups->current_group->id;
+			$group_id = $bp->ships->current_group->id;
 		} elseif ( isset( $groups_template->group->id ) ) {
 			// Then see if we're in the loop
 			$group_id = $groups_template->group->id;
@@ -1877,10 +1877,10 @@ function bp_group_get_invite_status( $group_id = false ) {
 
 	// Backward compatibility. When 'invite_status' is not set, fall back to a default value
 	if ( !$invite_status ) {
-		$invite_status = apply_filters( 'bp_group_invite_status_fallback', 'members' );
+		$invite_status = apply_filters( 'bp_ship_invite_status_fallback', 'members' );
 	}
 
-	return apply_filters( 'bp_group_get_invite_status', $invite_status, $group_id );
+	return apply_filters( 'bp_ship_get_invite_status', $invite_status, $group_id );
 }
 
 /**
@@ -1904,7 +1904,7 @@ function bp_ships_user_can_send_invites( $group_id = 0, $user_id = 0 ) {
 
 	// If $group_id isn't specified, use existing one if available.
 	if ( ! $group_id ) {
-		$group_id = bp_get_current_group_id();
+		$group_id = bp_get_current_ship_id();
 	}
 
 	if ( $user_id ) {
@@ -1912,7 +1912,7 @@ function bp_ships_user_can_send_invites( $group_id = 0, $user_id = 0 ) {
 		if ( user_can( $user_id, 'bp_moderate' ) ) {
 			$can_send_invites = true;
 		} else {
-			$invite_status = bp_group_get_invite_status( $group_id );
+			$invite_status = bp_ship_get_invite_status( $group_id );
 
 			switch ( $invite_status ) {
 				case 'admins' :
@@ -1959,7 +1959,7 @@ function bp_ships_user_can_send_invites( $group_id = 0, $user_id = 0 ) {
  * @since BuddyPress (1.0.0)
  * @todo Remove in 1.4
  */
-function bp_group_admin_memberlist( $admin_list = false, $group = false ) {
+function bp_ship_admin_memberlist( $admin_list = false, $group = false ) {
 	global $groups_template;
 
 	_deprecated_function( __FUNCTION__, '1.5', 'No longer used. See /bp-default/groups/single/admin.php' );
@@ -1968,7 +1968,7 @@ function bp_group_admin_memberlist( $admin_list = false, $group = false ) {
 		$group =& $groups_template->group;
 
 
-	if ( $admins = groups_get_group_admins( $group->id ) ) : ?>
+	if ( $admins = groups_get_ship_admins( $group->id ) ) : ?>
 
 		<ul id="admins-list" class="item-list<?php if ( !empty( $admin_list ) ) : ?> single-line<?php endif; ?>">
 
@@ -1985,7 +1985,7 @@ function bp_group_admin_memberlist( $admin_list = false, $group = false ) {
 					<?php echo bp_core_get_userlink( $admin->user_id ); ?>
 
 					<span class="small">
-						<a class="button confirm admin-demote-to-member" href="<?php bp_group_member_demote_link($admin->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
+						<a class="button confirm admin-demote-to-member" href="<?php bp_ship_member_demote_link($admin->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
 					</span>
 				</h5>
 			</li>
@@ -2034,13 +2034,13 @@ function bp_group_admin_memberlist( $admin_list = false, $group = false ) {
  *
  * @todo Deprecate.
  */
-function bp_group_mod_memberlist( $admin_list = false, $group = false ) {
+function bp_ship_mod_memberlist( $admin_list = false, $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
 		$group =& $groups_template->group;
 
-	if ( $group_mods = groups_get_group_mods( $group->id ) ) { ?>
+	if ( $group_mods = groups_get_ship_mods( $group->id ) ) { ?>
 
 		<ul id="mods-list" class="item-list<?php if ( $admin_list ) { ?> single-line<?php } ?>">
 
@@ -2056,8 +2056,8 @@ function bp_group_mod_memberlist( $admin_list = false, $group = false ) {
 					<?php echo bp_core_get_userlink( $mod->user_id ); ?>
 
 					<span class="small">
-						<a href="<?php bp_group_member_promote_admin_link( array( 'user_id' => $mod->user_id ) ) ?>" class="button confirm mod-promote-to-admin" title="<?php esc_attr_e( 'Promote to Admin', 'buddypress' ); ?>"><?php _e( 'Promote to Admin', 'buddypress' ); ?></a>
-						<a class="button confirm mod-demote-to-member" href="<?php bp_group_member_demote_link($mod->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
+						<a href="<?php bp_ship_member_promote_admin_link( array( 'user_id' => $mod->user_id ) ) ?>" class="button confirm mod-promote-to-admin" title="<?php esc_attr_e( 'Promote to Admin', 'buddypress' ); ?>"><?php _e( 'Promote to Admin', 'buddypress' ); ?></a>
+						<a class="button confirm mod-demote-to-member" href="<?php bp_ship_member_demote_link($mod->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
 					</span>
 				</h5>
 			</li>
@@ -2102,22 +2102,22 @@ function bp_group_mod_memberlist( $admin_list = false, $group = false ) {
  * @param object $group Optional. Group object. Default: current group in loop.
  * @return array Info about group admins (user_id + date_modified).
  */
-function bp_group_has_moderators( $group = false ) {
+function bp_ship_has_moderators( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
 		$group =& $groups_template->group;
 
-	return apply_filters( 'bp_group_has_moderators', groups_get_group_mods( $group->id ) );
+	return apply_filters( 'bp_ship_has_moderators', groups_get_ship_mods( $group->id ) );
 }
 
 /**
  * Output a URL for promoting a user to moderator.
  *
- * @param array $args See {@link bp_get_group_member_promote_mod_link()}.
+ * @param array $args See {@link bp_get_ship_member_promote_mod_link()}.
  */
-function bp_group_member_promote_mod_link( $args = '' ) {
-	echo bp_get_group_member_promote_mod_link( $args );
+function bp_ship_member_promote_mod_link( $args = '' ) {
+	echo bp_get_ship_member_promote_mod_link( $args );
 }
 	/**
 	 * Generate a URL for promoting a user to moderator.
@@ -2129,7 +2129,7 @@ function bp_group_member_promote_mod_link( $args = '' ) {
 	 * }
 	 * @return string
 	 */
-	function bp_get_group_member_promote_mod_link( $args = '' ) {
+	function bp_get_ship_member_promote_mod_link( $args = '' ) {
 		global $members_template, $groups_template;
 
 		$defaults = array(
@@ -2140,16 +2140,16 @@ function bp_group_member_promote_mod_link( $args = '' ) {
 		$r = wp_parse_args( $args, $defaults );
 		extract( $r, EXTR_SKIP );
 
-		return apply_filters( 'bp_get_group_member_promote_mod_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/promote/mod/' . $user_id, 'groups_promote_member' ) );
+		return apply_filters( 'bp_get_ship_member_promote_mod_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/promote/mod/' . $user_id, 'groups_promote_member' ) );
 	}
 
 /**
  * Output a URL for promoting a user to admin.
  *
- * @param array $args See {@link bp_get_group_member_promote_admin_link()}.
+ * @param array $args See {@link bp_get_ship_member_promote_admin_link()}.
  */
-function bp_group_member_promote_admin_link( $args = '' ) {
-	echo bp_get_group_member_promote_admin_link( $args );
+function bp_ship_member_promote_admin_link( $args = '' ) {
+	echo bp_get_ship_member_promote_admin_link( $args );
 }
 	/**
 	 * Generate a URL for promoting a user to admin.
@@ -2161,7 +2161,7 @@ function bp_group_member_promote_admin_link( $args = '' ) {
 	 * }
 	 * @return string
 	 */
-	function bp_get_group_member_promote_admin_link( $args = '' ) {
+	function bp_get_ship_member_promote_admin_link( $args = '' ) {
 		global $members_template, $groups_template;
 
 		$defaults = array(
@@ -2172,7 +2172,7 @@ function bp_group_member_promote_admin_link( $args = '' ) {
 		$r = wp_parse_args( $args, $defaults );
 		extract( $r, EXTR_SKIP );
 
-		return apply_filters( 'bp_get_group_member_promote_admin_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/promote/admin/' . $user_id, 'groups_promote_member' ) );
+		return apply_filters( 'bp_get_ship_member_promote_admin_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/promote/admin/' . $user_id, 'groups_promote_member' ) );
 	}
 
 /**
@@ -2181,13 +2181,13 @@ function bp_group_member_promote_admin_link( $args = '' ) {
  * @param int $user_id ID of the member to demote. Default: current member in
  *        a member loop.
  */
-function bp_group_member_demote_link( $user_id = 0 ) {
+function bp_ship_member_demote_link( $user_id = 0 ) {
 	global $members_template;
 
 	if ( !$user_id )
 		$user_id = $members_template->member->user_id;
 
-	echo bp_get_group_member_demote_link( $user_id );
+	echo bp_get_ship_member_demote_link( $user_id );
 }
 	/**
 	 * Generate a URL for demoting a user to member.
@@ -2197,7 +2197,7 @@ function bp_group_member_demote_link( $user_id = 0 ) {
 	 * @param object $group Optional. Group object. Default: current group.
 	 * @return string
 	 */
-	function bp_get_group_member_demote_link( $user_id = 0, $group = false ) {
+	function bp_get_ship_member_demote_link( $user_id = 0, $group = false ) {
 		global $members_template, $groups_template;
 
 		if ( empty( $group ) )
@@ -2206,7 +2206,7 @@ function bp_group_member_demote_link( $user_id = 0 ) {
 		if ( !$user_id )
 			$user_id = $members_template->member->user_id;
 
-		return apply_filters( 'bp_get_group_member_demote_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/demote/' . $user_id, 'groups_demote_member' ) );
+		return apply_filters( 'bp_get_ship_member_demote_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/demote/' . $user_id, 'groups_demote_member' ) );
 	}
 
 /**
@@ -2215,13 +2215,13 @@ function bp_group_member_demote_link( $user_id = 0 ) {
  * @param int $user_id ID of the member to ban. Default: current member in
  *        a member loop.
  */
-function bp_group_member_ban_link( $user_id = 0 ) {
+function bp_ship_member_ban_link( $user_id = 0 ) {
 	global $members_template;
 
 	if ( !$user_id )
 		$user_id = $members_template->member->user_id;
 
-	echo bp_get_group_member_ban_link( $user_id );
+	echo bp_get_ship_member_ban_link( $user_id );
 }
 	/**
 	 * Generate a URL for banning a member from a group.
@@ -2231,13 +2231,13 @@ function bp_group_member_ban_link( $user_id = 0 ) {
 	 * @param object $group Optional. Group object. Default: current group.
 	 * @return string
 	 */
-	function bp_get_group_member_ban_link( $user_id = 0, $group = false ) {
+	function bp_get_ship_member_ban_link( $user_id = 0, $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_member_ban_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/ban/' . $user_id, 'groups_ban_member' ) );
+		return apply_filters( 'bp_get_ship_member_ban_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/ban/' . $user_id, 'groups_ban_member' ) );
 	}
 
 /**
@@ -2246,13 +2246,13 @@ function bp_group_member_ban_link( $user_id = 0 ) {
  * @param int $user_id ID of the member to unban. Default: current member in
  *        a member loop.
  */
-function bp_group_member_unban_link( $user_id = 0 ) {
+function bp_ship_member_unban_link( $user_id = 0 ) {
 	global $members_template;
 
 	if ( !$user_id )
 		$user_id = $members_template->member->user_id;
 
-	echo bp_get_group_member_unban_link( $user_id );
+	echo bp_get_ship_member_unban_link( $user_id );
 }
 	/**
 	 * Generate a URL for unbanning a member from a group.
@@ -2262,7 +2262,7 @@ function bp_group_member_unban_link( $user_id = 0 ) {
 	 * @param object $group Optional. Group object. Default: current group.
 	 * @return string
 	 */
-	function bp_get_group_member_unban_link( $user_id = 0, $group = false ) {
+	function bp_get_ship_member_unban_link( $user_id = 0, $group = false ) {
 		global $members_template, $groups_template;
 
 		if ( !$user_id )
@@ -2271,7 +2271,7 @@ function bp_group_member_unban_link( $user_id = 0 ) {
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_member_unban_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/unban/' . $user_id, 'groups_unban_member' ) );
+		return apply_filters( 'bp_get_ship_member_unban_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/unban/' . $user_id, 'groups_unban_member' ) );
 	}
 
 /**
@@ -2280,13 +2280,13 @@ function bp_group_member_unban_link( $user_id = 0 ) {
  * @param int $user_id ID of the member to remove. Default: current member in
  *        a member loop.
  */
-function bp_group_member_remove_link( $user_id = 0 ) {
+function bp_ship_member_remove_link( $user_id = 0 ) {
 	global $members_template;
 
 	if ( !$user_id )
 		$user_id = $members_template->member->user_id;
 
-	echo bp_get_group_member_remove_link( $user_id );
+	echo bp_get_ship_member_remove_link( $user_id );
 }
 	/**
 	 * Generate a URL for removing a member from a group.
@@ -2296,13 +2296,13 @@ function bp_group_member_remove_link( $user_id = 0 ) {
 	 * @param object $group Optional. Group object. Default: current group.
 	 * @return string
 	 */
-	function bp_get_group_member_remove_link( $user_id = 0, $group = false ) {
+	function bp_get_ship_member_remove_link( $user_id = 0, $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_member_remove_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'admin/manage-members/remove/' . $user_id, 'groups_remove_member' ) );
+		return apply_filters( 'bp_get_ship_member_remove_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'admin/manage-members/remove/' . $user_id, 'groups_remove_member' ) );
 	}
 
 /**
@@ -2311,11 +2311,11 @@ function bp_group_member_remove_link( $user_id = 0 ) {
  * @param object $group Optional. Group object. Default: current group in
  *        the loop.
  */
-function bp_group_admin_tabs( $group = false ) {
+function bp_ship_admin_tabs( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) ) {
-		$group = ( $groups_template->group ) ? $groups_template->group : groups_get_current_group();
+		$group = ( $groups_template->group ) ? $groups_template->group : ships_get_current_ship();
 	}
 
 	$css_id = 'manage-members';
@@ -2324,11 +2324,11 @@ function bp_group_admin_tabs( $group = false ) {
 		$css_id = 'membership-requests';
 	}
 
-	add_filter( "bp_get_options_nav_{$css_id}", 'bp_group_admin_tabs_backcompat', 10, 3 );
+	add_filter( "bp_get_options_nav_{$css_id}", 'bp_ship_admin_tabs_backcompat', 10, 3 );
 
 	bp_get_options_nav( $group->slug . '_manage' );
 
-	remove_filter( "bp_get_options_nav_{$css_id}", 'bp_group_admin_tabs_backcompat', 10, 3 );
+	remove_filter( "bp_get_options_nav_{$css_id}", 'bp_ship_admin_tabs_backcompat', 10, 3 );
 }
 
 /**
@@ -2340,12 +2340,12 @@ function bp_group_admin_tabs( $group = false ) {
  * @param  string $selected_item current selected tab
  * @return string HTML output
  */
-function bp_group_admin_tabs_backcompat( $subnav_output = '', $subnav_item = '', $selected_item = '' ) {
+function bp_ship_admin_tabs_backcompat( $subnav_output = '', $subnav_item = '', $selected_item = '' ) {
 	if ( ! has_action( 'groups_admin_tabs' ) ) {
 		return $subnav_output;
 	}
 
-	$group = groups_get_current_group();
+	$group = ships_get_current_ship();
 
 	ob_start();
 
@@ -2365,16 +2365,16 @@ function bp_group_admin_tabs_backcompat( $subnav_output = '', $subnav_item = '',
 /**
  * Output the group count for the displayed user.
  */
-function bp_group_total_for_member() {
-	echo bp_get_group_total_for_member();
+function bp_ship_total_for_member() {
+	echo bp_get_ship_total_for_member();
 }
 	/**
 	 * Get the group count for the displayed user.
 	 *
 	 * @return string
 	 */
-	function bp_get_group_total_for_member() {
-		return apply_filters( 'bp_get_group_total_for_member', bp_ships_Member::total_group_count() );
+	function bp_get_ship_total_for_member() {
+		return apply_filters( 'bp_get_ship_total_for_member', bp_ships_Member::total_ship_count() );
 	}
 
 /**
@@ -2382,8 +2382,8 @@ function bp_group_total_for_member() {
  *
  * @param string $page Page slug.
  */
-function bp_group_form_action( $page ) {
-	echo bp_get_group_form_action( $page );
+function bp_ship_form_action( $page ) {
+	echo bp_get_ship_form_action( $page );
 }
 	/**
 	 * Generate the 'action' attribute for a group form.
@@ -2393,13 +2393,13 @@ function bp_group_form_action( $page ) {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_form_action( $page, $group = false ) {
+	function bp_get_ship_form_action( $page, $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_group_form_action', bp_get_group_permalink( $group ) . $page );
+		return apply_filters( 'bp_ship_form_action', bp_get_ship_permalink( $group ) . $page );
 	}
 
 /**
@@ -2407,8 +2407,8 @@ function bp_group_form_action( $page ) {
  *
  * @param string $page Optional. Page slug.
  */
-function bp_group_admin_form_action( $page = false ) {
-	echo bp_get_group_admin_form_action( $page );
+function bp_ship_admin_form_action( $page = false ) {
+	echo bp_get_ship_admin_form_action( $page );
 }
 	/**
 	 * Generate the 'action' attribute for a group admin form.
@@ -2418,7 +2418,7 @@ function bp_group_admin_form_action( $page = false ) {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_admin_form_action( $page = false, $group = false ) {
+	function bp_get_ship_admin_form_action( $page = false, $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
@@ -2427,7 +2427,7 @@ function bp_group_admin_form_action( $page = false ) {
 		if ( empty( $page ) )
 			$page = bp_action_variable( 0 );
 
-		return apply_filters( 'bp_group_admin_form_action', bp_get_group_permalink( $group ) . 'admin/' . $page );
+		return apply_filters( 'bp_ship_admin_form_action', bp_get_ship_permalink( $group ) . 'admin/' . $page );
 	}
 
 /**
@@ -2437,7 +2437,7 @@ function bp_group_admin_form_action( $page = false ) {
  *        the loop.
  * @return bool
  */
-function bp_group_has_requested_membership( $group = false ) {
+function bp_ship_has_requested_membership( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) )
@@ -2458,7 +2458,7 @@ function bp_group_has_requested_membership( $group = false ) {
  *        group in the loop.
  * @return bool If user is member of group or not.
  */
-function bp_group_is_member( $group = false ) {
+function bp_ship_is_member( $group = false ) {
 	global $groups_template;
 
 	// Site admins always have access
@@ -2468,7 +2468,7 @@ function bp_group_is_member( $group = false ) {
 	if ( empty( $group ) )
 		$group =& $groups_template->group;
 
-	return apply_filters( 'bp_group_is_member', !empty( $group->is_member ) );
+	return apply_filters( 'bp_ship_is_member', !empty( $group->is_member ) );
 }
 
 /**
@@ -2478,14 +2478,14 @@ function bp_group_is_member( $group = false ) {
  *        group in the groups loop.
  * @return bool True if the user has an outstanding invite, otherwise false.
  */
-function bp_group_is_invited( $group = false ) {
+function bp_ship_is_invited( $group = false ) {
 	global $groups_template;
 
 	if ( empty( $group ) ) {
 		$group =& $groups_template->group;
 	}
 
-	return apply_filters( 'bp_group_is_invited', ! empty( $group->is_invited ) );
+	return apply_filters( 'bp_ship_is_invited', ! empty( $group->is_invited ) );
 }
 
 /**
@@ -2508,7 +2508,7 @@ function bp_group_is_invited( $group = false ) {
  * @param int $user_id The user ID to check
  * @return bool True if user is banned.  False if user isn't banned.
  */
-function bp_group_is_user_banned( $group = false, $user_id = 0 ) {
+function bp_ship_is_user_banned( $group = false, $user_id = 0 ) {
 	global $groups_template;
 
 	// Site admins always have access
@@ -2517,7 +2517,7 @@ function bp_group_is_user_banned( $group = false, $user_id = 0 ) {
 	}
 
 	// check groups loop first
-	// @see bp_ships_Group::get_group_extras()
+	// @see bp_ships_Group::get_ship_extras()
 	if ( ! empty( $groups_template->in_the_loop ) && isset( $groups_template->group->is_banned ) ) {
 		$retval = $groups_template->group->is_banned;
 
@@ -2539,14 +2539,14 @@ function bp_group_is_user_banned( $group = false, $user_id = 0 ) {
 		}
 	}
 
-	return (bool) apply_filters( 'bp_group_is_user_banned', $retval );
+	return (bool) apply_filters( 'bp_ship_is_user_banned', $retval );
 }
 
 /**
  * Output the URL for accepting an invitation to the current group in the loop.
  */
-function bp_group_accept_invite_link() {
-	echo bp_get_group_accept_invite_link();
+function bp_ship_accept_invite_link() {
+	echo bp_get_ship_accept_invite_link();
 }
 	/**
 	 * Generate the URL for accepting an invitation to a group.
@@ -2555,20 +2555,20 @@ function bp_group_accept_invite_link() {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_accept_invite_link( $group = false ) {
+	function bp_get_ship_accept_invite_link( $group = false ) {
 		global $groups_template, $bp;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_accept_invite_link', wp_nonce_url( trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() . '/invites/accept/' . $group->id ), 'groups_accept_invite' ) );
+		return apply_filters( 'bp_get_ship_accept_invite_link', wp_nonce_url( trailingslashit( bp_loggedin_user_domain() . bp_get_ships_slug() . '/invites/accept/' . $group->id ), 'groups_accept_invite' ) );
 	}
 
 /**
  * Output the URL for accepting an invitation to the current group in the loop.
  */
-function bp_group_reject_invite_link() {
-	echo bp_get_group_reject_invite_link();
+function bp_ship_reject_invite_link() {
+	echo bp_get_ship_reject_invite_link();
 }
 	/**
 	 * Generate the URL for rejecting an invitation to a group.
@@ -2577,20 +2577,20 @@ function bp_group_reject_invite_link() {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_reject_invite_link( $group = false ) {
+	function bp_get_ship_reject_invite_link( $group = false ) {
 		global $groups_template, $bp;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_reject_invite_link', wp_nonce_url( trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() . '/invites/reject/' . $group->id ), 'groups_reject_invite' ) );
+		return apply_filters( 'bp_get_ship_reject_invite_link', wp_nonce_url( trailingslashit( bp_loggedin_user_domain() . bp_get_ships_slug() . '/invites/reject/' . $group->id ), 'groups_reject_invite' ) );
 	}
 
 /**
  * Output the URL for confirming a request to leave a group.
  */
-function bp_group_leave_confirm_link() {
-	echo bp_get_group_leave_confirm_link();
+function bp_ship_leave_confirm_link() {
+	echo bp_get_ship_leave_confirm_link();
 }
 	/**
 	 * Generate the URL for confirming a request to leave a group.
@@ -2599,20 +2599,20 @@ function bp_group_leave_confirm_link() {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_leave_confirm_link( $group = false ) {
+	function bp_get_ship_leave_confirm_link( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_group_leave_confirm_link', wp_nonce_url( bp_get_group_permalink( $group ) . 'leave-group/yes', 'groups_leave_group' ) );
+		return apply_filters( 'bp_ship_leave_confirm_link', wp_nonce_url( bp_get_ship_permalink( $group ) . 'leave-group/yes', 'groups_leave_group' ) );
 	}
 
 /**
  * Output the URL for rejecting a request to leave a group.
  */
-function bp_group_leave_reject_link() {
-	echo bp_get_group_leave_reject_link();
+function bp_ship_leave_reject_link() {
+	echo bp_get_ship_leave_reject_link();
 }
 	/**
 	 * Generate the URL for rejecting a request to leave a group.
@@ -2621,20 +2621,20 @@ function bp_group_leave_reject_link() {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_leave_reject_link( $group = false ) {
+	function bp_get_ship_leave_reject_link( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_get_group_leave_reject_link', bp_get_group_permalink( $group ) );
+		return apply_filters( 'bp_get_ship_leave_reject_link', bp_get_ship_permalink( $group ) );
 	}
 
 /**
  * Output the 'action' attribute for a group send invite form.
  */
-function bp_group_send_invite_form_action() {
-	echo bp_get_group_send_invite_form_action();
+function bp_ship_send_invite_form_action() {
+	echo bp_get_ship_send_invite_form_action();
 }
 	/**
 	 * Output the 'action' attribute for a group send invite form.
@@ -2643,13 +2643,13 @@ function bp_group_send_invite_form_action() {
 	 *        in the loop.
 	 * @return string
 	 */
-	function bp_get_group_send_invite_form_action( $group = false ) {
+	function bp_get_ship_send_invite_form_action( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		return apply_filters( 'bp_group_send_invite_form_action', bp_get_group_permalink( $group ) . 'send-invites/send' );
+		return apply_filters( 'bp_ship_send_invite_form_action', bp_get_ship_permalink( $group ) . 'send-invites/send' );
 	}
 
 /**
@@ -2658,7 +2658,7 @@ function bp_group_send_invite_form_action() {
  * @param object $group Optional. Group object. Default: current group in
  *        the loop.
  * @return bool
- */
+
 function bp_has_friends_to_invite( $group = false ) {
 	global $groups_template;
 
@@ -2672,7 +2672,7 @@ function bp_has_friends_to_invite( $group = false ) {
 		return false;
 
 	return true;
-}
+} */
 
 /**
  * Output a 'New Topic' button for a group.
@@ -2682,8 +2682,8 @@ function bp_has_friends_to_invite( $group = false ) {
  * @param bp_ships_Group|bool $group The BP Groups_Group object if passed,
  *        boolean false if not passed.
  */
-function bp_group_new_topic_button( $group = false ) {
-	echo bp_get_group_new_topic_button( $group );
+function bp_ship_new_topic_button( $group = false ) {
+	echo bp_get_ship_new_topic_button( $group );
 }
 	/**
 	 * Returns a 'New Topic' button for a group.
@@ -2694,13 +2694,13 @@ function bp_group_new_topic_button( $group = false ) {
 	 *        passed, boolean false if not passed.
 	 * @return string HTML code for the button.
 	 */
-	function bp_get_group_new_topic_button( $group = false ) {
+	function bp_get_ship_new_topic_button( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		if ( !is_user_logged_in() || bp_group_is_user_banned() || !bp_is_group_forum() || bp_is_group_forum_topic() )
+		if ( !is_user_logged_in() || bp_ship_is_user_banned() || !bp_is_ship_forum() || bp_is_ship_forum_topic() )
 			return false;
 
 		$button = array(
@@ -2717,19 +2717,19 @@ function bp_group_new_topic_button( $group = false ) {
 		);
 
 		// Filter and return the HTML button
-		return bp_get_button( apply_filters( 'bp_get_group_new_topic_button', $button ) );
+		return bp_get_button( apply_filters( 'bp_get_ship_new_topic_button', $button ) );
 	}
 
-function bp_group_join_button( $group = false ) {
-	echo bp_get_group_join_button( $group );
+function bp_ship_join_button( $group = false ) {
+	echo bp_get_ship_join_button( $group );
 }
-	function bp_get_group_join_button( $group = false ) {
+	function bp_get_ship_join_button( $group = false ) {
 		global $groups_template;
 
 		if ( empty( $group ) )
 			$group =& $groups_template->group;
 
-		if ( !is_user_logged_in() || bp_group_is_user_banned( $group ) )
+		if ( !is_user_logged_in() || bp_ship_is_user_banned( $group ) )
 			return false;
 
 		// Group creation was not completed or status is unknown
@@ -2740,7 +2740,7 @@ function bp_group_join_button( $group = false ) {
 		if ( isset( $group->is_member ) && $group->is_member ) {
 
 			// Stop sole admins from abandoning their group
-	 		$group_admins = groups_get_group_admins( $group->id );
+	 		$group_admins = groups_get_ship_admins( $group->id );
 		 	if ( 1 == count( $group_admins ) && $group_admins[0]->user_id == bp_loggedin_user_id() )
 				return false;
 
@@ -2751,7 +2751,7 @@ function bp_group_join_button( $group = false ) {
 				'block_self'        => false,
 				'wrapper_class'     => 'group-button ' . $group->status,
 				'wrapper_id'        => 'groupbutton-' . $group->id,
-				'link_href'         => wp_nonce_url( bp_get_group_permalink( $group ) . 'leave-group', 'groups_leave_group' ),
+				'link_href'         => wp_nonce_url( bp_get_ship_permalink( $group ) . 'leave-group', 'groups_leave_group' ),
 				'link_text'         => __( 'Leave Group', 'buddypress' ),
 				'link_title'        => __( 'Leave Group', 'buddypress' ),
 				'link_class'        => 'group-button leave-group',
@@ -2774,7 +2774,7 @@ function bp_group_join_button( $group = false ) {
 						'block_self'        => false,
 						'wrapper_class'     => 'group-button ' . $group->status,
 						'wrapper_id'        => 'groupbutton-' . $group->id,
-						'link_href'         => wp_nonce_url( bp_get_group_permalink( $group ) . 'join', 'groups_join_group' ),
+						'link_href'         => wp_nonce_url( bp_get_ship_permalink( $group ) . 'join', 'groups_join_group' ),
 						'link_text'         => __( 'Join Group', 'buddypress' ),
 						'link_title'        => __( 'Join Group', 'buddypress' ),
 						'link_class'        => 'group-button join-group',
@@ -2793,7 +2793,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => add_query_arg( 'redirect_to', bp_get_group_permalink( $group ), bp_get_group_accept_invite_link( $group ) ),
+							'link_href'         => add_query_arg( 'redirect_to', bp_get_ship_permalink( $group ), bp_get_ship_accept_invite_link( $group ) ),
 							'link_text'         => __( 'Accept Invitation', 'buddypress' ),
 							'link_title'        => __( 'Accept Invitation', 'buddypress' ),
 							'link_class'        => 'group-button accept-invite',
@@ -2809,7 +2809,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button pending ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => bp_get_group_permalink( $group ),
+							'link_href'         => bp_get_ship_permalink( $group ),
 							'link_text'         => __( 'Request Sent', 'buddypress' ),
 							'link_title'        => __( 'Request Sent', 'buddypress' ),
 							'link_class'        => 'group-button pending membership-requested',
@@ -2825,7 +2825,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => wp_nonce_url( bp_get_group_permalink( $group ) . 'request-membership', 'groups_request_membership' ),
+							'link_href'         => wp_nonce_url( bp_get_ship_permalink( $group ) . 'request-membership', 'groups_request_membership' ),
 							'link_text'         => __( 'Request Membership', 'buddypress' ),
 							'link_title'        => __( 'Request Membership', 'buddypress' ),
 							'link_class'        => 'group-button request-membership',
@@ -2837,7 +2837,7 @@ function bp_group_join_button( $group = false ) {
 		}
 
 		// Filter and return the HTML button
-		return bp_get_button( apply_filters( 'bp_get_group_join_button', $button ) );
+		return bp_get_button( apply_filters( 'bp_get_ship_join_button', $button ) );
 	}
 
 /**
@@ -2845,8 +2845,8 @@ function bp_group_join_button( $group = false ) {
  *
  * @since BuddyPress (2.0.0)
  */
-function bp_group_create_button() {
-	echo bp_get_group_create_button();
+function bp_ship_create_button() {
+	echo bp_get_ship_create_button();
 }
 	/**
 	 * Get the Create a Group button.
@@ -2855,12 +2855,12 @@ function bp_group_create_button() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_create_button() {
+	function bp_get_ship_create_button() {
 		if ( ! is_user_logged_in() ) {
 			return false;
 		}
 
-		if ( ! bp_user_can_create_groups() ) {
+		if ( ! bp_user_can_create_ships() ) {
 			return false;
 		}
 
@@ -2870,12 +2870,12 @@ function bp_group_create_button() {
 			'link_text'  => __( 'Create a Group', 'buddypress' ),
 			'link_title' => __( 'Create a Group', 'buddypress' ),
 			'link_class' => 'group-create no-ajax',
-			'link_href'  => trailingslashit( bp_get_root_domain() ) . trailingslashit( bp_get_groups_root_slug() ) . trailingslashit( 'create' ),
+			'link_href'  => trailingslashit( bp_get_root_domain() ) . trailingslashit( bp_get_ships_root_slug() ) . trailingslashit( 'create' ),
 			'wrapper'    => false,
 			'block_self' => false,
 		);
 
-		return bp_get_button( apply_filters( 'bp_get_group_create_button', $button_args ) );
+		return bp_get_button( apply_filters( 'bp_get_ship_create_button', $button_args ) );
 	}
 
 /**
@@ -2883,8 +2883,8 @@ function bp_group_create_button() {
  *
  * @since BuddyPress (2.2.0)
  */
-function bp_group_create_nav_item() {
-	echo bp_get_group_create_nav_item();
+function bp_ship_create_nav_item() {
+	echo bp_get_ship_create_nav_item();
 }
 
 	/**
@@ -2894,18 +2894,18 @@ function bp_group_create_nav_item() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_create_nav_item() {
+	function bp_get_ship_create_nav_item() {
 		// Get the create a group button
-		$create_group_button = bp_get_group_create_button();
+		$create_ship_button = bp_get_ship_create_button();
 
 		// Make sure the button is available
-		if ( empty( $create_group_button ) ) {
+		if ( empty( $create_ship_button ) ) {
 			return;
 		}
 
-		$output = '<li id="group-create-nav">' . $create_group_button . '</li>';
+		$output = '<li id="group-create-nav">' . $create_ship_button . '</li>';
 
-		return apply_filters( 'bp_get_group_create_nav_item', $output );
+		return apply_filters( 'bp_get_ship_create_nav_item', $output );
 	}
 
 /**
@@ -2914,12 +2914,12 @@ function bp_group_create_nav_item() {
  *
  * @since BuddyPress (2.2.0)
  *
- * @uses   bp_group_create_nav_item() to output the create a Group nav item
+ * @uses   bp_ship_create_nav_item() to output the create a Group nav item
  * @return string HTML Output
  */
-function bp_group_backcompat_create_nav_item() {
+function bp_ship_backcompat_create_nav_item() {
 	// Bail if the Groups nav item is already used by bp-legacy
-	if ( has_action( 'bp_ships_directory_group_filter', 'bp_legacy_theme_group_create_nav', 999 ) ) {
+	if ( has_action( 'bp_ships_directory_ship_filter', 'bp_legacy_theme_ship_create_nav', 999 ) ) {
 		return;
 	}
 
@@ -2928,9 +2928,9 @@ function bp_group_backcompat_create_nav_item() {
 		return;
 	}
 
-	bp_group_create_nav_item();
+	bp_ship_create_nav_item();
 }
-add_action( 'bp_ships_directory_group_filter', 'bp_group_backcompat_create_nav_item', 1000 );
+add_action( 'bp_ships_directory_ship_filter', 'bp_ship_backcompat_create_nav_item', 1000 );
 
 /**
  * Prints a message if the group is not visible to the current user (it is a
@@ -2940,15 +2940,15 @@ add_action( 'bp_ships_directory_group_filter', 'bp_group_backcompat_create_nav_i
  * @param object $group Group to get status message for. Optional; defaults to current group.
  * @since BuddyPress (1.0.0)
  */
-function bp_group_status_message( $group = null ) {
+function bp_ship_status_message( $group = null ) {
 	global $groups_template;
 
 	if ( ! $group )
 		$group =& $groups_template->group;
 
 	if ( 'private' == $group->status ) {
- 		if ( ! bp_group_has_requested_membership() ) {
-			if ( is_user_logged_in() && bp_group_is_invited() ) {
+ 		if ( ! bp_ship_has_requested_membership() ) {
+			if ( is_user_logged_in() && bp_ship_is_invited() ) {
 				$message = __( 'You must accept your pending invitation before you can access this private group.', 'buddypress' );
 			} elseif ( is_user_logged_in() ) {
 				$message = __( 'This is a private group and you must request group membership in order to join.', 'buddypress' );
@@ -2964,10 +2964,10 @@ function bp_group_status_message( $group = null ) {
 		$message = __( 'This is a hidden group and only invited members can join.', 'buddypress' );
 	}
 
-	echo apply_filters( 'bp_group_status_message', $message, $group );
+	echo apply_filters( 'bp_ship_status_message', $message, $group );
 }
 
-function bp_group_hidden_fields() {
+function bp_ship_hidden_fields() {
 	if ( isset( $_REQUEST['s'] ) ) {
 		echo '<input type="hidden" id="search_terms" value="' . esc_attr( $_REQUEST['s'] ) . '" name="search_terms" />';
 	}
@@ -2981,27 +2981,27 @@ function bp_group_hidden_fields() {
 	}
 }
 
-function bp_total_group_count() {
-	echo bp_get_total_group_count();
+function bp_total_ship_count() {
+	echo bp_get_total_ship_count();
 }
-	function bp_get_total_group_count() {
-		return apply_filters( 'bp_get_total_group_count', groups_get_total_group_count() );
+	function bp_get_total_ship_count() {
+		return apply_filters( 'bp_get_total_ship_count', groups_get_total_ship_count() );
 	}
 
-function bp_total_group_count_for_user( $user_id = 0 ) {
-	echo bp_get_total_group_count_for_user( $user_id );
+function bp_total_ship_count_for_user( $user_id = 0 ) {
+	echo bp_get_total_ship_count_for_user( $user_id );
 }
-	function bp_get_total_group_count_for_user( $user_id = 0 ) {
-		return apply_filters( 'bp_get_total_group_count_for_user', groups_total_groups_for_user( $user_id ), $user_id );
+	function bp_get_total_ship_count_for_user( $user_id = 0 ) {
+		return apply_filters( 'bp_get_total_ship_count_for_user', groups_total_ships_for_user( $user_id ), $user_id );
 	}
-	add_filter( 'bp_get_total_group_count_for_user', 'bp_core_number_format' );
+	add_filter( 'bp_get_total_ship_count_for_user', 'bp_core_number_format' );
 
 
 /***************************************************************************
  * Group Members Template Tags
  **/
 
-class bp_ships_Group_Members_Template {
+class bp_ships_ship_Members_Template {
 	var $current_member = -1;
 	var $member_count;
 	var $members;
@@ -3012,7 +3012,7 @@ class bp_ships_Group_Members_Template {
 	var $pag_page;
 	var $pag_num;
 	var $pag_links;
-	var $total_group_count;
+	var $total_ship_count;
 
 	/**
 	 * Constructor.
@@ -3055,7 +3055,7 @@ class bp_ships_Group_Members_Template {
 		}
 
 		$r = wp_parse_args( $args, array(
-			'group_id'            => bp_get_current_group_id(),
+			'group_id'            => bp_get_current_ship_id(),
 			'page'                => 1,
 			'per_page'            => 20,
 			'page_arg'            => 'mlpage',
@@ -3077,15 +3077,15 @@ class bp_ships_Group_Members_Template {
 
 		/**
 		 * Check the current group is the same as the supplied group ID.
-		 * It can differ when using {@link bp_group_has_members()} outside the Groups screens.
+		 * It can differ when using {@link bp_ship_has_members()} outside the Groups screens.
 		 */
-		$current_group = groups_get_current_group();
-		if ( ! $current_group || $current_group && $current_group->id !== bp_get_current_group_id() ) {
+		$current_group = ships_get_current_ship();
+		if ( ! $current_group || $current_group && $current_group->id !== bp_get_current_ship_id() ) {
 			$current_group = groups_get_group( array( 'group_id' => $r['group_id'] ) );
 		}
 
 		// Assemble the base URL for pagination
-		$base_url = trailingslashit( bp_get_group_permalink( $current_group ) . bp_current_action() );
+		$base_url = trailingslashit( bp_get_ship_permalink( $current_group ) . bp_current_action() );
 		if ( bp_action_variable() ) {
 			$base_url = trailingslashit( $base_url . bp_action_variable() );
 		}
@@ -3095,7 +3095,7 @@ class bp_ships_Group_Members_Template {
 		$members_args['page']     = $this->pag_page;
 		$members_args['per_page'] = $this->pag_num;
 
-		$this->members = groups_get_group_members( $members_args );
+		$this->members = groups_get_ship_members( $members_args );
 
 		if ( !$max || $max >= (int) $this->members['count'] )
 			$this->total_member_count = (int) $this->members['count'];
@@ -3194,17 +3194,17 @@ class bp_ships_Group_Members_Template {
  *           $_REQUEST['s']. Default: null.
  * }
  */
-function bp_group_has_members( $args = '' ) {
+function bp_ship_has_members( $args = '' ) {
 	global $members_template;
 
 	$exclude_admins_mods = 1;
 
-	if ( bp_is_group_members() ) {
+	if ( bp_is_ship_members() ) {
 		$exclude_admins_mods = 0;
 	}
 
 	$r = wp_parse_args( $args, array(
-		'group_id'            => bp_get_current_group_id(),
+		'group_id'            => bp_get_current_ship_id(),
 		'page'                => 1,
 		'per_page'            => 20,
 		'max'                 => false,
@@ -3220,17 +3220,17 @@ function bp_group_has_members( $args = '' ) {
 		$r['search_terms'] = $_REQUEST['s'];
 	}
 
-	$members_template = new bp_ships_Group_Members_Template( $r );
-	return apply_filters( 'bp_group_has_members', $members_template->has_members(), $members_template );
+	$members_template = new bp_ships_ship_Members_Template( $r );
+	return apply_filters( 'bp_ship_has_members', $members_template->has_members(), $members_template );
 }
 
-function bp_group_members() {
+function bp_ship_members() {
 	global $members_template;
 
 	return $members_template->members();
 }
 
-function bp_group_the_member() {
+function bp_ship_the_member() {
 	global $members_template;
 
 	return $members_template->the_member();
@@ -3243,8 +3243,8 @@ function bp_group_the_member() {
  *
  * @param array $args {@see bp_core_fetch_avatar()}
  */
-function bp_group_member_avatar( $args = '' ) {
-	echo bp_get_group_member_avatar( $args );
+function bp_ship_member_avatar( $args = '' ) {
+	echo bp_get_ship_member_avatar( $args );
 }
 	/**
 	 * Return the group member avatar while in the groups members loop.
@@ -3253,7 +3253,7 @@ function bp_group_member_avatar( $args = '' ) {
 	 *
 	 * @param array $args {@see bp_core_fetch_avatar()}
 	 */
-	function bp_get_group_member_avatar( $args = '' ) {
+	function bp_get_ship_member_avatar( $args = '' ) {
 		global $members_template;
 
 		$r = bp_parse_args( $args, array(
@@ -3263,7 +3263,7 @@ function bp_group_member_avatar( $args = '' ) {
 			'alt'     => sprintf( __( 'Profile picture of %s', 'buddypress' ), $members_template->member->display_name )
 		) );
 
-		return apply_filters( 'bp_get_group_member_avatar', bp_core_fetch_avatar( $r ), $r );
+		return apply_filters( 'bp_get_ship_member_avatar', bp_core_fetch_avatar( $r ), $r );
 	}
 
 /**
@@ -3274,8 +3274,8 @@ function bp_group_member_avatar( $args = '' ) {
  * @param array $args {@see bp_core_fetch_avatar()}
  */
 
-function bp_group_member_avatar_thumb( $args = '' ) {
-	echo bp_get_group_member_avatar_thumb( $args );
+function bp_ship_member_avatar_thumb( $args = '' ) {
+	echo bp_get_ship_member_avatar_thumb( $args );
 }
 	/**
 	 * Return the group member avatar while in the groups members loop.
@@ -3284,7 +3284,7 @@ function bp_group_member_avatar_thumb( $args = '' ) {
 	 *
 	 * @param array $args {@see bp_core_fetch_avatar()}
 	 */
-	function bp_get_group_member_avatar_thumb( $args = '' ) {
+	function bp_get_ship_member_avatar_thumb( $args = '' ) {
 		global $members_template;
 
 		$r = bp_parse_args( $args, array(
@@ -3294,7 +3294,7 @@ function bp_group_member_avatar_thumb( $args = '' ) {
 			'alt'     => sprintf( __( 'Profile picture of %s', 'buddypress' ), $members_template->member->display_name )
 		) );
 
-		return apply_filters( 'bp_get_group_member_avatar_thumb', bp_core_fetch_avatar( $r ), $r );
+		return apply_filters( 'bp_get_ship_member_avatar_thumb', bp_core_fetch_avatar( $r ), $r );
 	}
 
 /**
@@ -3304,8 +3304,8 @@ function bp_group_member_avatar_thumb( $args = '' ) {
  *
  * @param array $args {@see bp_core_fetch_avatar()}
  */
-function bp_group_member_avatar_mini( $width = 30, $height = 30 ) {
-	echo bp_get_group_member_avatar_mini( $width, $height );
+function bp_ship_member_avatar_mini( $width = 30, $height = 30 ) {
+	echo bp_get_ship_member_avatar_mini( $width, $height );
 }
 	/**
 	 * Output the group member avatar while in the groups members loop.
@@ -3314,7 +3314,7 @@ function bp_group_member_avatar_mini( $width = 30, $height = 30 ) {
 	 *
 	 * @param array $args {@see bp_core_fetch_avatar()}
 	 */
-	function bp_get_group_member_avatar_mini( $width = 30, $height = 30 ) {
+	function bp_get_ship_member_avatar_mini( $width = 30, $height = 30 ) {
 		global $members_template;
 
 		$r = bp_parse_args( array(), array(
@@ -3326,49 +3326,49 @@ function bp_group_member_avatar_mini( $width = 30, $height = 30 ) {
 			'height'  => absint( $height )
 		) );
 
-		return apply_filters( 'bp_get_group_member_avatar_mini', bp_core_fetch_avatar( $r ), $r );
+		return apply_filters( 'bp_get_ship_member_avatar_mini', bp_core_fetch_avatar( $r ), $r );
 	}
 
-function bp_group_member_name() {
-	echo bp_get_group_member_name();
+function bp_ship_member_name() {
+	echo bp_get_ship_member_name();
 }
-	function bp_get_group_member_name() {
+	function bp_get_ship_member_name() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_name', $members_template->member->display_name );
+		return apply_filters( 'bp_get_ship_member_name', $members_template->member->display_name );
 	}
 
-function bp_group_member_url() {
-	echo bp_get_group_member_url();
+function bp_ship_member_url() {
+	echo bp_get_ship_member_url();
 }
-	function bp_get_group_member_url() {
+	function bp_get_ship_member_url() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_url', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
+		return apply_filters( 'bp_get_ship_member_url', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
 	}
 
-function bp_group_member_link() {
-	echo bp_get_group_member_link();
+function bp_ship_member_link() {
+	echo bp_get_ship_member_link();
 }
-	function bp_get_group_member_link() {
+	function bp_get_ship_member_link() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_link', '<a href="' . bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) . '">' . $members_template->member->display_name . '</a>' );
+		return apply_filters( 'bp_get_ship_member_link', '<a href="' . bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) . '">' . $members_template->member->display_name . '</a>' );
 	}
 
-function bp_group_member_domain() {
-	echo bp_get_group_member_domain();
+function bp_ship_member_domain() {
+	echo bp_get_ship_member_domain();
 }
-	function bp_get_group_member_domain() {
+	function bp_get_ship_member_domain() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_domain', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
+		return apply_filters( 'bp_get_ship_member_domain', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
 	}
 
-function bp_group_member_is_friend() {
-	echo bp_get_group_member_is_friend();
+function bp_ship_member_is_friend() {
+	echo bp_get_ship_member_is_friend();
 }
-	function bp_get_group_member_is_friend() {
+	function bp_get_ship_member_is_friend() {
 		global $members_template;
 
 		if ( !isset( $members_template->member->is_friend ) )
@@ -3376,44 +3376,44 @@ function bp_group_member_is_friend() {
 		else
 			$friend_status = ( 0 == $members_template->member->is_friend ) ? 'pending' : 'is_friend';
 
-		return apply_filters( 'bp_get_group_member_is_friend', $friend_status );
+		return apply_filters( 'bp_get_ship_member_is_friend', $friend_status );
 	}
 
-function bp_group_member_is_banned() {
-	echo bp_get_group_member_is_banned();
+function bp_ship_member_is_banned() {
+	echo bp_get_ship_member_is_banned();
 }
-	function bp_get_group_member_is_banned() {
+	function bp_get_ship_member_is_banned() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_is_banned', $members_template->member->is_banned );
+		return apply_filters( 'bp_get_ship_member_is_banned', $members_template->member->is_banned );
 	}
 
-function bp_group_member_css_class() {
+function bp_ship_member_css_class() {
 	global $members_template;
 
 	if ( $members_template->member->is_banned )
-		echo apply_filters( 'bp_group_member_css_class', 'banned-user' );
+		echo apply_filters( 'bp_ship_member_css_class', 'banned-user' );
 }
 
-function bp_group_member_joined_since() {
-	echo bp_get_group_member_joined_since();
+function bp_ship_member_joined_since() {
+	echo bp_get_ship_member_joined_since();
 }
-	function bp_get_group_member_joined_since() {
+	function bp_get_ship_member_joined_since() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_joined_since', bp_core_get_last_activity( $members_template->member->date_modified, __( 'joined %s', 'buddypress') ) );
+		return apply_filters( 'bp_get_ship_member_joined_since', bp_core_get_last_activity( $members_template->member->date_modified, __( 'joined %s', 'buddypress') ) );
 	}
 
-function bp_group_member_id() {
-	echo bp_get_group_member_id();
+function bp_ship_member_id() {
+	echo bp_get_ship_member_id();
 }
-	function bp_get_group_member_id() {
+	function bp_get_ship_member_id() {
 		global $members_template;
 
-		return apply_filters( 'bp_get_group_member_id', $members_template->member->user_id );
+		return apply_filters( 'bp_get_ship_member_id', $members_template->member->user_id );
 	}
 
-function bp_group_member_needs_pagination() {
+function bp_ship_member_needs_pagination() {
 	global $members_template;
 
 	if ( $members_template->total_member_count > $members_template->pag_num )
@@ -3422,26 +3422,26 @@ function bp_group_member_needs_pagination() {
 	return false;
 }
 
-function bp_group_pag_id() {
-	echo bp_get_group_pag_id();
+function bp_ship_pag_id() {
+	echo bp_get_ship_pag_id();
 }
-	function bp_get_group_pag_id() {
-		return apply_filters( 'bp_get_group_pag_id', 'pag' );
+	function bp_get_ship_pag_id() {
+		return apply_filters( 'bp_get_ship_pag_id', 'pag' );
 	}
 
-function bp_group_member_pagination() {
-	echo bp_get_group_member_pagination();
+function bp_ship_member_pagination() {
+	echo bp_get_ship_member_pagination();
 	wp_nonce_field( 'bp_ships_member_list', '_member_pag_nonce' );
 }
-	function bp_get_group_member_pagination() {
+	function bp_get_ship_member_pagination() {
 		global $members_template;
-		return apply_filters( 'bp_get_group_member_pagination', $members_template->pag_links );
+		return apply_filters( 'bp_get_ship_member_pagination', $members_template->pag_links );
 	}
 
-function bp_group_member_pagination_count() {
-	echo bp_get_group_member_pagination_count();
+function bp_ship_member_pagination_count() {
+	echo bp_get_ship_member_pagination_count();
 }
-	function bp_get_group_member_pagination_count() {
+	function bp_get_ship_member_pagination_count() {
 		global $members_template;
 
 		$start_num = intval( ( $members_template->pag_page - 1 ) * $members_template->pag_num ) + 1;
@@ -3449,14 +3449,14 @@ function bp_group_member_pagination_count() {
 		$to_num = bp_core_number_format( ( $start_num + ( $members_template->pag_num - 1 ) > $members_template->total_member_count ) ? $members_template->total_member_count : $start_num + ( $members_template->pag_num - 1 ) );
 		$total = bp_core_number_format( $members_template->total_member_count );
 
-		return apply_filters( 'bp_get_group_member_pagination_count', sprintf( _n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_ship_member_pagination_count', sprintf( _n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
-function bp_group_member_admin_pagination() {
-	echo bp_get_group_member_admin_pagination();
+function bp_ship_member_admin_pagination() {
+	echo bp_get_ship_member_admin_pagination();
 	wp_nonce_field( 'bp_ships_member_admin_list', '_member_admin_pag_nonce' );
 }
-	function bp_get_group_member_admin_pagination() {
+	function bp_get_ship_member_admin_pagination() {
 		global $members_template;
 
 		return $members_template->pag_links;
@@ -3528,19 +3528,19 @@ function bp_ships_members_filter() {
  *
  * @since BuddyPress (1.5.0)
  *
- * @uses apply_filters() To call 'bp_user_can_create_groups'.
- * @uses bp_get_option() To retrieve value of 'bp_restrict_group_creation'. Defaults to 0.
+ * @uses apply_filters() To call 'bp_user_can_create_ships'.
+ * @uses bp_get_option() To retrieve value of 'bp_restrict_ship_creation'. Defaults to 0.
  * @uses bp_current_user_can() To determine if current user if super admin.
  *
  * @return bool True if user can create groups. False otherwise.
  */
-function bp_user_can_create_groups() {
+function bp_user_can_create_ships() {
 	// Super admin can always create groups
 	if ( bp_current_user_can( 'bp_moderate' ) )
 		return true;
 
 	// Get group creation option, default to 0 (allowed)
-	$restricted = (int) bp_get_option( 'bp_restrict_group_creation', 0 );
+	$restricted = (int) bp_get_option( 'bp_restrict_ship_creation', 0 );
 
 	// Allow by default
 	$can_create = true;
@@ -3549,26 +3549,26 @@ function bp_user_can_create_groups() {
 	if ( $restricted )
 		$can_create = false;
 
-	return apply_filters( 'bp_user_can_create_groups', $can_create, $restricted );
+	return apply_filters( 'bp_user_can_create_ships', $can_create, $restricted );
 }
 
-function bp_group_creation_tabs() {
+function bp_ship_creation_tabs() {
 	global $bp;
 
-	if ( !is_array( $bp->groups->group_creation_steps ) )
+	if ( !is_array( $bp->ships->group_creation_steps ) )
 		return false;
 
-	if ( !bp_get_groups_current_create_step() ) {
-		$keys = array_keys( $bp->groups->group_creation_steps );
-		$bp->groups->current_create_step = array_shift( $keys );
+	if ( !bp_get_ships_current_create_step() ) {
+		$keys = array_keys( $bp->ships->group_creation_steps );
+		$bp->ships->current_create_step = array_shift( $keys );
 	}
 
 	$counter = 1;
 
-	foreach ( (array) $bp->groups->group_creation_steps as $slug => $step ) {
-		$is_enabled = bp_are_previous_group_creation_steps_complete( $slug ); ?>
+	foreach ( (array) $bp->ships->group_creation_steps as $slug => $step ) {
+		$is_enabled = bp_are_previous_ship_creation_steps_complete( $slug ); ?>
 
-		<li<?php if ( bp_get_groups_current_create_step() == $slug ) : ?> class="current"<?php endif; ?>><?php if ( $is_enabled ) : ?><a href="<?php echo bp_get_root_domain() . '/' . bp_get_groups_root_slug() ?>/create/step/<?php echo $slug ?>/"><?php else: ?><span><?php endif; ?><?php echo $counter ?>. <?php echo $step['name'] ?><?php if ( $is_enabled ) : ?></a><?php else: ?></span><?php endif ?></li><?php
+		<li<?php if ( bp_get_ships_current_create_step() == $slug ) : ?> class="current"<?php endif; ?>><?php if ( $is_enabled ) : ?><a href="<?php echo bp_get_root_domain() . '/' . bp_get_ships_root_slug() ?>/create/step/<?php echo $slug ?>/"><?php else: ?><span><?php endif; ?><?php echo $counter ?>. <?php echo $step['name'] ?><?php if ( $is_enabled ) : ?></a><?php else: ?></span><?php endif ?></li><?php
 		$counter++;
 	}
 
@@ -3577,41 +3577,41 @@ function bp_group_creation_tabs() {
 	do_action( 'groups_creation_tabs' );
 }
 
-function bp_group_creation_stage_title() {
+function bp_ship_creation_stage_title() {
 	global $bp;
 
-	echo apply_filters( 'bp_group_creation_stage_title', '<span>&mdash; ' . $bp->groups->group_creation_steps[bp_get_groups_current_create_step()]['name'] . '</span>' );
+	echo apply_filters( 'bp_ship_creation_stage_title', '<span>&mdash; ' . $bp->ships->group_creation_steps[bp_get_ships_current_create_step()]['name'] . '</span>' );
 }
 
-function bp_group_creation_form_action() {
-	echo bp_get_group_creation_form_action();
+function bp_ship_creation_form_action() {
+	echo bp_get_ship_creation_form_action();
 }
-	function bp_get_group_creation_form_action() {
+	function bp_get_ship_creation_form_action() {
 		global $bp;
 
 		if ( !bp_action_variable( 1 ) ) {
-			$keys = array_keys( $bp->groups->group_creation_steps );
+			$keys = array_keys( $bp->ships->group_creation_steps );
 			$bp->action_variables[1] = array_shift( $keys );
 		}
 
-		return apply_filters( 'bp_get_group_creation_form_action', trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/' . bp_action_variable( 1 ) ) );
+		return apply_filters( 'bp_get_ship_creation_form_action', trailingslashit( bp_get_root_domain() . '/' . bp_get_ships_root_slug() . '/create/step/' . bp_action_variable( 1 ) ) );
 	}
 
-function bp_is_group_creation_step( $step_slug ) {
+function bp_is_ship_creation_step( $step_slug ) {
 	global $bp;
 
 	/* Make sure we are in the groups component */
-	if ( !bp_is_groups_component() || !bp_is_current_action( 'create' ) )
+	if ( !bp_is_current_component( 'ships' ) || !bp_is_current_action( 'create' ) )
 		return false;
 
 	/* If this the first step, we can just accept and return true */
-	$keys = array_keys( $bp->groups->group_creation_steps );
+	$keys = array_keys( $bp->ships->group_creation_steps );
 	if ( !bp_action_variable( 1 ) && array_shift( $keys ) == $step_slug )
 		return true;
 
 	/* Before allowing a user to see a group creation step we must make sure previous steps are completed */
-	if ( !bp_is_first_group_creation_step() ) {
-		if ( !bp_are_previous_group_creation_steps_complete( $step_slug ) )
+	if ( !bp_is_first_ship_creation_step() ) {
+		if ( !bp_are_previous_ship_creation_steps_complete( $step_slug ) )
 			return false;
 	}
 
@@ -3622,112 +3622,112 @@ function bp_is_group_creation_step( $step_slug ) {
 	return false;
 }
 
-function bp_is_group_creation_step_complete( $step_slugs ) {
+function bp_is_ship_creation_step_complete( $step_slugs ) {
 	global $bp;
 
-	if ( !isset( $bp->groups->completed_create_steps ) )
+	if ( !isset( $bp->ships->completed_create_steps ) )
 		return false;
 
 	if ( is_array( $step_slugs ) ) {
 		$found = true;
 
 		foreach ( (array) $step_slugs as $step_slug ) {
-			if ( !in_array( $step_slug, $bp->groups->completed_create_steps ) )
+			if ( !in_array( $step_slug, $bp->ships->completed_create_steps ) )
 				$found = false;
 		}
 
 		return $found;
 	} else {
-		return in_array( $step_slugs, $bp->groups->completed_create_steps );
+		return in_array( $step_slugs, $bp->ships->completed_create_steps );
 	}
 
 	return true;
 }
 
-function bp_are_previous_group_creation_steps_complete( $step_slug ) {
+function bp_are_previous_ship_creation_steps_complete( $step_slug ) {
 	global $bp;
 
 	/* If this is the first group creation step, return true */
-	$keys = array_keys( $bp->groups->group_creation_steps );
+	$keys = array_keys( $bp->ships->group_creation_steps );
 	if ( array_shift( $keys ) == $step_slug )
 		return true;
 
-	reset( $bp->groups->group_creation_steps );
+	reset( $bp->ships->group_creation_steps );
 	unset( $previous_steps );
 
 	/* Get previous steps */
-	foreach ( (array) $bp->groups->group_creation_steps as $slug => $name ) {
+	foreach ( (array) $bp->ships->group_creation_steps as $slug => $name ) {
 		if ( $slug == $step_slug )
 			break;
 
 		$previous_steps[] = $slug;
 	}
 
-	return bp_is_group_creation_step_complete( $previous_steps );
+	return bp_is_ship_creation_step_complete( $previous_steps );
 }
 
-function bp_new_group_id() {
-	echo bp_get_new_group_id();
+function bp_new_ship_id() {
+	echo bp_get_new_ship_id();
 }
-	function bp_get_new_group_id() {
+	function bp_get_new_ship_id() {
 		global $bp;
 
-		if ( isset( $bp->groups->new_group_id ) )
-			$new_group_id = $bp->groups->new_group_id;
+		if ( isset( $bp->ships->new_ship_id ) )
+			$new_ship_id = $bp->ships->new_ship_id;
 		else
-			$new_group_id = 0;
+			$new_ship_id = 0;
 
-		return apply_filters( 'bp_get_new_group_id', $new_group_id );
+		return apply_filters( 'bp_get_new_ship_id', $new_ship_id );
 	}
 
-function bp_new_group_name() {
-	echo bp_get_new_group_name();
+function bp_new_ship_name() {
+	echo bp_get_new_ship_name();
 }
-	function bp_get_new_group_name() {
+	function bp_get_new_ship_name() {
 		global $bp;
 
-		if ( isset( $bp->groups->current_group->name ) )
-			$name = $bp->groups->current_group->name;
+		if ( isset( $bp->ships->current_group->name ) )
+			$name = $bp->ships->current_group->name;
 		else
 			$name = '';
 
-		return apply_filters( 'bp_get_new_group_name', $name );
+		return apply_filters( 'bp_get_new_ship_name', $name );
 	}
 
-function bp_new_group_description() {
-	echo bp_get_new_group_description();
+function bp_new_ship_description() {
+	echo bp_get_new_ship_description();
 }
-	function bp_get_new_group_description() {
+	function bp_get_new_ship_description() {
 		global $bp;
 
-		if ( isset( $bp->groups->current_group->description ) )
-			$description = $bp->groups->current_group->description;
+		if ( isset( $bp->ships->current_group->description ) )
+			$description = $bp->ships->current_group->description;
 		else
 			$description = '';
 
-		return apply_filters( 'bp_get_new_group_description', $description );
+		return apply_filters( 'bp_get_new_ship_description', $description );
 	}
 
-function bp_new_group_enable_forum() {
-	echo bp_get_new_group_enable_forum();
+function bp_new_ship_enable_forum() {
+	echo bp_get_new_ship_enable_forum();
 }
-	function bp_get_new_group_enable_forum() {
+	function bp_get_new_ship_enable_forum() {
 		global $bp;
-		return (int) apply_filters( 'bp_get_new_group_enable_forum', $bp->groups->current_group->enable_forum );
+		return (int) apply_filters( 'bp_get_new_ship_enable_forum', $bp->ships->current_group->enable_forum );
 	}
 
-function bp_new_group_status() {
-	echo bp_get_new_group_status();
+function bp_new_ship_status() {
+	echo bp_get_new_ship_status();
 }
-	function bp_get_new_group_status() {
+	function bp_get_new_ship_status() {
 		global $bp;
-		return apply_filters( 'bp_get_new_group_status', $bp->groups->current_group->status );
+		return apply_filters( 'bp_get_new_ship_status', $bp->ships->current_group->status );
 	}
 
-function bp_new_group_avatar( $args = '' ) {
-	echo bp_get_new_group_avatar( $args );
+function bp_new_ship_avatar( $args = '' ) {
+	echo bp_get_new_ship_avatar( $args );
 }
-	function bp_get_new_group_avatar( $args = '' ) {
+	function bp_get_new_ship_avatar( $args = '' ) {
 		global $bp;
 
 		$defaults = array(
@@ -3743,23 +3743,23 @@ function bp_new_group_avatar( $args = '' ) {
 		$r = wp_parse_args( $args, $defaults );
 		extract( $r, EXTR_SKIP );
 
-		return apply_filters( 'bp_get_new_group_avatar', bp_core_fetch_avatar( array( 'item_id' => $bp->groups->current_group->id, 'object' => 'group', 'type' => $type, 'avatar_dir' => 'group-avatars', 'alt' => $alt, 'width' => $width, 'height' => $height, 'class' => $class, 'no_grav' => $no_grav ) ) );
+		return apply_filters( 'bp_get_new_ship_avatar', bp_core_fetch_avatar( array( 'item_id' => $bp->ships->current_group->id, 'object' => 'group', 'type' => $type, 'avatar_dir' => 'group-avatars', 'alt' => $alt, 'width' => $width, 'height' => $height, 'class' => $class, 'no_grav' => $no_grav ) ) );
 	}
 
-function bp_group_creation_previous_link() {
-	echo bp_get_group_creation_previous_link();
+function bp_ship_creation_previous_link() {
+	echo bp_get_ship_creation_previous_link();
 }
-	function bp_get_group_creation_previous_link() {
+	function bp_get_ship_creation_previous_link() {
 		global $bp;
 
-		foreach ( (array) $bp->groups->group_creation_steps as $slug => $name ) {
+		foreach ( (array) $bp->ships->group_creation_steps as $slug => $name ) {
 			if ( bp_is_action_variable( $slug ) )
 				break;
 
 			$previous_steps[] = $slug;
 		}
 
-		return apply_filters( 'bp_get_group_creation_previous_link', trailingslashit( bp_get_root_domain() ) . bp_get_groups_root_slug() . '/create/step/' . array_pop( $previous_steps ) );
+		return apply_filters( 'bp_get_ship_creation_previous_link', trailingslashit( bp_get_root_domain() ) . bp_get_ships_root_slug() . '/create/step/' . array_pop( $previous_steps ) );
 	}
 
 /**
@@ -3768,56 +3768,56 @@ function bp_group_creation_previous_link() {
  * @since BuddyPress (1.6.0)
  */
 function bp_ships_current_create_step() {
-	echo bp_get_groups_current_create_step();
+	echo bp_get_ships_current_create_step();
 }
 	/**
 	 * Returns the current group creation step. If none is found, returns an empty string
 	 *
 	 * @since BuddyPress (1.6.0)
 	 *
-	 * @uses apply_filters() Filter bp_get_groups_current_create_step to modify
+	 * @uses apply_filters() Filter bp_get_ships_current_create_step to modify
 	 * @return string $current_create_step
 	 */
-	function bp_get_groups_current_create_step() {
+	function bp_get_ships_current_create_step() {
 		global $bp;
 
-		if ( !empty( $bp->groups->current_create_step ) ) {
-			$current_create_step = $bp->groups->current_create_step;
+		if ( !empty( $bp->ships->current_create_step ) ) {
+			$current_create_step = $bp->ships->current_create_step;
 		} else {
 			$current_create_step = '';
 		}
 
-		return apply_filters( 'bp_get_groups_current_create_step', $current_create_step );
+		return apply_filters( 'bp_get_ships_current_create_step', $current_create_step );
 	}
 
-function bp_is_last_group_creation_step() {
+function bp_is_last_ship_creation_step() {
 	global $bp;
 
-	$keys      = array_keys( $bp->groups->group_creation_steps );
+	$keys      = array_keys( $bp->ships->group_creation_steps );
 	$last_step = array_pop( $keys );
 
-	if ( $last_step == bp_get_groups_current_create_step() )
+	if ( $last_step == bp_get_ships_current_create_step() )
 		return true;
 
 	return false;
 }
 
-function bp_is_first_group_creation_step() {
+function bp_is_first_ship_creation_step() {
 	global $bp;
 
-	$keys       = array_keys( $bp->groups->group_creation_steps );
+	$keys       = array_keys( $bp->ships->group_creation_steps );
 	$first_step = array_shift( $keys );
 
-	if ( $first_step == bp_get_groups_current_create_step() )
+	if ( $first_step == bp_get_ships_current_create_step() )
 		return true;
 
 	return false;
 }
 
-function bp_new_group_invite_friend_list() {
-	echo bp_get_new_group_invite_friend_list();
+function bp_new_ship_invite_friend_list() {
+	echo bp_get_new_ship_invite_friend_list();
 }
-	function bp_get_new_group_invite_friend_list( $args = '' ) {
+	function bp_get_new_ship_invite_friend_list( $args = '' ) {
 		global $bp;
 
 		if ( !bp_is_active( 'friends' ) )
@@ -3832,7 +3832,7 @@ function bp_new_group_invite_friend_list() {
 		extract( $r, EXTR_SKIP );
 
 		if ( empty( $group_id ) )
-			$group_id = !empty( $bp->groups->new_group_id ) ? $bp->groups->new_group_id : $bp->groups->current_group->id;
+			$group_id = !empty( $bp->ships->new_ship_id ) ? $bp->ships->new_ship_id : $bp->ships->current_group->id;
 
 		if ( $friends = friends_get_friends_invite_list( bp_loggedin_user_id(), $group_id ) ) {
 			$invites = groups_get_invites_for_group( bp_loggedin_user_id(), $group_id );
@@ -3855,7 +3855,7 @@ function bp_new_group_invite_friend_list() {
 		return false;
 	}
 
-function bp_directory_groups_search_form() {
+function bp_directory_ships_search_form() {
 
 	$default_search_value = bp_get_search_default_text( 'groups' );
 	$search_value         = !empty( $_REQUEST['s'] ) ? stripslashes( $_REQUEST['s'] ) : $default_search_value;
@@ -3865,7 +3865,7 @@ function bp_directory_groups_search_form() {
 		<input type="submit" id="groups_search_submit" name="groups_search_submit" value="'. __( 'Search', 'buddypress' ) .'" />
 	</form>';
 
-	echo apply_filters( 'bp_directory_groups_search_form', $search_form_html );
+	echo apply_filters( 'bp_directory_ships_search_form', $search_form_html );
 
 }
 
@@ -3877,12 +3877,12 @@ function bp_directory_groups_search_form() {
 function bp_ships_header_tabs() {
 	global $bp;?>
 
-	<li<?php if ( !bp_action_variable( 0 ) || bp_is_action_variable( 'recently-active', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/recently-active' ) ?>"><?php _e( 'Recently Active', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'recently-joined', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/recently-joined' ) ?>"><?php _e( 'Recently Joined', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'most-popular', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/most-popular' ) ?>"><?php _e( 'Most Popular', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'admin-of', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/admin-of' ) ?>"><?php _e( 'Administrator Of', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'mod-of', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/mod-of' ) ?>"><?php _e( 'Moderator Of', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'alphabetically' ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/alphabetically' ) ?>"><?php _e( 'Alphabetically', 'buddypress' ) ?></a></li>
+	<li<?php if ( !bp_action_variable( 0 ) || bp_is_action_variable( 'recently-active', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/recently-active' ) ?>"><?php _e( 'Recently Active', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'recently-joined', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/recently-joined' ) ?>"><?php _e( 'Recently Joined', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'most-popular', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/most-popular' ) ?>"><?php _e( 'Most Popular', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'admin-of', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/admin-of' ) ?>"><?php _e( 'Administrator Of', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'mod-of', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/mod-of' ) ?>"><?php _e( 'Moderator Of', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'alphabetically' ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_ships_slug() . '/my-groups/alphabetically' ) ?>"><?php _e( 'Alphabetically', 'buddypress' ) ?></a></li>
 
 <?php
 	do_action( 'groups_header_tabs' );
@@ -3927,8 +3927,8 @@ function bp_ships_filter_title() {
  * @param string $slug
  * @return bool
  */
-function bp_is_group_admin_screen( $slug = '' ) {
-	return (bool) ( bp_is_group_admin_page() && bp_is_action_variable( $slug ) );
+function bp_is_ship_admin_screen( $slug = '' ) {
+	return (bool) ( bp_is_ship_admin_page() && bp_is_action_variable( $slug ) );
 }
 
 /**
@@ -3936,25 +3936,25 @@ function bp_is_group_admin_screen( $slug = '' ) {
  *
  * @since BuddyPress (1.6.0)
  */
-function bp_group_current_admin_tab() {
-	echo bp_get_group_current_admin_tab();
+function bp_ship_current_admin_tab() {
+	echo bp_get_ship_current_admin_tab();
 }
 	/**
 	 * Returns the current group admin tab slug
 	 *
 	 * @since BuddyPress (1.6.0)
 	 *
-	 * @uses apply_filters() Filter bp_get_current_group_admin_tab to modify return value
+	 * @uses apply_filters() Filter bp_get_current_ship_admin_tab to modify return value
 	 * @return string $tab The current tab's slug
 	 */
-	function bp_get_group_current_admin_tab() {
-		if ( bp_is_groups_component() && bp_is_current_action( 'admin' ) ) {
+	function bp_get_ship_current_admin_tab() {
+		if ( bp_is_current_component( 'ships' ) && bp_is_current_action( 'admin' ) ) {
 			$tab = bp_action_variable( 0 );
 		} else {
 			$tab = '';
 		}
 
-		return apply_filters( 'bp_get_current_group_admin_tab', $tab );
+		return apply_filters( 'bp_get_current_ship_admin_tab', $tab );
 	}
 
 /************************************************************************************
@@ -3966,10 +3966,10 @@ function bp_group_current_admin_tab() {
  *
  * @since BuddyPress (1.0.0)
  * @param string $type thumb or full ?
- * @uses bp_get_group_current_avatar() to get the avatar of the current group
+ * @uses bp_get_ship_current_avatar() to get the avatar of the current group
  */
-function bp_group_current_avatar( $type = 'thumb' ) {
-	echo bp_get_group_current_avatar( $type );
+function bp_ship_current_avatar( $type = 'thumb' ) {
+	echo bp_get_ship_current_avatar( $type );
 }
 	/**
 	 * Returns the current group avatar
@@ -3979,10 +3979,10 @@ function bp_group_current_avatar( $type = 'thumb' ) {
 	 * @param string $type thumb or full ?
 	 * @return string $tab The current tab's slug.
 	 */
-	function bp_get_group_current_avatar( $type = 'thumb' ) {
+	function bp_get_ship_current_avatar( $type = 'thumb' ) {
 
 		$group_avatar = bp_core_fetch_avatar( array(
-			'item_id'    => bp_get_current_group_id(),
+			'item_id'    => bp_get_current_ship_id(),
 			'object'     => 'group',
 			'type'       => $type,
 			'avatar_dir' => 'group-avatars',
@@ -3990,14 +3990,14 @@ function bp_group_current_avatar( $type = 'thumb' ) {
 			'class'      => 'avatar'
 		) );
 
-		return apply_filters( 'bp_get_group_current_avatar', $group_avatar );
+		return apply_filters( 'bp_get_ship_current_avatar', $group_avatar );
 	}
 
-function bp_get_group_has_avatar( $group_id = false ) {
+function bp_get_ship_has_avatar( $group_id = false ) {
 	global $bp;
 
 	if ( false === $group_id ) {
-		$group_id = bp_get_current_group_id();
+		$group_id = bp_get_current_ship_id();
 	}
 
 	// Todo - this looks like an overgeneral check
@@ -4019,33 +4019,33 @@ function bp_get_group_has_avatar( $group_id = false ) {
 	return true;
 }
 
-function bp_group_avatar_delete_link() {
-	echo bp_get_group_avatar_delete_link();
+function bp_ship_avatar_delete_link() {
+	echo bp_get_ship_avatar_delete_link();
 }
-	function bp_get_group_avatar_delete_link() {
+	function bp_get_ship_avatar_delete_link() {
 		global $bp;
 
-		return apply_filters( 'bp_get_group_avatar_delete_link', wp_nonce_url( bp_get_group_permalink( $bp->groups->current_group ) . 'admin/group-avatar/delete', 'bp_group_avatar_delete' ) );
+		return apply_filters( 'bp_get_ship_avatar_delete_link', wp_nonce_url( bp_get_ship_permalink( $bp->ships->current_group ) . 'admin/group-avatar/delete', 'bp_ship_avatar_delete' ) );
 	}
 
-function bp_group_avatar_edit_form() {
+function bp_ship_avatar_edit_form() {
 	groups_avatar_upload();
 }
 
-function bp_custom_group_boxes() {
-	do_action( 'groups_custom_group_boxes' );
+function bp_custom_ship_boxes() {
+	do_action( 'groups_custom_ship_boxes' );
 }
 
-function bp_custom_group_admin_tabs() {
-	do_action( 'groups_custom_group_admin_tabs' );
+function bp_custom_ship_admin_tabs() {
+	do_action( 'groups_custom_ship_admin_tabs' );
 }
 
-function bp_custom_group_fields_editable() {
-	do_action( 'groups_custom_group_fields_editable' );
+function bp_custom_ship_fields_editable() {
+	do_action( 'groups_custom_ship_fields_editable' );
 }
 
-function bp_custom_group_fields() {
-	do_action( 'groups_custom_group_fields' );
+function bp_custom_ship_fields() {
+	do_action( 'groups_custom_ship_fields' );
 }
 
 
@@ -4100,14 +4100,14 @@ class bp_ships_Membership_Requests_Template {
 			'page_arg' => 'mrpage',
 			'max'      => false,
 			'type'     => 'first_joined',
-			'group_id' => bp_get_current_group_id(),
+			'group_id' => bp_get_current_ship_id(),
 		) );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );
 		$this->pag_page = bp_sanitize_pagination_arg( $this->pag_arg, $r['page']     );
 		$this->pag_num  = bp_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
-		$mquery = new BP_Group_Member_Query( array(
+		$mquery = new BP_ship_Member_Query( array(
 			'group_id' => $r['group_id'],
 			'type'     => $r['type'],
 			'per_page' => $this->pag_num,
@@ -4125,7 +4125,7 @@ class bp_ships_Membership_Requests_Template {
 		foreach ( $this->requests as $rk => $rv ) {
 			// For legacy reasons, the 'id' property of each
 			// request must match the membership id, not the ID of
-			// the user (as it's returned by BP_Group_Member_Query)
+			// the user (as it's returned by BP_ship_Member_Query)
 			$this->requests[ $rk ]->user_id = $rv->ID;
 			$this->requests[ $rk ]->id      = $rv->membership_id;
 
@@ -4213,11 +4213,11 @@ class bp_ships_Membership_Requests_Template {
  * }
  * @return bool True if there are requests, otherwise false.
  */
-function bp_group_has_membership_requests( $args = '' ) {
+function bp_ship_has_membership_requests( $args = '' ) {
 	global $requests_template;
 
 	$defaults = array(
-		'group_id' => bp_get_current_group_id(),
+		'group_id' => bp_get_current_ship_id(),
 		'per_page' => 10,
 		'page'     => 1,
 		'max'      => false
@@ -4226,64 +4226,64 @@ function bp_group_has_membership_requests( $args = '' ) {
 	$r = wp_parse_args( $args, $defaults );
 
 	$requests_template = new bp_ships_Membership_Requests_Template( $r );
-	return apply_filters( 'bp_group_has_membership_requests', $requests_template->has_requests(), $requests_template );
+	return apply_filters( 'bp_ship_has_membership_requests', $requests_template->has_requests(), $requests_template );
 }
 
-function bp_group_membership_requests() {
+function bp_ship_membership_requests() {
 	global $requests_template;
 
 	return $requests_template->requests();
 }
 
-function bp_group_the_membership_request() {
+function bp_ship_the_membership_request() {
 	global $requests_template;
 
 	return $requests_template->the_request();
 }
 
-function bp_group_request_user_avatar_thumb() {
+function bp_ship_request_user_avatar_thumb() {
 	global $requests_template;
 
-	echo apply_filters( 'bp_group_request_user_avatar_thumb', bp_core_fetch_avatar( array( 'item_id' => $requests_template->request->user_id, 'type' => 'thumb', 'alt' => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_core_get_user_displayname( $requests_template->request->user_id ) ) ) ) );
+	echo apply_filters( 'bp_ship_request_user_avatar_thumb', bp_core_fetch_avatar( array( 'item_id' => $requests_template->request->user_id, 'type' => 'thumb', 'alt' => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_core_get_user_displayname( $requests_template->request->user_id ) ) ) ) );
 }
 
-function bp_group_request_reject_link() {
-	echo bp_get_group_request_reject_link();
+function bp_ship_request_reject_link() {
+	echo bp_get_ship_request_reject_link();
 }
-	function bp_get_group_request_reject_link() {
+	function bp_get_ship_request_reject_link() {
 		global $requests_template;
 
-		return apply_filters( 'bp_get_group_request_reject_link', wp_nonce_url( bp_get_group_permalink( groups_get_current_group() ) . 'admin/membership-requests/reject/' . $requests_template->request->membership_id, 'groups_reject_membership_request' ) );
+		return apply_filters( 'bp_get_ship_request_reject_link', wp_nonce_url( bp_get_ship_permalink( ships_get_current_ship() ) . 'admin/membership-requests/reject/' . $requests_template->request->membership_id, 'groups_reject_membership_request' ) );
 	}
 
-function bp_group_request_accept_link() {
-	echo bp_get_group_request_accept_link();
+function bp_ship_request_accept_link() {
+	echo bp_get_ship_request_accept_link();
 }
-	function bp_get_group_request_accept_link() {
+	function bp_get_ship_request_accept_link() {
 		global $requests_template;
 
-		return apply_filters( 'bp_get_group_request_accept_link', wp_nonce_url( bp_get_group_permalink( groups_get_current_group() ) . 'admin/membership-requests/accept/' . $requests_template->request->membership_id, 'groups_accept_membership_request' ) );
+		return apply_filters( 'bp_get_ship_request_accept_link', wp_nonce_url( bp_get_ship_permalink( ships_get_current_ship() ) . 'admin/membership-requests/accept/' . $requests_template->request->membership_id, 'groups_accept_membership_request' ) );
 	}
 
-function bp_group_request_user_link() {
-	echo bp_get_group_request_user_link();
+function bp_ship_request_user_link() {
+	echo bp_get_ship_request_user_link();
 }
-	function bp_get_group_request_user_link() {
+	function bp_get_ship_request_user_link() {
 		global $requests_template;
 
-		return apply_filters( 'bp_get_group_request_user_link', bp_core_get_userlink( $requests_template->request->user_id ) );
+		return apply_filters( 'bp_get_ship_request_user_link', bp_core_get_userlink( $requests_template->request->user_id ) );
 	}
 
-function bp_group_request_time_since_requested() {
+function bp_ship_request_time_since_requested() {
 	global $requests_template;
 
-	echo apply_filters( 'bp_group_request_time_since_requested', sprintf( __( 'requested %s', 'buddypress' ), bp_core_time_since( strtotime( $requests_template->request->date_modified ) ) ) );
+	echo apply_filters( 'bp_ship_request_time_since_requested', sprintf( __( 'requested %s', 'buddypress' ), bp_core_time_since( strtotime( $requests_template->request->date_modified ) ) ) );
 }
 
-function bp_group_request_comment() {
+function bp_ship_request_comment() {
 	global $requests_template;
 
-	echo apply_filters( 'bp_group_request_comment', strip_tags( stripslashes( $requests_template->request->comments ) ) );
+	echo apply_filters( 'bp_ship_request_comment', strip_tags( stripslashes( $requests_template->request->comments ) ) );
 }
 
 /**
@@ -4291,8 +4291,8 @@ function bp_group_request_comment() {
  *
  * @since BuddyPress (2.0.0)
  */
-function bp_group_requests_pagination_links() {
-	echo bp_get_group_requests_pagination_links();
+function bp_ship_requests_pagination_links() {
+	echo bp_get_ship_requests_pagination_links();
 }
 	/**
 	 * Get pagination links for group membership requests.
@@ -4301,9 +4301,9 @@ function bp_group_requests_pagination_links() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_requests_pagination_links() {
+	function bp_get_ship_requests_pagination_links() {
 		global $requests_template;
-		return apply_filters( 'bp_get_group_requests_pagination_links', $requests_template->pag_links );
+		return apply_filters( 'bp_get_ship_requests_pagination_links', $requests_template->pag_links );
 	}
 
 /**
@@ -4311,8 +4311,8 @@ function bp_group_requests_pagination_links() {
  *
  * @since BuddyPress (2.0.0)
  */
-function bp_group_requests_pagination_count() {
-	echo bp_get_group_requests_pagination_count();
+function bp_ship_requests_pagination_count() {
+	echo bp_get_ship_requests_pagination_count();
 }
 	/**
 	 * Get pagination count text for group membership requests.
@@ -4321,7 +4321,7 @@ function bp_group_requests_pagination_count() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_requests_pagination_count() {
+	function bp_get_ship_requests_pagination_count() {
 		global $requests_template;
 
 		$start_num = intval( ( $requests_template->pag_page - 1 ) * $requests_template->pag_num ) + 1;
@@ -4329,7 +4329,7 @@ function bp_group_requests_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $requests_template->pag_num - 1 ) > $requests_template->total_request_count ) ? $requests_template->total_request_count : $start_num + ( $requests_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $requests_template->total_request_count );
 
-		return apply_filters( 'bp_get_group_requests_pagination_count', sprintf( _n( 'Viewing 1 request', 'Viewing %1$s - %2$s of %3$s requests', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_ship_requests_pagination_count', sprintf( _n( 'Viewing 1 request', 'Viewing %1$s - %2$s of %3$s requests', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 /************************************************************************************
@@ -4369,14 +4369,14 @@ class bp_ships_Invite_Template {
 			'per_page' => 10,
 			'page_arg' => 'invitepage',
 			'user_id'  => bp_loggedin_user_id(),
-			'group_id' => bp_get_current_group_id(),
+			'group_id' => bp_get_current_ship_id(),
 		) );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );
 		$this->pag_page = bp_sanitize_pagination_arg( $this->pag_arg, $r['page']     );
 		$this->pag_num  = bp_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
-		$iquery = new BP_Group_Member_Query( array(
+		$iquery = new BP_ship_Member_Query( array(
 			'group_id' => $r['group_id'],
 			'type'     => 'first_joined',
 			'per_page' => $this->pag_num,
@@ -4467,7 +4467,7 @@ class bp_ships_Invite_Template {
 		$this->invite->user->last_active  = bp_core_get_last_activity( $this->invite->user->last_activity, __( 'active %s', 'buddypress' ) );
 
 		if ( bp_is_active( 'groups' ) ) {
-			$total_groups = bp_ships_Member::total_group_count( $user_id );
+			$total_groups = bp_ships_Member::total_ship_count( $user_id );
 			$this->invite->user->total_groups = sprintf( _n( '%d group', '%d groups', $total_groups, 'buddypress' ), $total_groups );
 		}
 
@@ -4477,14 +4477,14 @@ class bp_ships_Invite_Template {
 
 		$this->invite->user->total_blogs = null;
 
-		$this->invite->group_id = $group_id; // Global'ed in bp_group_has_invites()
+		$this->invite->group_id = $group_id; // Global'ed in bp_ship_has_invites()
 
 		if ( 0 == $this->current_invite ) // loop has just started
 			do_action('loop_start');
 	}
 }
 
-function bp_group_has_invites( $args = '' ) {
+function bp_ship_has_invites( $args = '' ) {
 	global $invites_template, $group_id;
 
 	$r = wp_parse_args( $args, array(
@@ -4495,10 +4495,10 @@ function bp_group_has_invites( $args = '' ) {
 	) );
 
 	if ( empty( $r['group_id'] ) ) {
-		if ( groups_get_current_group() ) {
-			$r['group_id'] = bp_get_current_group_id();
-		} elseif ( ! empty( buddypress()->groups->new_group_id ) ) {
-			$r['group_id'] = buddypress()->groups->new_group_id;
+		if ( ships_get_current_ship() ) {
+			$r['group_id'] = bp_get_current_ship_id();
+		} elseif ( ! empty( buddypress()->groups->new_ship_id ) ) {
+			$r['group_id'] = buddypress()->groups->new_ship_id;
 		}
 	}
 
@@ -4512,69 +4512,69 @@ function bp_group_has_invites( $args = '' ) {
 	}
 
 	$invites_template = new bp_ships_Invite_Template( $r );
-	return apply_filters( 'bp_group_has_invites', $invites_template->has_invites(), $invites_template );
+	return apply_filters( 'bp_ship_has_invites', $invites_template->has_invites(), $invites_template );
 }
 
-function bp_group_invites() {
+function bp_ship_invites() {
 	global $invites_template;
 
 	return $invites_template->invites();
 }
 
-function bp_group_the_invite() {
+function bp_ship_the_invite() {
 	global $invites_template;
 
 	return $invites_template->the_invite();
 }
 
-function bp_group_invite_item_id() {
-	echo bp_get_group_invite_item_id();
+function bp_ship_invite_item_id() {
+	echo bp_get_ship_invite_item_id();
 }
-	function bp_get_group_invite_item_id() {
+	function bp_get_ship_invite_item_id() {
 		global $invites_template;
 
-		return apply_filters( 'bp_get_group_invite_item_id', 'uid-' . $invites_template->invite->user->id );
+		return apply_filters( 'bp_get_ship_invite_item_id', 'uid-' . $invites_template->invite->user->id );
 	}
 
-function bp_group_invite_user_avatar() {
-	echo bp_get_group_invite_user_avatar();
+function bp_ship_invite_user_avatar() {
+	echo bp_get_ship_invite_user_avatar();
 }
-	function bp_get_group_invite_user_avatar() {
+	function bp_get_ship_invite_user_avatar() {
 		global $invites_template;
 
-		return apply_filters( 'bp_get_group_invite_user_avatar', $invites_template->invite->user->avatar_thumb );
+		return apply_filters( 'bp_get_ship_invite_user_avatar', $invites_template->invite->user->avatar_thumb );
 	}
 
-function bp_group_invite_user_link() {
-	echo bp_get_group_invite_user_link();
+function bp_ship_invite_user_link() {
+	echo bp_get_ship_invite_user_link();
 }
-	function bp_get_group_invite_user_link() {
+	function bp_get_ship_invite_user_link() {
 		global $invites_template;
 
-		return apply_filters( 'bp_get_group_invite_user_link', bp_core_get_userlink( $invites_template->invite->user->id ) );
+		return apply_filters( 'bp_get_ship_invite_user_link', bp_core_get_userlink( $invites_template->invite->user->id ) );
 	}
 
-function bp_group_invite_user_last_active() {
-	echo bp_get_group_invite_user_last_active();
+function bp_ship_invite_user_last_active() {
+	echo bp_get_ship_invite_user_last_active();
 }
-	function bp_get_group_invite_user_last_active() {
+	function bp_get_ship_invite_user_last_active() {
 		global $invites_template;
 
-		return apply_filters( 'bp_get_group_invite_user_last_active', $invites_template->invite->user->last_active );
+		return apply_filters( 'bp_get_ship_invite_user_last_active', $invites_template->invite->user->last_active );
 	}
 
-function bp_group_invite_user_remove_invite_url() {
-	echo bp_get_group_invite_user_remove_invite_url();
+function bp_ship_invite_user_remove_invite_url() {
+	echo bp_get_ship_invite_user_remove_invite_url();
 }
-	function bp_get_group_invite_user_remove_invite_url() {
+	function bp_get_ship_invite_user_remove_invite_url() {
 		global $invites_template;
 
 		$user_id = intval( $invites_template->invite->user->id );
 
 		if ( bp_is_current_action( 'create' ) ) {
-			$uninvite_url = bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/group-invites/?user_id=' . $user_id;
+			$uninvite_url = bp_get_root_domain() . '/' . bp_get_ships_root_slug() . '/create/step/group-invites/?user_id=' . $user_id;
 		} else {
-			$uninvite_url = bp_get_group_permalink( groups_get_current_group() ) . 'send-invites/remove/' . $user_id;
+			$uninvite_url = bp_get_ship_permalink( ships_get_current_ship() ) . 'send-invites/remove/' . $user_id;
 		}
 
 		return wp_nonce_url( $uninvite_url, 'groups_invite_uninvite_user' );
@@ -4585,8 +4585,8 @@ function bp_group_invite_user_remove_invite_url() {
  *
  * @since BuddyPress (2.0.0)
  */
-function bp_group_invite_pagination_links() {
-	echo bp_get_group_invite_pagination_links();
+function bp_ship_invite_pagination_links() {
+	echo bp_get_ship_invite_pagination_links();
 }
 	/**
 	 * Get pagination links for group invitations.
@@ -4595,9 +4595,9 @@ function bp_group_invite_pagination_links() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_invite_pagination_links() {
+	function bp_get_ship_invite_pagination_links() {
 		global $invites_template;
-		return apply_filters( 'bp_get_group_invite_pagination_links', $invites_template->pag_links );
+		return apply_filters( 'bp_get_ship_invite_pagination_links', $invites_template->pag_links );
 	}
 
 /**
@@ -4605,8 +4605,8 @@ function bp_group_invite_pagination_links() {
  *
  * @since BuddyPress (2.0.0)
  */
-function bp_group_invite_pagination_count() {
-	echo bp_get_group_invite_pagination_count();
+function bp_ship_invite_pagination_count() {
+	echo bp_get_ship_invite_pagination_count();
 }
 	/**
 	 * Get pagination count text for group invitations.
@@ -4615,7 +4615,7 @@ function bp_group_invite_pagination_count() {
 	 *
 	 * @return string
 	 */
-	function bp_get_group_invite_pagination_count() {
+	function bp_get_ship_invite_pagination_count() {
 		global $invites_template;
 
 		$start_num = intval( ( $invites_template->pag_page - 1 ) * $invites_template->pag_num ) + 1;
@@ -4623,7 +4623,7 @@ function bp_group_invite_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $invites_template->pag_num - 1 ) > $invites_template->total_invite_count ) ? $invites_template->total_invite_count : $start_num + ( $invites_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $invites_template->total_invite_count );
 
-		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing 1 invitation', 'Viewing %1$s - %2$s of %3$s invitations', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_ships_pagination_count', sprintf( _n( 'Viewing 1 invitation', 'Viewing %1$s - %2$s of %3$s invitations', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 /***
@@ -4639,111 +4639,111 @@ function bp_ships_activity_feed() {
 	if ( !bp_is_active( 'groups' ) || !bp_is_active( 'activity' ) || !bp_is_group() )
 		return; ?>
 
-	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php bp_current_group_name() ?> | <?php _e( 'Group Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_group_activity_feed_link() ?>" />
+	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php bp_current_ship_name() ?> | <?php _e( 'Group Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_ship_activity_feed_link() ?>" />
 
 <?php
 }
 add_action( 'bp_head', 'bp_ships_activity_feed' );
 
-function bp_group_activity_feed_link() {
-	echo bp_get_group_activity_feed_link();
+function bp_ship_activity_feed_link() {
+	echo bp_get_ship_activity_feed_link();
 }
-	function bp_get_group_activity_feed_link() {
-		return apply_filters( 'bp_get_group_activity_feed_link', bp_get_group_permalink( groups_get_current_group() ) . 'feed/' );
+	function bp_get_ship_activity_feed_link() {
+		return apply_filters( 'bp_get_ship_activity_feed_link', bp_get_ship_permalink( ships_get_current_ship() ) . 'feed/' );
 	}
 
 /**
- * Echoes the output of bp_get_current_group_id()
+ * Echoes the output of bp_get_current_ship_id()
  *
  * @since BuddyPress (1.5.0)
  */
-function bp_current_group_id() {
-	echo bp_get_current_group_id();
+function bp_current_ship_id() {
+	echo bp_get_current_ship_id();
 }
 	/**
 	 * Returns the ID of the current group
 	 *
 	 * @since BuddyPress (1.5.0)
-	 * @uses apply_filters() Filter bp_get_current_group_id to modify this output
+	 * @uses apply_filters() Filter bp_get_current_ship_id to modify this output
 	 *
-	 * @return int $current_group_id The id of the current group, if there is one
+	 * @return int $current_ship_id The id of the current group, if there is one
 	 */
-	function bp_get_current_group_id() {
-		$current_group    = groups_get_current_group();
-		$current_group_id = isset( $current_group->id ) ? (int) $current_group->id : 0;
+	function bp_get_current_ship_id() {
+		$current_group    = ships_get_current_ship();
+		$current_ship_id = isset( $current_group->id ) ? (int) $current_group->id : 0;
 
-		return apply_filters( 'bp_get_current_group_id', $current_group_id, $current_group );
+		return apply_filters( 'bp_get_current_ship_id', $current_ship_id, $current_group );
 	}
 
 /**
- * Echoes the output of bp_get_current_group_slug()
+ * Echoes the output of bp_get_current_ship_slug()
  *
  * @since BuddyPress (1.5.0)
  */
-function bp_current_group_slug() {
-	echo bp_get_current_group_slug();
+function bp_current_ship_slug() {
+	echo bp_get_current_ship_slug();
 }
 	/**
 	 * Returns the slug of the current group
 	 *
 	 * @since BuddyPress (1.5.0)
-	 * @uses apply_filters() Filter bp_get_current_group_slug to modify this output
+	 * @uses apply_filters() Filter bp_get_current_ship_slug to modify this output
 	 *
-	 * @return string $current_group_slug The slug of the current group, if there is one
+	 * @return string $current_ship_slug The slug of the current group, if there is one
 	 */
-	function bp_get_current_group_slug() {
-		$current_group      = groups_get_current_group();
-		$current_group_slug = isset( $current_group->slug ) ? $current_group->slug : '';
+	function bp_get_current_ship_slug() {
+		$current_group      = ships_get_current_ship();
+		$current_ship_slug = isset( $current_group->slug ) ? $current_group->slug : '';
 
-		return apply_filters( 'bp_get_current_group_slug', $current_group_slug, $current_group );
+		return apply_filters( 'bp_get_current_ship_slug', $current_ship_slug, $current_group );
 	}
 
 /**
- * Echoes the output of bp_get_current_group_name()
+ * Echoes the output of bp_get_current_ship_name()
  *
  */
-function bp_current_group_name() {
-	echo bp_get_current_group_name();
+function bp_current_ship_name() {
+	echo bp_get_current_ship_name();
 }
 	/**
 	 * Returns the name of the current group
 	 *
 	 * @since BuddyPress (1.5.0)
-	 * @uses apply_filters() Filter bp_get_current_group_name to modify this output
+	 * @uses apply_filters() Filter bp_get_current_ship_name to modify this output
 	 *
 	 * @return string The name of the current group, if there is one
 	 */
-	function bp_get_current_group_name() {
-		$current_group      = groups_get_current_group();
-		$current_group_name = isset( $current_group->name ) ? $current_group->name : '';
-		$name               = apply_filters( 'bp_get_group_name', $current_group_name );
+	function bp_get_current_ship_name() {
+		$current_group      = ships_get_current_ship();
+		$current_ship_name = isset( $current_group->name ) ? $current_group->name : '';
+		$name               = apply_filters( 'bp_get_ship_name', $current_ship_name );
 
-		return apply_filters( 'bp_get_current_group_name', $name, $current_group );
+		return apply_filters( 'bp_get_current_ship_name', $name, $current_group );
 	}
 
 /**
- * Echoes the output of bp_get_current_group_description()
+ * Echoes the output of bp_get_current_ship_description()
  *
  * @since BuddyPress (2.1.0)
  */
-function bp_current_group_description() {
-	echo bp_get_current_group_description();
+function bp_current_ship_description() {
+	echo bp_get_current_ship_description();
 }
 	/**
 	 * Returns the description of the current group
 	 *
 	 * @since BuddyPress (2.1.0)
-	 * @uses apply_filters() Filter bp_get_current_group_description to modify
+	 * @uses apply_filters() Filter bp_get_current_ship_description to modify
 	 *                       this output
 	 *
 	 * @return string The description of the current group, if there is one
 	 */
-	function bp_get_current_group_description() {
-		$current_group      = groups_get_current_group();
-		$current_group_desc = isset( $current_group->description ) ? $current_group->description : '';
-		$desc               = apply_filters( 'bp_get_group_description', $current_group_desc );
+	function bp_get_current_ship_description() {
+		$current_group      = ships_get_current_ship();
+		$current_ship_desc = isset( $current_group->description ) ? $current_group->description : '';
+		$desc               = apply_filters( 'bp_get_ship_description', $current_ship_desc );
 
-		return apply_filters( 'bp_get_current_group_description', $desc );
+		return apply_filters( 'bp_get_current_ship_description', $desc );
 	}
 
 /**
@@ -4757,7 +4757,7 @@ function bp_current_group_description() {
  * @return string
  */
 function bp_ships_action_link( $action = '', $query_args = '', $nonce = false ) {
-	echo bp_get_groups_action_link( $action, $query_args, $nonce );
+	echo bp_get_ships_action_link( $action, $query_args, $nonce );
 }
 	/**
 	 * Get a URL for a group component action
@@ -4769,9 +4769,9 @@ function bp_ships_action_link( $action = '', $query_args = '', $nonce = false ) 
 	 * @param bool $nonce
 	 * @return string
 	 */
-	function bp_get_groups_action_link( $action = '', $query_args = '', $nonce = false ) {
+	function bp_get_ships_action_link( $action = '', $query_args = '', $nonce = false ) {
 
-		$current_group = groups_get_current_group();
+		$current_group = ships_get_current_ship();
 		$url           = '';
 
 		// Must be a group
@@ -4779,9 +4779,9 @@ function bp_ships_action_link( $action = '', $query_args = '', $nonce = false ) 
 
 			// Append $action to $url if provided
 			if ( !empty( $action ) ) {
-				$url = bp_get_group_permalink( $current_group ) . $action;
+				$url = bp_get_ship_permalink( $current_group ) . $action;
 			} else {
-				$url = bp_get_group_permalink( $current_group );
+				$url = bp_get_ship_permalink( $current_group );
 			}
 
 			// Add a slash at the end of our user url
@@ -4801,7 +4801,7 @@ function bp_ships_action_link( $action = '', $query_args = '', $nonce = false ) 
 		}
 
 		// Return the url
-		return apply_filters( 'bp_get_groups_action_link', $url, $action, $query_args, $nonce );
+		return apply_filters( 'bp_get_ships_action_link', $url, $action, $query_args, $nonce );
 	}
 
 /** Stats **********************************************************************/
@@ -4846,7 +4846,7 @@ function bp_ships_get_profile_stats( $args = '' ) {
 
 			// Get the user groups
 			if ( empty( $r['groups'] ) ) {
-				$r['groups'] = absint( bp_get_total_group_count_for_user( $r['user_id'] ) );
+				$r['groups'] = absint( bp_get_total_ship_count_for_user( $r['user_id'] ) );
 			}
 
 			// If groups exist, show some formatted output
